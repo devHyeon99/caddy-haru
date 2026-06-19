@@ -31,4 +31,12 @@ pnpm test
 pnpm build
 ```
 
+데이터베이스 검증에는 Docker가 필요합니다.
+
+```bash
+pnpm db:start
+pnpm db:reset
+pnpm db:test
+```
+
 제품 요구사항은 [docs/PRD.md](docs/PRD.md)를 참고하세요.
