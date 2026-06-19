@@ -1,0 +1,1 @@
+-- Production data is never seeded. Test fixtures live under supabase/tests.
