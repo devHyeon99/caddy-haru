@@ -34,7 +34,29 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm build:cloudflare
 ```
+
+## Cloudflare Workers
+
+OpenNext 어댑터를 사용해 Cloudflare Workers에 배포합니다.
+
+```bash
+cp .dev.vars.example .dev.vars
+pnpm preview
+```
+
+운영 배포 전 Cloudflare Worker의 런타임 변수와 GitHub `production`
+Environment secrets에 다음 값을 등록합니다.
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+최초 배포는 GitHub Actions의 `Deploy Cloudflare` 워크플로를 수동 실행합니다.
+배포 후 발급된 운영 URL을 Supabase Auth의 Site URL과 Redirect URLs에
+등록해야 카카오 로그인이 정상 동작합니다.
 
 데이터베이스 검증에는 Docker가 필요합니다.
 

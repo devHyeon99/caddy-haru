@@ -53,3 +53,6 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Cloudflare build
+        run: pnpm build:cloudflare
