@@ -51,4 +51,4 @@ jobs:
           test -n "$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
 
       - name: Deploy
-        run: pnpm deploy
+        run: pnpm run deploy
