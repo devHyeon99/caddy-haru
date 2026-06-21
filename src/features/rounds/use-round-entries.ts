@@ -6,6 +6,7 @@ import {
   createRoundEntry,
   deleteRoundEntry,
   listRoundEntries,
+  roundEntriesQueryKey,
   updateRoundEntry,
   type RoundEntryInput,
 } from "./round-entry-api";
@@ -16,7 +17,7 @@ function sortEntries(entries: RoundEntry[]) {
 
 export function useRoundEntries(year: number, courseName: string) {
   const queryClient = useQueryClient();
-  const queryKey = ["round-entries", year] as const;
+  const queryKey = roundEntriesQueryKey(year);
 
   const query = useQuery({
     queryKey,

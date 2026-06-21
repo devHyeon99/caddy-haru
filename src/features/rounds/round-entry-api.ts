@@ -1,8 +1,12 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { RoundEntry } from "@/lib/calendar";
 import { createClient } from "@/shared/api/supabase/client";
 
 const roundEntryColumns =
   "id, work_date, caddie_fee, over_fee, payment_method, memo";
+
+export const roundEntriesQueryKey = (year: number) =>
+  ["round-entries", year] as const;
 
 export type RoundEntryInput = Omit<RoundEntry, "id">;
 
@@ -40,8 +44,12 @@ export function toRoundEntryPayload(
   };
 }
 
-export async function listRoundEntries(year: number) {
-  const supabase = createClient();
+// Shared query usable with either the browser or the server Supabase client,
+// so the same logic powers client fetching and server-side prefetching.
+export async function fetchRoundEntries(
+  supabase: SupabaseClient,
+  year: number,
+) {
   const { data, error } = await supabase
     .from("round_entries")
     .select(roundEntryColumns)
@@ -55,6 +63,10 @@ export async function listRoundEntries(year: number) {
   }
 
   return (data as RoundEntryRow[]).map(mapRoundEntry);
+}
+
+export async function listRoundEntries(year: number) {
+  return fetchRoundEntries(createClient(), year);
 }
 
 export async function createRoundEntry(

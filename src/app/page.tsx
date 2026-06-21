@@ -1,5 +1,12 @@
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { CalendarDashboard } from "@/features/dashboard/calendar-dashboard";
+import { fetchRoundEntriesOnServer } from "@/features/rounds/round-entries.server";
+import { roundEntriesQueryKey } from "@/features/rounds/round-entry-api";
 import { createClient } from "@/shared/api/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -35,13 +42,22 @@ export default async function Home() {
       return parts;
     }, {});
   const initialDate = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+  const initialYear = Number(dateParts.year);
+
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: roundEntriesQueryKey(initialYear),
+    queryFn: () => fetchRoundEntriesOnServer(initialYear),
+  });
 
   return (
-    <CalendarDashboard
-      courseName={profile.course_name}
-      defaultCaddieFee={profile.default_caddie_fee}
-      overFeePresets={profile.over_fee_presets}
-      initialDate={initialDate}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CalendarDashboard
+        courseName={profile.course_name}
+        defaultCaddieFee={profile.default_caddie_fee}
+        overFeePresets={profile.over_fee_presets}
+        initialDate={initialDate}
+      />
+    </HydrationBoundary>
   );
 }
