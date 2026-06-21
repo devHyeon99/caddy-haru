@@ -10,15 +10,20 @@
 - pnpm
 - Vitest
 
-백엔드는 Supabase Auth, PostgreSQL, RLS를 사용할 예정이며 웹 배포는 Cloudflare Workers를 우선 검토합니다.
+백엔드는 Supabase Auth, PostgreSQL, RLS를 사용하며 웹 배포는 Cloudflare Workers를 우선 검토합니다.
 
 ## 시작하기
 
 ```bash
 corepack enable
 pnpm install
+cp .env.example .env.local
 pnpm dev
 ```
+
+`.env.local`의 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`에는 Supabase Dashboard의
+Project Settings > API에서 확인한 Publishable key를 입력합니다. 카카오 로그인 콜백은
+로컬 환경에서 `http://localhost:3000/auth/callback`을 사용합니다.
 
 로컬 주소는 [http://localhost:3000](http://localhost:3000)입니다.
 

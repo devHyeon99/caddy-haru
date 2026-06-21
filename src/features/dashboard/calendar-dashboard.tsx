@@ -5,6 +5,7 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  LogOut,
   Pencil,
   Plus,
   Settings,
@@ -12,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
+import { signOut } from "@/app/auth/actions";
 import { useTheme, type ThemeMode } from "@/app/providers";
 import {
   formatCompactIncome,
@@ -33,19 +35,97 @@ const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 const overFeeOptions = [0, 10_000, 20_000, 30_000];
 
 const initialEntries: RoundEntry[] = [
-  { id: "1", workDate: "2026-01-12", caddieFee: 150_000, overFee: 10_000, paymentMethod: "cash" },
-  { id: "2", workDate: "2026-02-08", caddieFee: 150_000, overFee: 20_000, paymentMethod: "transfer" },
-  { id: "3", workDate: "2026-03-17", caddieFee: 150_000, overFee: 0, paymentMethod: "cash" },
-  { id: "4", workDate: "2026-04-22", caddieFee: 150_000, overFee: 30_000, paymentMethod: "transfer" },
-  { id: "5", workDate: "2026-05-09", caddieFee: 150_000, overFee: 10_000, paymentMethod: "cash" },
-  { id: "6", workDate: "2026-06-03", caddieFee: 150_000, overFee: 0, paymentMethod: "cash" },
-  { id: "7", workDate: "2026-06-05", caddieFee: 150_000, overFee: 20_000, paymentMethod: "transfer" },
-  { id: "8", workDate: "2026-06-05", caddieFee: 150_000, overFee: 0, paymentMethod: "cash" },
-  { id: "9", workDate: "2026-06-08", caddieFee: 150_000, overFee: 10_000, paymentMethod: "transfer" },
-  { id: "10", workDate: "2026-06-11", caddieFee: 150_000, overFee: 30_000, paymentMethod: "cash" },
-  { id: "11", workDate: "2026-06-14", caddieFee: 150_000, overFee: 0, paymentMethod: "cash" },
-  { id: "12", workDate: "2026-06-18", caddieFee: 150_000, overFee: 20_000, paymentMethod: "cash" },
-  { id: "13", workDate: "2026-06-18", caddieFee: 150_000, overFee: 0, paymentMethod: "transfer" },
+  {
+    id: "1",
+    workDate: "2026-01-12",
+    caddieFee: 150_000,
+    overFee: 10_000,
+    paymentMethod: "cash",
+  },
+  {
+    id: "2",
+    workDate: "2026-02-08",
+    caddieFee: 150_000,
+    overFee: 20_000,
+    paymentMethod: "transfer",
+  },
+  {
+    id: "3",
+    workDate: "2026-03-17",
+    caddieFee: 150_000,
+    overFee: 0,
+    paymentMethod: "cash",
+  },
+  {
+    id: "4",
+    workDate: "2026-04-22",
+    caddieFee: 150_000,
+    overFee: 30_000,
+    paymentMethod: "transfer",
+  },
+  {
+    id: "5",
+    workDate: "2026-05-09",
+    caddieFee: 150_000,
+    overFee: 10_000,
+    paymentMethod: "cash",
+  },
+  {
+    id: "6",
+    workDate: "2026-06-03",
+    caddieFee: 150_000,
+    overFee: 0,
+    paymentMethod: "cash",
+  },
+  {
+    id: "7",
+    workDate: "2026-06-05",
+    caddieFee: 150_000,
+    overFee: 20_000,
+    paymentMethod: "transfer",
+  },
+  {
+    id: "8",
+    workDate: "2026-06-05",
+    caddieFee: 150_000,
+    overFee: 0,
+    paymentMethod: "cash",
+  },
+  {
+    id: "9",
+    workDate: "2026-06-08",
+    caddieFee: 150_000,
+    overFee: 10_000,
+    paymentMethod: "transfer",
+  },
+  {
+    id: "10",
+    workDate: "2026-06-11",
+    caddieFee: 150_000,
+    overFee: 30_000,
+    paymentMethod: "cash",
+  },
+  {
+    id: "11",
+    workDate: "2026-06-14",
+    caddieFee: 150_000,
+    overFee: 0,
+    paymentMethod: "cash",
+  },
+  {
+    id: "12",
+    workDate: "2026-06-18",
+    caddieFee: 150_000,
+    overFee: 20_000,
+    paymentMethod: "cash",
+  },
+  {
+    id: "13",
+    workDate: "2026-06-18",
+    caddieFee: 150_000,
+    overFee: 0,
+    paymentMethod: "transfer",
+  },
 ];
 
 function BrandMark() {
@@ -58,7 +138,15 @@ function BrandMark() {
   );
 }
 
-export function CalendarDashboard() {
+type CalendarDashboardProps = {
+  courseName: string;
+  defaultCaddieFee: number;
+};
+
+export function CalendarDashboard({
+  courseName,
+  defaultCaddieFee,
+}: CalendarDashboardProps) {
   const [activeView, setActiveView] = useState<AppView>("calendar");
   const [statisticsView, setStatisticsView] =
     useState<StatisticsView>("monthly");
@@ -68,11 +156,10 @@ export function CalendarDashboard() {
   const [entries, setEntries] = useState(initialEntries);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [caddieFee, setCaddieFee] = useState("150000");
+  const [caddieFee, setCaddieFee] = useState(String(defaultCaddieFee));
   const [overFee, setOverFee] = useState(0);
   const [customOverFee, setCustomOverFee] = useState("");
-  const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethod>("cash");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   const [memo, setMemo] = useState("");
   const { mode, setMode } = useTheme();
 
@@ -102,7 +189,9 @@ export function CalendarDashboard() {
 
   const monthlyChart = Array.from({ length: 12 }, (_, index) => {
     const prefix = `${year}-${String(index + 1).padStart(2, "0")}`;
-    return sumIncome(entries.filter((entry) => entry.workDate.startsWith(prefix)));
+    return sumIncome(
+      entries.filter((entry) => entry.workDate.startsWith(prefix)),
+    );
   });
 
   function changeMonth(offset: number) {
@@ -114,7 +203,7 @@ export function CalendarDashboard() {
 
   function openNewRound() {
     setEditingId(null);
-    setCaddieFee("150000");
+    setCaddieFee(String(defaultCaddieFee));
     setOverFee(0);
     setCustomOverFee("");
     setPaymentMethod("cash");
@@ -170,7 +259,7 @@ export function CalendarDashboard() {
             <BrandMark />
             <div>
               <div className={styles.brandName}>캐디하루</div>
-              <div className={styles.courseName}>레이크힐 골프클럽</div>
+              <div className={styles.courseName}>{courseName}</div>
             </div>
           </div>
           <span className={styles.prototypeBadge}>UI 프로토타입</span>
@@ -207,7 +296,12 @@ export function CalendarDashboard() {
           )}
 
           {activeView === "settings" && (
-            <SettingsView mode={mode} onChangeMode={setMode} />
+            <SettingsView
+              mode={mode}
+              courseName={courseName}
+              defaultCaddieFee={defaultCaddieFee}
+              onChangeMode={setMode}
+            />
           )}
         </div>
 
@@ -249,7 +343,9 @@ export function CalendarDashboard() {
                   {month + 1}월 {selectedDay}일
                 </div>
                 <h2 id="round-sheet-title" className={styles.sectionTitle}>
-                  {editingId ? "라운드 수정" : `${selectedEntries.length + 1}라운드 추가`}
+                  {editingId
+                    ? "라운드 수정"
+                    : `${selectedEntries.length + 1}라운드 추가`}
                 </h2>
               </div>
               <button
@@ -395,7 +491,9 @@ function CalendarView({
       <section className={styles.summary} aria-label="이번 달 요약">
         <div>
           <div className={styles.eyebrow}>이번 달 수입</div>
-          <div className={styles.summaryAmount}>{formatWon(sumIncome(monthEntries))}</div>
+          <div className={styles.summaryAmount}>
+            {formatWon(sumIncome(monthEntries))}
+          </div>
         </div>
         <div className={styles.roundCount}>{monthEntries.length}라운드</div>
       </section>
@@ -479,7 +577,8 @@ function CalendarView({
                   </div>
                   <div className={styles.feeBreakdown}>
                     캐디피 {formatWon(entry.caddieFee)}
-                    {entry.overFee > 0 && ` · 오버피 ${formatWon(entry.overFee)}`}
+                    {entry.overFee > 0 &&
+                      ` · 오버피 ${formatWon(entry.overFee)}`}
                   </div>
                 </div>
                 <div className={styles.roundIncome}>
@@ -541,12 +640,14 @@ function StatisticsViewContent({
   const entries = view === "monthly" ? monthEntries : yearEntries;
   const chartData =
     view === "monthly"
-      ? Array.from({ length: new Date(year, month + 1, 0).getDate() }, (_, index) =>
-          sumIncome(
-            monthEntries.filter(
-              (entry) => Number(entry.workDate.slice(-2)) === index + 1,
+      ? Array.from(
+          { length: new Date(year, month + 1, 0).getDate() },
+          (_, index) =>
+            sumIncome(
+              monthEntries.filter(
+                (entry) => Number(entry.workDate.slice(-2)) === index + 1,
+              ),
             ),
-          ),
         )
       : monthlyChart;
   const chartMax = Math.max(...chartData, 1);
@@ -583,11 +684,15 @@ function StatisticsViewContent({
         <Metric label="총 라운드" value={`${entries.length}회`} />
         <Metric
           label="캐디피"
-          value={formatWon(entries.reduce((sum, entry) => sum + entry.caddieFee, 0))}
+          value={formatWon(
+            entries.reduce((sum, entry) => sum + entry.caddieFee, 0),
+          )}
         />
         <Metric
           label="오버피"
-          value={formatWon(entries.reduce((sum, entry) => sum + entry.overFee, 0))}
+          value={formatWon(
+            entries.reduce((sum, entry) => sum + entry.overFee, 0),
+          )}
         />
       </div>
       <h2 className={styles.sectionTitle}>
@@ -599,12 +704,15 @@ function StatisticsViewContent({
             <div className={styles.barTrack}>
               <div
                 className={styles.bar}
-                style={{ height: `${Math.max((value / chartMax) * 100, value ? 3 : 0)}%` }}
+                style={{
+                  height: `${Math.max((value / chartMax) * 100, value ? 3 : 0)}%`,
+                }}
               />
             </div>
             {(view === "yearly" || (index + 1) % 5 === 0) && (
               <span className={styles.barLabel}>
-                {index + 1}{view === "yearly" ? "월" : "일"}
+                {index + 1}
+                {view === "yearly" ? "월" : "일"}
               </span>
             )}
           </div>
@@ -625,9 +733,13 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function SettingsView({
   mode,
+  courseName,
+  defaultCaddieFee,
   onChangeMode,
 }: {
   mode: ThemeMode;
+  courseName: string;
+  defaultCaddieFee: number;
   onChangeMode: (mode: ThemeMode) => void;
 }) {
   const themeLabels: Record<ThemeMode, string> = {
@@ -645,9 +757,8 @@ function SettingsView({
         </p>
       </div>
       <div className={styles.settingsList}>
-        <Setting label="카카오 계정" value="캐디하루 사용자" />
-        <Setting label="소속 골프장" value="레이크힐 골프클럽" />
-        <Setting label="기본 캐디피" value="150,000원" />
+        <Setting label="소속 골프장" value={courseName} />
+        <Setting label="기본 캐디피" value={formatWon(defaultCaddieFee)} />
         <Setting label="오버피 빠른 선택" value="1만 · 2만 · 3만원" />
       </div>
       <h2 className={styles.sectionTitle} style={{ marginTop: 28 }}>
@@ -668,9 +779,12 @@ function SettingsView({
         ))}
       </div>
       <div className={styles.settingsList}>
-        <Setting label="CSV 내보내기" value="기간 선택" />
-        <Setting label="로그아웃" value="" />
-        <Setting label="계정 및 데이터 삭제" value="" />
+        <form action={signOut}>
+          <button className={styles.settingButton} type="submit">
+            <span className={styles.settingLabel}>로그아웃</span>
+            <LogOut size={18} aria-hidden="true" />
+          </button>
+        </form>
       </div>
     </>
   );

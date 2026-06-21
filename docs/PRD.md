@@ -283,30 +283,30 @@ action-primary    #4BD3A2
 
 ### 9.1 profiles
 
-| 필드 | 형식 | 설명 |
-| --- | --- | --- |
-| user_id | uuid | `auth.users.id`, 기본 키 |
-| course_name | text | 현재 소속 골프장 |
-| default_caddie_fee | integer | 기본 캐디피, 원 단위 |
-| over_fee_presets | integer[] | 오버피 빠른 선택값 |
-| theme_mode | enum | system, light, dark |
-| created_at | timestamptz | 생성 시각 |
-| updated_at | timestamptz | 수정 시각 |
+| 필드               | 형식        | 설명                     |
+| ------------------ | ----------- | ------------------------ |
+| user_id            | uuid        | `auth.users.id`, 기본 키 |
+| course_name        | text        | 현재 소속 골프장         |
+| default_caddie_fee | integer     | 기본 캐디피, 원 단위     |
+| over_fee_presets   | integer[]   | 오버피 빠른 선택값       |
+| theme_mode         | enum        | system, light, dark      |
+| created_at         | timestamptz | 생성 시각                |
+| updated_at         | timestamptz | 수정 시각                |
 
 ### 9.2 round_entries
 
-| 필드 | 형식 | 설명 |
-| --- | --- | --- |
-| id | uuid | 기본 키 |
-| user_id | uuid | 기록 소유 사용자 |
-| work_date | date | 근무 날짜 |
-| caddie_fee | integer | 캐디피, 원 단위 |
-| over_fee | integer | 오버피, 원 단위 |
-| payment_method | enum | cash, transfer |
-| course_name_snapshot | text | 기록 당시 골프장명 |
-| memo | text, nullable | 선택 메모 |
-| created_at | timestamptz | 생성 시각 |
-| updated_at | timestamptz | 수정 시각 |
+| 필드                 | 형식           | 설명               |
+| -------------------- | -------------- | ------------------ |
+| id                   | uuid           | 기본 키            |
+| user_id              | uuid           | 기록 소유 사용자   |
+| work_date            | date           | 근무 날짜          |
+| caddie_fee           | integer        | 캐디피, 원 단위    |
+| over_fee             | integer        | 오버피, 원 단위    |
+| payment_method       | enum           | cash, transfer     |
+| course_name_snapshot | text           | 기록 당시 골프장명 |
+| memo                 | text, nullable | 선택 메모          |
+| created_at           | timestamptz    | 생성 시각          |
+| updated_at           | timestamptz    | 수정 시각          |
 
 금액은 부동소수점이 아닌 원 단위 정수로 저장한다. `caddie_fee`와 `over_fee`에는 0 이상의 값만 허용한다. 날짜 조회를 위해 `(user_id, work_date)` 복합 인덱스를 둔다.
 

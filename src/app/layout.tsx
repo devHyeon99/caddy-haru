@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppProviders } from "./providers";
+import { ThemeScript } from "./theme-script";
 import { lightTheme } from "@/styles/theme.css";
 
 export const metadata: Metadata = {
@@ -15,7 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={lightTheme} suppressHydrationWarning>
-      <body>
+      <head>
+        <ThemeScript />
+      </head>
+      <body suppressHydrationWarning>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

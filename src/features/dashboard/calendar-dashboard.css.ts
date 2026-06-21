@@ -715,6 +715,27 @@ export const settingValue = style({
   fontSize: 13,
 });
 
+export const settingButton = style({
+  width: "100%",
+  minHeight: 64,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: 0,
+  border: 0,
+  borderBottom: `1px solid ${vars.color.border}`,
+  color: vars.color.textPrimary,
+  background: "transparent",
+  cursor: "pointer",
+  selectors: {
+    "&:hover": { color: vars.color.brandStrong },
+    "&:focus-visible": {
+      outline: `3px solid ${vars.color.brandSoft}`,
+      outlineOffset: -3,
+    },
+  },
+});
+
 export const themeControls = style({
   display: "flex",
   flexWrap: "wrap",
