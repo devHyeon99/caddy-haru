@@ -3,6 +3,8 @@
 out/
 build/
 coverage/
+.open-next/
+.wrangler/
 
 # Dependencies
 node_modules/
