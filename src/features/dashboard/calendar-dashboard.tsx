@@ -15,6 +15,7 @@ import {
 import { FormEvent, useMemo, useState } from "react";
 import { signOut } from "@/app/auth/actions";
 import { useTheme, type ThemeMode } from "@/app/providers";
+import { useRoundEntries } from "@/features/rounds/use-round-entries";
 import {
   formatCompactIncome,
   formatWon,
@@ -32,101 +33,6 @@ type AppView = "calendar" | "statistics" | "settings";
 type StatisticsView = "monthly" | "yearly";
 
 const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
-const overFeeOptions = [0, 10_000, 20_000, 30_000];
-
-const initialEntries: RoundEntry[] = [
-  {
-    id: "1",
-    workDate: "2026-01-12",
-    caddieFee: 150_000,
-    overFee: 10_000,
-    paymentMethod: "cash",
-  },
-  {
-    id: "2",
-    workDate: "2026-02-08",
-    caddieFee: 150_000,
-    overFee: 20_000,
-    paymentMethod: "transfer",
-  },
-  {
-    id: "3",
-    workDate: "2026-03-17",
-    caddieFee: 150_000,
-    overFee: 0,
-    paymentMethod: "cash",
-  },
-  {
-    id: "4",
-    workDate: "2026-04-22",
-    caddieFee: 150_000,
-    overFee: 30_000,
-    paymentMethod: "transfer",
-  },
-  {
-    id: "5",
-    workDate: "2026-05-09",
-    caddieFee: 150_000,
-    overFee: 10_000,
-    paymentMethod: "cash",
-  },
-  {
-    id: "6",
-    workDate: "2026-06-03",
-    caddieFee: 150_000,
-    overFee: 0,
-    paymentMethod: "cash",
-  },
-  {
-    id: "7",
-    workDate: "2026-06-05",
-    caddieFee: 150_000,
-    overFee: 20_000,
-    paymentMethod: "transfer",
-  },
-  {
-    id: "8",
-    workDate: "2026-06-05",
-    caddieFee: 150_000,
-    overFee: 0,
-    paymentMethod: "cash",
-  },
-  {
-    id: "9",
-    workDate: "2026-06-08",
-    caddieFee: 150_000,
-    overFee: 10_000,
-    paymentMethod: "transfer",
-  },
-  {
-    id: "10",
-    workDate: "2026-06-11",
-    caddieFee: 150_000,
-    overFee: 30_000,
-    paymentMethod: "cash",
-  },
-  {
-    id: "11",
-    workDate: "2026-06-14",
-    caddieFee: 150_000,
-    overFee: 0,
-    paymentMethod: "cash",
-  },
-  {
-    id: "12",
-    workDate: "2026-06-18",
-    caddieFee: 150_000,
-    overFee: 20_000,
-    paymentMethod: "cash",
-  },
-  {
-    id: "13",
-    workDate: "2026-06-18",
-    caddieFee: 150_000,
-    overFee: 0,
-    paymentMethod: "transfer",
-  },
-];
 
 function BrandMark() {
   return (
@@ -141,19 +47,25 @@ function BrandMark() {
 type CalendarDashboardProps = {
   courseName: string;
   defaultCaddieFee: number;
+  overFeePresets: number[];
+  initialDate: string;
 };
 
 export function CalendarDashboard({
   courseName,
   defaultCaddieFee,
+  overFeePresets,
+  initialDate,
 }: CalendarDashboardProps) {
+  const initialYear = Number(initialDate.slice(0, 4));
+  const initialMonth = Number(initialDate.slice(5, 7)) - 1;
+  const initialDay = Number(initialDate.slice(8, 10));
   const [activeView, setActiveView] = useState<AppView>("calendar");
   const [statisticsView, setStatisticsView] =
     useState<StatisticsView>("monthly");
-  const [year, setYear] = useState(2026);
-  const [month, setMonth] = useState(5);
-  const [selectedDay, setSelectedDay] = useState(18);
-  const [entries, setEntries] = useState(initialEntries);
+  const [year, setYear] = useState(initialYear);
+  const [month, setMonth] = useState(initialMonth);
+  const [selectedDay, setSelectedDay] = useState(initialDay);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [caddieFee, setCaddieFee] = useState(String(defaultCaddieFee));
@@ -161,9 +73,27 @@ export function CalendarDashboard({
   const [customOverFee, setCustomOverFee] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   const [memo, setMemo] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+  const [operationError, setOperationError] = useState<string | null>(null);
   const { mode, setMode } = useTheme();
+  const {
+    entries,
+    isLoading,
+    isError,
+    refetch,
+    createEntry,
+    updateEntry,
+    deleteEntry,
+    isSaving,
+    isDeleting,
+  } = useRoundEntries(year, courseName);
+  const overFeeOptions = useMemo(
+    () => Array.from(new Set([0, ...overFeePresets])),
+    [overFeePresets],
+  );
 
   const selectedDateKey = toDateKey(year, month, selectedDay);
+  const canAddRound = selectedDateKey <= initialDate;
   const selectedEntries = entries.filter(
     (entry) => entry.workDate === selectedDateKey,
   );
@@ -202,12 +132,17 @@ export function CalendarDashboard({
   }
 
   function openNewRound() {
+    if (!canAddRound) {
+      return;
+    }
+
     setEditingId(null);
     setCaddieFee(String(defaultCaddieFee));
     setOverFee(0);
     setCustomOverFee("");
     setPaymentMethod("cash");
     setMemo("");
+    setFormError(null);
     setSheetOpen(true);
   }
 
@@ -220,30 +155,58 @@ export function CalendarDashboard({
     );
     setPaymentMethod(entry.paymentMethod);
     setMemo(entry.memo ?? "");
+    setFormError(null);
     setSheetOpen(true);
   }
 
-  function saveRound(event: FormEvent<HTMLFormElement>) {
+  async function saveRound(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const nextEntry: RoundEntry = {
-      id: editingId ?? crypto.randomUUID(),
+    setFormError(null);
+    setOperationError(null);
+
+    const parsedCaddieFee = parseWonInput(caddieFee);
+    const parsedOverFee = customOverFee
+      ? parseWonInput(customOverFee)
+      : overFee;
+
+    if (parsedCaddieFee > 10_000_000 || parsedOverFee > 10_000_000) {
+      setFormError("금액은 각각 1,000만원 이하로 입력해 주세요.");
+      return;
+    }
+
+    const nextEntry = {
       workDate: selectedDateKey,
-      caddieFee: parseWonInput(caddieFee),
-      overFee: customOverFee ? parseWonInput(customOverFee) : overFee,
+      caddieFee: parsedCaddieFee,
+      overFee: parsedOverFee,
       paymentMethod,
       memo: memo.trim() || undefined,
     };
 
-    setEntries((current) =>
-      editingId
-        ? current.map((entry) => (entry.id === editingId ? nextEntry : entry))
-        : [...current, nextEntry],
-    );
-    setSheetOpen(false);
+    try {
+      if (editingId) {
+        await updateEntry({ id: editingId, ...nextEntry });
+      } else {
+        await createEntry(nextEntry);
+      }
+      setSheetOpen(false);
+    } catch {
+      setFormError("라운드 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+    }
   }
 
-  function deleteRound(id: string) {
-    setEntries((current) => current.filter((entry) => entry.id !== id));
+  async function deleteRound(id: string) {
+    if (!window.confirm("이 라운드 기록을 삭제할까요?")) {
+      return;
+    }
+
+    setOperationError(null);
+    try {
+      await deleteEntry(id);
+    } catch {
+      setOperationError(
+        "라운드 기록을 삭제하지 못했습니다. 다시 시도해 주세요.",
+      );
+    }
   }
 
   const selectedOverFee = customOverFee
@@ -262,11 +225,35 @@ export function CalendarDashboard({
               <div className={styles.courseName}>{courseName}</div>
             </div>
           </div>
-          <span className={styles.prototypeBadge}>UI 프로토타입</span>
         </header>
 
         <div className={styles.content}>
-          {activeView === "calendar" && (
+          {operationError && (
+            <div className={styles.errorMessage} role="alert">
+              {operationError}
+            </div>
+          )}
+
+          {activeView !== "settings" && isLoading && (
+            <div className={styles.dataState} role="status">
+              수입 기록을 불러오는 중입니다.
+            </div>
+          )}
+
+          {activeView !== "settings" && isError && (
+            <div className={styles.dataState} role="alert">
+              <p>수입 기록을 불러오지 못했습니다.</p>
+              <button
+                className={styles.retryButton}
+                type="button"
+                onClick={() => void refetch()}
+              >
+                다시 시도
+              </button>
+            </div>
+          )}
+
+          {activeView === "calendar" && !isLoading && !isError && (
             <CalendarView
               year={year}
               month={month}
@@ -280,10 +267,12 @@ export function CalendarDashboard({
               onAddRound={openNewRound}
               onEditRound={openEditRound}
               onDeleteRound={deleteRound}
+              canAddRound={canAddRound}
+              isDeleting={isDeleting}
             />
           )}
 
-          {activeView === "statistics" && (
+          {activeView === "statistics" && !isLoading && !isError && (
             <StatisticsViewContent
               view={statisticsView}
               onChangeView={setStatisticsView}
@@ -334,6 +323,7 @@ export function CalendarDashboard({
             role="dialog"
             aria-modal="true"
             aria-labelledby="round-sheet-title"
+            aria-busy={isSaving}
             onSubmit={saveRound}
           >
             <div className={styles.sheetHandle} />
@@ -352,6 +342,7 @@ export function CalendarDashboard({
                 className={styles.iconButton}
                 type="button"
                 aria-label="닫기"
+                disabled={isSaving}
                 onClick={() => setSheetOpen(false)}
               >
                 <X size={21} />
@@ -447,8 +438,17 @@ export function CalendarDashboard({
                 {formatWon(formTotal)}
               </strong>
             </div>
-            <button className={styles.addButton} type="submit">
-              {editingId ? "수정 저장" : "라운드 저장"}
+            {formError && (
+              <p className={styles.formError} role="alert">
+                {formError}
+              </p>
+            )}
+            <button
+              className={styles.addButton}
+              type="submit"
+              disabled={isSaving}
+            >
+              {isSaving ? "저장 중" : editingId ? "수정 저장" : "라운드 저장"}
             </button>
           </form>
         </div>
@@ -470,6 +470,8 @@ type CalendarViewProps = {
   onAddRound: () => void;
   onEditRound: (entry: RoundEntry) => void;
   onDeleteRound: (id: string) => void;
+  canAddRound: boolean;
+  isDeleting: boolean;
 };
 
 function CalendarView({
@@ -485,6 +487,8 @@ function CalendarView({
   onAddRound,
   onEditRound,
   onDeleteRound,
+  canAddRound,
+  isDeleting,
 }: CalendarViewProps) {
   return (
     <>
@@ -589,6 +593,7 @@ function CalendarView({
                     className={styles.iconButton}
                     type="button"
                     aria-label={`${index + 1}라운드 수정`}
+                    disabled={isDeleting}
                     onClick={() => onEditRound(entry)}
                   >
                     <Pencil size={17} />
@@ -597,6 +602,7 @@ function CalendarView({
                     className={styles.iconButton}
                     type="button"
                     aria-label={`${index + 1}라운드 삭제`}
+                    disabled={isDeleting}
                     onClick={() => onDeleteRound(entry.id)}
                   >
                     <Trash2 size={17} />
@@ -609,9 +615,20 @@ function CalendarView({
           <div className={styles.emptyState}>기록된 라운드가 없습니다.</div>
         )}
 
-        <button className={styles.addButton} type="button" onClick={onAddRound}>
-          <Plus size={19} />
-          라운드 추가
+        <button
+          className={styles.addButton}
+          type="button"
+          disabled={!canAddRound}
+          onClick={onAddRound}
+        >
+          {canAddRound ? (
+            <>
+              <Plus size={19} />
+              라운드 추가
+            </>
+          ) : (
+            "미래 날짜에는 기록할 수 없습니다"
+          )}
         </button>
       </section>
     </>
