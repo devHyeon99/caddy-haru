@@ -27,8 +27,29 @@ export const panel = style({
   },
 });
 
+export const loginPanel = style({
+  width: "min(100%, 480px)",
+  minWidth: 0,
+  minHeight: "100vh",
+  display: "grid",
+  gridTemplateRows: "auto 1fr auto",
+  justifyItems: "center",
+  padding: `${vars.space[8]} ${vars.space[6]}`,
+  background: vars.color.surface,
+});
+
+export const loginAction = style({
+  width: "100%",
+});
+
+export const loginFooter = style({
+  width: "min(100%, 420px)",
+  alignSelf: "end",
+});
+
 export const brand = style({
-  flex: 1,
+  width: "min(100%, 420px)",
+  alignSelf: "start",
 });
 
 export const brandName = style({
@@ -48,7 +69,6 @@ export const title = style({
 });
 
 export const description = style({
-  marginBottom: vars.space[8],
   color: vars.color.textSecondary,
   fontSize: 14,
   lineHeight: 1.65,
@@ -135,7 +155,8 @@ export const primaryButton = style({
 });
 
 export const footnote = style({
-  marginTop: vars.space[6],
+  width: "100%",
+  marginTop: vars.space[4],
   color: vars.color.textSecondary,
   textAlign: "center",
   fontSize: 12,
