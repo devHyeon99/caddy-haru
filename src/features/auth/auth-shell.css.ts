@@ -47,6 +47,29 @@ export const loginFooter = style({
   alignSelf: "end",
 });
 
+export const onboardingPanel = style({
+  width: "min(100%, 480px)",
+  minWidth: 0,
+  minHeight: "100vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: `${vars.space[8]} ${vars.space[6]}`,
+  background: vars.color.surface,
+});
+
+export const onboardingContent = style({
+  width: "min(100%, 420px)",
+});
+
+export const onboardingBrand = style({
+  marginBottom: vars.space[8],
+});
+
+export const onboardingDescription = style({
+  marginBottom: vars.space[8],
+});
+
 export const brand = style({
   width: "min(100%, 420px)",
   alignSelf: "start",

@@ -26,15 +26,19 @@ export default async function OnboardingPage() {
 
   return (
     <main className={styles.page}>
-      <section className={styles.panel}>
-        <div className={styles.brand}>
-          <div className={styles.brandName}>캐디하루</div>
+      <section className={styles.onboardingPanel}>
+        <div className={styles.onboardingContent}>
+          <div className={`${styles.brand} ${styles.onboardingBrand}`}>
+            <div className={styles.brandName}>캐디하루</div>
+          </div>
+          <h1 className={styles.title}>기본 정보를 알려주세요</h1>
+          <p
+            className={`${styles.description} ${styles.onboardingDescription}`}
+          >
+            한 번 설정하면 매일 더 빠르게 수입을 기록할 수 있습니다.
+          </p>
+          <OnboardingForm />
         </div>
-        <h1 className={styles.title}>기본 정보를 알려주세요</h1>
-        <p className={styles.description}>
-          한 번 설정하면 매일 더 빠르게 수입을 기록할 수 있습니다.
-        </p>
-        <OnboardingForm />
       </section>
     </main>
   );
