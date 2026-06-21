@@ -1,6 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseEnvironment } from "@/shared/config/env";
+import {
+  isMissingRefreshTokenError,
+  isSupabaseAuthCookie,
+} from "./auth-cookie";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -23,6 +27,19 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getClaims();
+  const { error } = await supabase.auth.getClaims();
+
+  if (isMissingRefreshTokenError(error)) {
+    const staleCookies = request.cookies
+      .getAll()
+      .filter(({ name }) => isSupabaseAuthCookie(name));
+
+    staleCookies.forEach(({ name }) => request.cookies.delete(name));
+    response = NextResponse.next({ request });
+    staleCookies.forEach(({ name }) =>
+      response.cookies.set(name, "", { maxAge: 0, path: "/" }),
+    );
+  }
+
   return response;
 }

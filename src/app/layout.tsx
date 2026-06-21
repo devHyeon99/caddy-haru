@@ -19,7 +19,7 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
