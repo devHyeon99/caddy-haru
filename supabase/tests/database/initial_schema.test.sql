@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(18);
+select plan(20);
 
 select has_table('public', 'profiles', 'profiles table exists');
 select has_table('public', 'round_entries', 'round_entries table exists');
@@ -143,6 +143,25 @@ select is(
   (select count(*)::integer from public.round_entries),
   2,
   'an authenticated user can insert their own round using auth.uid()'
+);
+
+update public.round_entries
+set memo = '수정된 기록'
+where over_fee = 10000;
+
+select is(
+  (select memo from public.round_entries where over_fee = 10000),
+  '수정된 기록',
+  'an authenticated user can update their own round'
+);
+
+delete from public.round_entries
+where memo = '수정된 기록';
+
+select is(
+  (select count(*)::integer from public.round_entries),
+  1,
+  'an authenticated user can delete their own round'
 );
 
 reset role;

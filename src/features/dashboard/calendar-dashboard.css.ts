@@ -104,16 +104,6 @@ export const courseName = style({
   letterSpacing: 0,
 });
 
-export const prototypeBadge = style({
-  padding: "5px 8px",
-  color: vars.color.brandStrong,
-  background: vars.color.brandSoft,
-  borderRadius: vars.radius.sm,
-  fontSize: 11,
-  fontWeight: 700,
-  letterSpacing: 0,
-});
-
 export const content = style({
   padding: `${vars.space[5]} ${vars.space[5]} ${vars.space[8]}`,
   "@media": {
@@ -122,6 +112,46 @@ export const content = style({
       paddingRight: vars.space[4],
     },
   },
+});
+
+export const dataState = style({
+  minHeight: 320,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: vars.space[4],
+  color: vars.color.textSecondary,
+  textAlign: "center",
+  fontSize: 14,
+});
+
+export const retryButton = style({
+  minHeight: 44,
+  padding: `0 ${vars.space[4]}`,
+  border: `1px solid ${vars.color.borderStrong}`,
+  borderRadius: vars.radius.md,
+  color: vars.color.textPrimary,
+  background: vars.color.surface,
+  cursor: "pointer",
+  fontWeight: 750,
+  selectors: {
+    "&:hover": { background: vars.color.surfaceSubtle },
+    "&:focus-visible": {
+      outline: `3px solid ${vars.color.brandSoft}`,
+      outlineOffset: 2,
+    },
+  },
+});
+
+export const errorMessage = style({
+  padding: vars.space[3],
+  marginBottom: vars.space[4],
+  borderLeft: `3px solid ${vars.color.error}`,
+  color: vars.color.error,
+  background: vars.color.surfaceSubtle,
+  fontSize: 13,
+  lineHeight: 1.5,
 });
 
 export const summary = style({
@@ -194,6 +224,7 @@ export const iconButton = style({
   cursor: "pointer",
   selectors: {
     "&:hover": { background: vars.color.surfaceSubtle },
+    "&:disabled": { cursor: "not-allowed", opacity: 0.45 },
     "&:focus-visible": {
       outline: `3px solid ${vars.color.brandSoft}`,
       outlineOffset: 1,
@@ -382,11 +413,22 @@ export const addButton = style({
   cursor: "pointer",
   selectors: {
     "&:hover": { background: vars.color.actionPrimaryHover },
+    "&:disabled": {
+      cursor: "not-allowed",
+      opacity: 0.55,
+    },
     "&:focus-visible": {
       outline: `3px solid ${vars.color.brandSoft}`,
       outlineOffset: 2,
     },
   },
+});
+
+export const formError = style({
+  marginTop: vars.space[3],
+  color: vars.color.error,
+  fontSize: 13,
+  lineHeight: 1.5,
 });
 
 export const bottomNav = style({
