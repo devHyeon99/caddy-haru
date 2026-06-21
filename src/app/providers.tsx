@@ -3,14 +3,27 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { darkTheme, lightTheme } from "@/styles/theme.css";
+import { THEME_STORAGE_KEY } from "./theme-script";
 
 export type ThemeMode = "system" | "light" | "dark";
+
+function readStoredMode(): ThemeMode {
+  if (typeof window === "undefined") {
+    return "system";
+  }
+
+  const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+  return stored === "light" || stored === "dark" || stored === "system"
+    ? stored
+    : "system";
+}
 
 type ThemeContextValue = {
   mode: ThemeMode;
@@ -36,7 +49,14 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         },
       }),
   );
-  const [mode, setMode] = useState<ThemeMode>("system");
+  const [mode, setMode] = useState<ThemeMode>(readStoredMode);
+
+  const handleSetMode = useCallback((next: ThemeMode) => {
+    setMode(next);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(THEME_STORAGE_KEY, next);
+    }
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -55,7 +75,10 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     return () => mediaQuery.removeEventListener("change", applyTheme);
   }, [mode]);
 
-  const themeValue = useMemo(() => ({ mode, setMode }), [mode]);
+  const themeValue = useMemo(
+    () => ({ mode, setMode: handleSetMode }),
+    [mode, handleSetMode],
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

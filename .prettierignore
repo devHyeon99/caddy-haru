@@ -1,0 +1,17 @@
+# Build output
+.next/
+out/
+build/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Lockfiles & generated
+pnpm-lock.yaml
+*.tsbuildinfo
+next-env.d.ts
+
+# Supabase local state
+supabase/.temp/
+supabase/.branches/
