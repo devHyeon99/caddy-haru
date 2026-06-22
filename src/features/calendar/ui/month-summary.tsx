@@ -18,16 +18,15 @@ export function MonthSummary({ monthEntries }: MonthSummaryProps) {
         <div className={styles.summaryAmount}>
           {formatWon(sumIncome(monthEntries))}
         </div>
-        <div className={styles.incomeBreakdown}>
-          <span>캐디피 {formatWon(totalCaddieFee)}</span>
-          <span className={styles.breakdownDivider}>·</span>
-          <span>오버피 {formatWon(totalOverFee)}</span>
-        </div>
+        <ul className={styles.incomeBreakdown}>
+          <li>캐디피 {formatWon(totalCaddieFee)}</li>
+          <li>오버피 {formatWon(totalOverFee)}</li>
+        </ul>
       </div>
-      <div className={styles.roundCount}>
-        <div className={styles.roundCountLabel}>근무횟수</div>
-        {monthEntries.length}회
-      </div>
+      <dl className={styles.roundCount}>
+        <dt className={styles.roundCountLabel}>근무횟수</dt>
+        <dd>{monthEntries.length}회</dd>
+      </dl>
     </section>
   );
 }
