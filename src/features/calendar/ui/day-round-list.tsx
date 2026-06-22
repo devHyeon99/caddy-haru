@@ -25,21 +25,23 @@ export function DayRoundList({
   onEditRound,
   onDeleteRound,
 }: DayRoundListProps) {
+  const headingId = `day-round-heading-${month}-${selectedDay}`;
+
   return (
-    <section>
+    <section aria-labelledby={headingId}>
       <div className={styles.sectionHeader}>
-        <h2 className={ui.sectionTitle}>
+        <h2 id={headingId} className={ui.sectionTitle}>
           {month + 1}월 {selectedDay}일
         </h2>
-        <div className={styles.sectionTotal}>
+        <p className={styles.sectionTotal}>
           {formatWon(sumIncome(selectedEntries))}
-        </div>
+        </p>
       </div>
 
       {selectedEntries.length > 0 ? (
-        <div className={styles.roundList}>
+        <ol className={styles.roundList}>
           {selectedEntries.map((entry, index) => (
-            <div className={styles.roundRow} key={entry.id}>
+            <li className={styles.roundRow} key={entry.id}>
               <div className={styles.roundMeta}>
                 <div className={styles.roundLabel}>
                   {index + 1}라운드
@@ -48,8 +50,10 @@ export function DayRoundList({
                   </span>
                 </div>
                 <div className={styles.feeBreakdown}>
-                  캐디피 {formatWon(entry.caddieFee)}
-                  {entry.overFee > 0 && ` · 오버피 ${formatWon(entry.overFee)}`}
+                  <span>캐디피 {formatWon(entry.caddieFee)}</span>
+                  {entry.overFee > 0 && (
+                    <span>오버피 {formatWon(entry.overFee)}</span>
+                  )}
                 </div>
               </div>
               <div className={styles.roundIncome}>
@@ -63,7 +67,7 @@ export function DayRoundList({
                   disabled={isDeleting}
                   onClick={() => onEditRound(entry)}
                 >
-                  <Pencil size={17} />
+                  <Pencil size={17} aria-hidden="true" />
                 </button>
                 <button
                   className={ui.iconButton}
@@ -72,14 +76,14 @@ export function DayRoundList({
                   disabled={isDeleting}
                   onClick={() => onDeleteRound(entry.id)}
                 >
-                  <Trash2 size={17} />
+                  <Trash2 size={17} aria-hidden="true" />
                 </button>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       ) : (
-        <div className={styles.emptyState}>기록된 라운드가 없습니다.</div>
+        <p className={styles.emptyState}>기록된 라운드가 없습니다.</p>
       )}
 
       <button
@@ -90,7 +94,7 @@ export function DayRoundList({
       >
         {canAddRound ? (
           <>
-            <Plus size={19} />
+            <Plus size={19} aria-hidden="true" />
             라운드 추가
           </>
         ) : (

@@ -242,15 +242,25 @@ export const paymentBadge = style({
   borderRadius: vars.radius.sm,
   color: vars.color.textSecondary,
   background: vars.color.surfaceSubtle,
-  fontSize: 10,
+  fontSize: 11,
   fontWeight: 700,
 });
 
 export const feeBreakdown = style({
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: "0 6px",
   color: vars.color.textSecondary,
   fontSize: 12,
   lineHeight: 1.45,
   fontVariantNumeric: "tabular-nums",
+  "@media": {
+    "screen and (max-width: 480px)": {
+      flexDirection: "column",
+      gap: 2,
+    },
+  },
 });
 
 export const roundIncome = style({
