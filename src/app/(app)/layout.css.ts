@@ -12,7 +12,7 @@ export const shell = style({
   maxWidth: 760,
   minHeight: "100vh",
   margin: "0 auto",
-  paddingBottom: 92,
+  paddingBottom: 72,
   background: vars.color.surface,
   borderLeft: `1px solid ${vars.color.border}`,
   borderRight: `1px solid ${vars.color.border}`,
@@ -25,7 +25,7 @@ export const shell = style({
 });
 
 export const content = style({
-  padding: `${vars.space[5]} ${vars.space[5]} ${vars.space[8]}`,
+  padding: `${vars.space[5]} ${vars.space[5]} ${vars.space[5]}`,
   "@media": {
     "screen and (max-width: 480px)": {
       paddingLeft: vars.space[4],
