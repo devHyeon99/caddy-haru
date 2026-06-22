@@ -68,21 +68,21 @@ export const summaryAmount = style({
 
 export const incomeBreakdown = style({
   display: "flex",
-  alignItems: "center",
+  flexDirection: "row",
   gap: vars.space[2],
+  margin: 0,
   marginTop: vars.space[2],
+  padding: 0,
+  listStyle: "none",
   color: vars.color.textSecondary,
   fontSize: 12,
   fontWeight: 500,
   fontVariantNumeric: "tabular-nums",
 });
 
-export const breakdownDivider = style({
-  color: vars.color.border,
-});
-
 export const roundCount = style({
   flex: "0 0 auto",
+  margin: 0,
   textAlign: "right",
   color: vars.color.brandStrong,
   fontSize: 20,
@@ -91,6 +91,7 @@ export const roundCount = style({
 });
 
 export const roundCountLabel = style({
+  margin: 0,
   color: vars.color.textSecondary,
   fontSize: 11,
   fontWeight: 600,
