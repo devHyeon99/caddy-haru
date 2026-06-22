@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import { AppIntroCarousel } from "@/features/auth/app-intro-carousel";
-import { KakaoLoginButton } from "@/features/auth/kakao-login-button";
+import { AppIntroCarousel, KakaoLoginButton } from "@/features/auth";
 import { createClient } from "@/shared/api/supabase/server";
-import * as styles from "@/features/auth/auth-shell.css";
+import * as styles from "@/shared/styles/auth-shell.css";
 
 export const dynamic = "force-dynamic";
 

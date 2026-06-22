@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { validateOnboarding } from "@/features/onboarding/validation";
 import { createClient } from "@/shared/api/supabase/server";
+import { validateOnboarding } from "./validation";
 
 export type OnboardingActionState = {
   error: string | null;

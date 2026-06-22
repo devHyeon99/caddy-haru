@@ -1,11 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  createProfile,
-  type OnboardingActionState,
-} from "@/app/onboarding/actions";
-import * as styles from "@/features/auth/auth-shell.css";
+import * as styles from "@/shared/styles/auth-shell.css";
+import { createProfile, type OnboardingActionState } from "./create-profile";
 
 const initialState: OnboardingActionState = { error: null };
 

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppProviders } from "./providers";
-import { ThemeScript } from "./theme-script";
-import { lightTheme } from "@/styles/theme.css";
+import { ThemeScript } from "@/shared/theme";
+import { lightTheme } from "@/shared/theme/theme.css";
 
 export const metadata: Metadata = {
   title: "캐디하루",

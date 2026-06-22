@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mapRoundEntry, toRoundEntryPayload } from "./round-entry-api";
+import { mapRoundEntry, toRoundEntryPayload } from "./round-api";
 
 describe("round entry mapping", () => {
   it("maps a database row to the calendar model", () => {
