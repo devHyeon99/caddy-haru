@@ -1,5 +1,5 @@
 import { keyframes, style } from "@vanilla-extract/css";
-import { vars } from "@/styles/theme.css";
+import { vars } from "@/shared/theme/theme.css";
 
 const reduceMotion = "(prefers-reduced-motion: reduce)";
 

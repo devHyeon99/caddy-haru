@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { RoundEntry } from "@/lib/calendar";
 import { createClient } from "@/shared/api/supabase/client";
+import type { RoundEntry } from "../model/round";
 
 const roundEntryColumns =
   "id, work_date, caddie_fee, over_fee, payment_method, memo";

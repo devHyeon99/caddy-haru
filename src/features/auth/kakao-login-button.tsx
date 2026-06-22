@@ -3,7 +3,7 @@
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/shared/api/supabase/client";
-import * as styles from "./auth-shell.css";
+import * as styles from "@/shared/styles/auth-shell.css";
 
 export function KakaoLoginButton() {
   const [isPending, setIsPending] = useState(false);

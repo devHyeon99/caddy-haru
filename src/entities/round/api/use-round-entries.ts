@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { RoundEntry } from "@/lib/calendar";
 import {
   createRoundEntry,
   deleteRoundEntry,
@@ -9,7 +8,8 @@ import {
   roundEntriesQueryKey,
   updateRoundEntry,
   type RoundEntryInput,
-} from "./round-entry-api";
+} from "./round-api";
+import type { RoundEntry } from "../model/round";
 
 function sortEntries(entries: RoundEntry[]) {
   return [...entries].sort((a, b) => a.workDate.localeCompare(b.workDate));

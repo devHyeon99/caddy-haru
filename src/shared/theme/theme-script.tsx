@@ -1,6 +1,5 @@
-import { darkTheme, lightTheme } from "@/styles/theme.css";
-
-export const THEME_STORAGE_KEY = "caddy-theme";
+import { darkTheme, lightTheme } from "./theme.css";
+import { THEME_STORAGE_KEY } from "./theme-context";
 
 /**
  * Renders a blocking inline script that applies the correct theme class to
