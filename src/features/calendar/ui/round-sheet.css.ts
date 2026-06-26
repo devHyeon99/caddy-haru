@@ -47,55 +47,6 @@ export const fieldLabel = style({
   fontWeight: 750,
 });
 
-export const moneyInput = style({
-  width: "100%",
-  minHeight: 50,
-  padding: `0 ${vars.space[4]}`,
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  fontSize: 18,
-  fontWeight: 750,
-  fontVariantNumeric: "tabular-nums",
-  outline: 0,
-  selectors: {
-    "&:focus": {
-      borderColor: vars.color.actionPrimary,
-      boxShadow: `0 0 0 3px ${vars.color.brandSoft}`,
-    },
-  },
-});
-
-export const chips = style({
-  display: "grid",
-  gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-  gap: 6,
-  "@media": {
-    "screen and (max-width: 420px)": {
-      gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    },
-  },
-});
-
-export const chip = style({
-  minHeight: 44,
-  padding: "0 6px",
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textSecondary,
-  background: vars.color.surface,
-  cursor: "pointer",
-  fontSize: 12,
-  fontWeight: 750,
-});
-
-export const selectedChip = style({
-  borderColor: vars.color.actionPrimary,
-  color: vars.color.brandStrong,
-  background: vars.color.brandSoft,
-});
-
 export const segment = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",

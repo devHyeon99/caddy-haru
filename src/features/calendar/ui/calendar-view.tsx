@@ -14,14 +14,12 @@ import { useRoundForm } from "../model/use-round-form";
 type CalendarViewProps = {
   courseName: string;
   defaultCaddieFee: number;
-  overFeePresets: number[];
   initialDate: string;
 };
 
 export function CalendarView({
   courseName,
   defaultCaddieFee,
-  overFeePresets,
   initialDate,
 }: CalendarViewProps) {
   const initialYear = Number(initialDate.slice(0, 4));
@@ -43,11 +41,6 @@ export function CalendarView({
     isSaving,
     isDeleting,
   } = useRoundEntries(year, courseName);
-
-  const overFeeOptions = useMemo(
-    () => Array.from(new Set([0, ...overFeePresets])),
-    [overFeePresets],
-  );
 
   const selectedDateKey = toDateKey(year, month, selectedDay);
   const canAddRound = selectedDateKey <= initialDate;
@@ -71,7 +64,6 @@ export function CalendarView({
 
   const form = useRoundForm({
     defaultCaddieFee,
-    overFeeOptions,
     selectedDateKey,
     createEntryAction: createEntry,
     updateEntryAction: updateEntry,
@@ -147,16 +139,15 @@ export function CalendarView({
           editingId={form.editingId}
           caddieFee={form.caddieFee}
           overFee={form.overFee}
-          customOverFee={form.customOverFee}
+          nineFee={form.nineFee}
           paymentMethod={form.paymentMethod}
           memo={form.memo}
-          overFeeOptions={overFeeOptions}
           formError={form.formError}
           isSaving={isSaving}
           formTotal={form.formTotal}
           onCaddieFeeChangeAction={form.setCaddieFee}
           onOverFeeChangeAction={form.setOverFee}
-          onCustomOverFeeChangeAction={form.setCustomOverFee}
+          onNineFeeChangeAction={form.setNineFee}
           onPaymentMethodChangeAction={form.setPaymentMethod}
           onMemoChangeAction={form.setMemo}
           onCloseAction={() => form.setSheetOpen(false)}

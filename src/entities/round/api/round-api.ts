@@ -3,7 +3,7 @@ import { createClient } from "@/shared/api/supabase/client";
 import type { RoundEntry } from "../model/round";
 
 const roundEntryColumns =
-  "id, work_date, caddie_fee, over_fee, payment_method, memo";
+  "id, work_date, caddie_fee, over_fee, nine_fee, payment_method, memo";
 
 export const roundEntriesQueryKey = (year: number) =>
   ["round-entries", year] as const;
@@ -15,6 +15,7 @@ export type RoundEntryRow = {
   work_date: string;
   caddie_fee: number;
   over_fee: number;
+  nine_fee: number;
   payment_method: "cash" | "transfer";
   memo: string | null;
 };
@@ -25,6 +26,7 @@ export function mapRoundEntry(row: RoundEntryRow): RoundEntry {
     workDate: row.work_date,
     caddieFee: row.caddie_fee,
     overFee: row.over_fee,
+    nineFee: row.nine_fee,
     paymentMethod: row.payment_method,
     memo: row.memo ?? undefined,
   };
@@ -38,6 +40,7 @@ export function toRoundEntryPayload(
     work_date: entry.workDate,
     caddie_fee: entry.caddieFee,
     over_fee: entry.overFee,
+    nine_fee: entry.nineFee,
     payment_method: entry.paymentMethod,
     course_name_snapshot: courseName,
     memo: entry.memo ?? null,
@@ -96,6 +99,7 @@ export async function updateRoundEntry(
     .update({
       caddie_fee: entry.caddieFee,
       over_fee: entry.overFee,
+      nine_fee: entry.nineFee,
       payment_method: entry.paymentMethod,
       memo: entry.memo ?? null,
     })

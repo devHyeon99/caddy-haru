@@ -2,19 +2,19 @@
 
 import React, { useState } from "react";
 import { type PaymentMethod, type RoundEntry } from "@/entities/round";
-import { parseWonInput } from "@/shared/lib/format";
+import { formatManValue, parseManInput } from "@/shared/lib/format";
 
 type RoundPayload = {
   workDate: string;
   caddieFee: number;
   overFee: number;
+  nineFee: number;
   paymentMethod: PaymentMethod;
   memo?: string;
 };
 
 type UseRoundFormOptions = {
   defaultCaddieFee: number;
-  overFeeOptions: number[];
   selectedDateKey: string;
   createEntryAction: (payload: RoundPayload) => Promise<unknown>;
   updateEntryAction: (
@@ -25,7 +25,6 @@ type UseRoundFormOptions = {
 
 export function useRoundForm({
   defaultCaddieFee,
-  overFeeOptions,
   selectedDateKey,
   createEntryAction,
   updateEntryAction,
@@ -33,24 +32,23 @@ export function useRoundForm({
 }: UseRoundFormOptions) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [caddieFee, setCaddieFee] = useState(String(defaultCaddieFee));
-  const [overFee, setOverFee] = useState(0);
-  const [customOverFee, setCustomOverFee] = useState("");
+  // 모든 금액 입력값은 만원 단위 문자열 ("15" = 150,000원)
+  const [caddieFee, setCaddieFee] = useState(formatManValue(defaultCaddieFee));
+  const [overFee, setOverFee] = useState("");
+  const [nineFee, setNineFee] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   const [memo, setMemo] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [operationError, setOperationError] = useState<string | null>(null);
 
-  const selectedOverFee = customOverFee
-    ? parseWonInput(customOverFee)
-    : overFee;
-  const formTotal = parseWonInput(caddieFee) + selectedOverFee;
+  const formTotal =
+    parseManInput(caddieFee) + parseManInput(overFee) + parseManInput(nineFee);
 
   function openNew() {
     setEditingId(null);
-    setCaddieFee(String(defaultCaddieFee));
-    setOverFee(0);
-    setCustomOverFee("");
+    setCaddieFee(formatManValue(defaultCaddieFee));
+    setOverFee("");
+    setNineFee("");
     setPaymentMethod("cash");
     setMemo("");
     setFormError(null);
@@ -59,11 +57,9 @@ export function useRoundForm({
 
   function openEdit(entry: RoundEntry) {
     setEditingId(entry.id);
-    setCaddieFee(String(entry.caddieFee));
-    setOverFee(entry.overFee);
-    setCustomOverFee(
-      overFeeOptions.includes(entry.overFee) ? "" : String(entry.overFee),
-    );
+    setCaddieFee(formatManValue(entry.caddieFee));
+    setOverFee(formatManValue(entry.overFee));
+    setNineFee(formatManValue(entry.nineFee));
     setPaymentMethod(entry.paymentMethod);
     setMemo(entry.memo ?? "");
     setFormError(null);
@@ -75,12 +71,15 @@ export function useRoundForm({
     setFormError(null);
     setOperationError(null);
 
-    const parsedCaddieFee = parseWonInput(caddieFee);
-    const parsedOverFee = customOverFee
-      ? parseWonInput(customOverFee)
-      : overFee;
+    const parsedCaddieFee = parseManInput(caddieFee);
+    const parsedOverFee = parseManInput(overFee);
+    const parsedNineFee = parseManInput(nineFee);
 
-    if (parsedCaddieFee > 10_000_000 || parsedOverFee > 10_000_000) {
+    if (
+      parsedCaddieFee > 10_000_000 ||
+      parsedOverFee > 10_000_000 ||
+      parsedNineFee > 10_000_000
+    ) {
       setFormError("금액은 각각 1,000만원 이하로 입력해 주세요.");
       return;
     }
@@ -89,6 +88,7 @@ export function useRoundForm({
       workDate: selectedDateKey,
       caddieFee: parsedCaddieFee,
       overFee: parsedOverFee,
+      nineFee: parsedNineFee,
       paymentMethod,
       memo: memo.trim() || undefined,
     };
@@ -122,7 +122,7 @@ export function useRoundForm({
     editingId,
     caddieFee,
     overFee,
-    customOverFee,
+    nineFee,
     paymentMethod,
     memo,
     formError,
@@ -135,7 +135,7 @@ export function useRoundForm({
     setSheetOpen,
     setCaddieFee,
     setOverFee,
-    setCustomOverFee,
+    setNineFee,
     setPaymentMethod,
     setMemo,
   };
