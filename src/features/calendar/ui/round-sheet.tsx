@@ -6,6 +6,7 @@ import { type PaymentMethod } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
 import * as ui from "@/shared/styles/ui.css";
 import * as styles from "./round-sheet.css";
+import { FeeField } from "./fee-field";
 
 type RoundSheetProps = {
   month: number;
@@ -13,17 +14,16 @@ type RoundSheetProps = {
   pendingRoundNumber: number;
   editingId: string | null;
   caddieFee: string;
-  overFee: number;
-  customOverFee: string;
+  overFee: string;
+  nineFee: string;
   paymentMethod: PaymentMethod;
   memo: string;
-  overFeeOptions: number[];
   formError: string | null;
   isSaving: boolean;
   formTotal: number;
   onCaddieFeeChangeAction: (value: string) => void;
-  onOverFeeChangeAction: (value: number) => void;
-  onCustomOverFeeChangeAction: (value: string) => void;
+  onOverFeeChangeAction: (value: string) => void;
+  onNineFeeChangeAction: (value: string) => void;
   onPaymentMethodChangeAction: (method: PaymentMethod) => void;
   onMemoChangeAction: (value: string) => void;
   onCloseAction: () => void;
@@ -37,16 +37,15 @@ export function RoundSheet({
   editingId,
   caddieFee,
   overFee,
-  customOverFee,
+  nineFee,
   paymentMethod,
   memo,
-  overFeeOptions,
   formError,
   isSaving,
   formTotal,
   onCaddieFeeChangeAction,
   onOverFeeChangeAction,
-  onCustomOverFeeChangeAction,
+  onNineFeeChangeAction,
   onPaymentMethodChangeAction,
   onMemoChangeAction,
   onCloseAction,
@@ -83,59 +82,23 @@ export function RoundSheet({
           </button>
         </div>
 
-        <label className={styles.field}>
-          <span className={styles.fieldLabel}>캐디피</span>
-          <input
-            className={styles.moneyInput}
-            type="text"
-            inputMode="numeric"
-            value={caddieFee}
-            onChange={(e) => onCaddieFeeChangeAction(e.target.value)}
-            aria-label="캐디피"
-          />
-        </label>
+        <FeeField
+          label="캐디피"
+          value={caddieFee}
+          onChangeAction={onCaddieFeeChangeAction}
+        />
 
-        <div className={styles.field}>
-          <span className={styles.fieldLabel}>오버피</span>
-          <div className={styles.chips}>
-            {overFeeOptions.map((amount) => (
-              <button
-                key={amount}
-                className={`${styles.chip} ${
-                  !customOverFee && overFee === amount
-                    ? styles.selectedChip
-                    : ""
-                }`}
-                type="button"
-                onClick={() => {
-                  onOverFeeChangeAction(amount);
-                  onCustomOverFeeChangeAction("");
-                }}
-              >
-                {amount === 0 ? "없음" : `${amount / 10_000}만원`}
-              </button>
-            ))}
-            <button
-              className={`${styles.chip} ${customOverFee ? styles.selectedChip : ""}`}
-              type="button"
-              onClick={() =>
-                onCustomOverFeeChangeAction(customOverFee || "50000")
-              }
-            >
-              직접 입력
-            </button>
-          </div>
-          {customOverFee && (
-            <input
-              className={styles.moneyInput}
-              type="text"
-              inputMode="numeric"
-              value={customOverFee}
-              onChange={(e) => onCustomOverFeeChangeAction(e.target.value)}
-              aria-label="직접 입력할 오버피"
-            />
-          )}
-        </div>
+        <FeeField
+          label="오버피"
+          value={overFee}
+          onChangeAction={onOverFeeChangeAction}
+        />
+
+        <FeeField
+          label="나인 추가"
+          value={nineFee}
+          onChangeAction={onNineFeeChangeAction}
+        />
 
         <div className={styles.field}>
           <span className={styles.fieldLabel}>결제 수단</span>

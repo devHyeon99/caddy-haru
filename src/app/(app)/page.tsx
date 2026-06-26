@@ -38,7 +38,6 @@ export default async function CalendarPage() {
       <CalendarView
         courseName={profile.courseName}
         defaultCaddieFee={profile.defaultCaddieFee}
-        overFeePresets={profile.overFeePresets}
         initialDate={initialDate}
       />
     </HydrationBoundary>
