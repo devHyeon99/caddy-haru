@@ -13,7 +13,11 @@ export function FeeField({ label, value, onChangeAction }: FeeFieldProps) {
   return (
     <div className={styles.field}>
       <span className={styles.label}>{label}</span>
-      <MoneyInput value={value} ariaLabel={label} onChangeAction={onChangeAction} />
+      <MoneyInput
+        value={value}
+        ariaLabel={label}
+        onChangeAction={onChangeAction}
+      />
     </div>
   );
 }

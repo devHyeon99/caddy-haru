@@ -47,7 +47,6 @@ export const fieldLabel = style({
   fontWeight: 750,
 });
 
-
 export const segment = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
