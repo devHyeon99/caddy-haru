@@ -1,4 +1,4 @@
-import { sumIncome, type RoundEntry } from "@/entities/round";
+import { sumIncome, countNineRounds, type RoundEntry } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
 import * as ui from "@/shared/styles/ui.css";
 import * as styles from "./calendar-view.css";
@@ -8,7 +8,10 @@ type MonthSummaryProps = {
 };
 
 export function MonthSummary({ monthEntries }: MonthSummaryProps) {
-  const totalCaddieFee = monthEntries.reduce((sum, e) => sum + e.caddieFee, 0);
+  const totalCaddieFee = monthEntries.reduce(
+    (sum, e) => sum + e.caddieFee + e.nineFee,
+    0,
+  );
   const totalOverFee = monthEntries.reduce((sum, e) => sum + e.overFee, 0);
 
   return (
@@ -23,10 +26,18 @@ export function MonthSummary({ monthEntries }: MonthSummaryProps) {
           <li>오버피 {formatWon(totalOverFee)}</li>
         </ul>
       </div>
-      <dl className={styles.roundCount}>
-        <dt className={styles.roundCountLabel}>근무횟수</dt>
-        <dd>{monthEntries.length}회</dd>
-      </dl>
+      <div className={styles.roundCount}>
+        <dl style={{ margin: 0 }}>
+          <dt className={styles.roundCountLabel}>근무횟수</dt>
+          <dd>{monthEntries.length}회</dd>
+        </dl>
+        {countNineRounds(monthEntries) > 0 && (
+          <dl style={{ margin: 0 }}>
+            <dt className={styles.roundCountLabel}>나인추가</dt>
+            <dd>{countNineRounds(monthEntries)}회</dd>
+          </dl>
+        )}
+      </div>
     </section>
   );
 }
