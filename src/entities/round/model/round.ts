@@ -5,12 +5,13 @@ export type RoundEntry = {
   workDate: string;
   caddieFee: number;
   overFee: number;
+  nineFee: number;
   paymentMethod: PaymentMethod;
   memo?: string;
 };
 
 export function getRoundIncome(entry: RoundEntry) {
-  return entry.caddieFee + entry.overFee;
+  return entry.caddieFee + entry.overFee + entry.nineFee;
 }
 
 export function sumIncome(entries: RoundEntry[]) {

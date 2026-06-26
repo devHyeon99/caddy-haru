@@ -7,6 +7,7 @@ const entries: RoundEntry[] = [
     workDate: "2026-06-18",
     caddieFee: 150_000,
     overFee: 20_000,
+    nineFee: 0,
     paymentMethod: "cash",
   },
   {
@@ -14,6 +15,7 @@ const entries: RoundEntry[] = [
     workDate: "2026-06-18",
     caddieFee: 150_000,
     overFee: 0,
+    nineFee: 0,
     paymentMethod: "transfer",
   },
 ];
