@@ -17,3 +17,7 @@ export function getRoundIncome(entry: RoundEntry) {
 export function sumIncome(entries: RoundEntry[]) {
   return entries.reduce((sum, entry) => sum + getRoundIncome(entry), 0);
 }
+
+export function countNineRounds(entries: RoundEntry[]) {
+  return entries.filter((entry) => entry.nineFee > 0).length;
+}

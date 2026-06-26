@@ -82,7 +82,10 @@ export const incomeBreakdown = style({
 
 export const roundCount = style({
   flex: "0 0 auto",
-  margin: 0,
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "flex-end",
+  gap: vars.space[4],
   textAlign: "right",
   color: vars.color.brandStrong,
   fontSize: 20,

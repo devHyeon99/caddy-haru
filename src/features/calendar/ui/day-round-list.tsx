@@ -1,6 +1,7 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { sumIncome, type RoundEntry } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
+import { Badge } from "@/shared/ui/badge";
 import * as ui from "@/shared/styles/ui.css";
 import * as styles from "./calendar-view.css";
 
@@ -45,19 +46,26 @@ export function DayRoundList({
               <div className={styles.roundMeta}>
                 <div className={styles.roundLabel}>
                   {index + 1}라운드
-                  <span className={styles.paymentBadge}>
+                  <Badge
+                    variant={
+                      entry.paymentMethod === "cash" ? "cash" : "transfer"
+                    }
+                  >
                     {entry.paymentMethod === "cash" ? "현금" : "계좌이체"}
-                  </span>
+                  </Badge>
+                  {entry.nineFee > 0 && <Badge variant="nine">나인추가</Badge>}
                 </div>
                 <div className={styles.feeBreakdown}>
-                  <span>캐디피 {formatWon(entry.caddieFee)}</span>
+                  <span>
+                    캐디피 {formatWon(entry.caddieFee + entry.nineFee)}
+                  </span>
                   {entry.overFee > 0 && (
                     <span>오버피 {formatWon(entry.overFee)}</span>
                   )}
                 </div>
               </div>
               <div className={styles.roundIncome}>
-                {formatWon(entry.caddieFee + entry.overFee)}
+                {formatWon(entry.caddieFee + entry.nineFee + entry.overFee)}
               </div>
               <div className={styles.rowActions}>
                 <button

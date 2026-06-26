@@ -15,13 +15,13 @@ const entries: RoundEntry[] = [
     workDate: "2026-06-18",
     caddieFee: 150_000,
     overFee: 0,
-    nineFee: 0,
+    nineFee: 80_000,
     paymentMethod: "transfer",
   },
 ];
 
 describe("round income", () => {
   it("sums caddie and over fees", () => {
-    expect(sumIncome(entries)).toBe(320_000);
+    expect(sumIncome(entries)).toBe(400_000);
   });
 });
