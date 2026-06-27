@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { sumIncome, useRoundEntries } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
+import { Button } from "@/shared/ui/button";
 import * as ui from "@/shared/styles/ui.css";
 import * as styles from "./statistics-view.css";
 
@@ -37,13 +38,9 @@ export function StatisticsView({
     return (
       <div className={styles.dataState} role="alert">
         <p>수입 기록을 불러오지 못했습니다.</p>
-        <button
-          className={styles.retryButton}
-          type="button"
-          onClick={() => void refetch()}
-        >
+        <Button variant="outline" onClick={() => void refetch()}>
           다시 시도
-        </button>
+        </Button>
       </div>
     );
   }

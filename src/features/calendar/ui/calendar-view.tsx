@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { getRoundIncome, useRoundEntries } from "@/entities/round";
 import { getMonthCells, toDateKey } from "@/shared/lib/calendar";
+import { Button } from "@/shared/ui/button";
 import * as styles from "./calendar-view.css";
 import { CalendarGrid } from "./calendar-grid";
 import { DayRoundList } from "./day-round-list";
@@ -89,13 +90,9 @@ export function CalendarView({
     return (
       <div className={styles.dataState} role="alert">
         <p>수입 기록을 불러오지 못했습니다.</p>
-        <button
-          className={styles.retryButton}
-          type="button"
-          onClick={() => void refetch()}
-        >
+        <Button variant="outline" onClick={() => void refetch()}>
           다시 시도
-        </button>
+        </Button>
       </div>
     );
   }
