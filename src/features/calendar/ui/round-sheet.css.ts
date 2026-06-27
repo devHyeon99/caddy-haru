@@ -5,14 +5,17 @@ export const overlay = style({
   position: "fixed",
   zIndex: 50,
   inset: 0,
-  display: "flex",
-  alignItems: "flex-end",
-  justifyContent: "center",
   background: vars.color.overlay,
 });
 
 export const sheet = style({
+  position: "fixed",
+  zIndex: 51,
+  left: 0,
+  right: 0,
+  bottom: 0,
   width: "min(100%, 760px)",
+  margin: "0 auto",
   maxHeight: "92vh",
   overflowY: "auto",
   padding: `${vars.space[5]} ${vars.space[5]} calc(${vars.space[6]} + env(safe-area-inset-bottom))`,
@@ -43,8 +46,8 @@ export const field = style({
 });
 
 export const fieldLabel = style({
-  fontSize: 13,
-  fontWeight: 750,
+  fontSize: vars.font.size.base,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const segment = style({
@@ -81,19 +84,19 @@ export const sheetTotal = style({
   padding: `${vars.space[4]} 0`,
   marginTop: vars.space[2],
   borderTop: `1px solid ${vars.color.border}`,
-  fontWeight: 750,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const sheetTotalAmount = style({
-  color: vars.color.brandStrong,
-  fontSize: 21,
-  fontWeight: 850,
+  color: vars.color.brandText,
+  fontSize: vars.font.size["2xl"],
+  fontWeight: vars.font.weight.black,
   fontVariantNumeric: "tabular-nums",
 });
 
 export const formError = style({
   marginTop: vars.space[3],
   color: vars.color.error,
-  fontSize: 13,
-  lineHeight: 1.5,
+  fontSize: vars.font.size.base,
+  lineHeight: vars.font.lineHeight.relaxed,
 });
