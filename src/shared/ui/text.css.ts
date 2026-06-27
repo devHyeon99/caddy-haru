@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/theme/theme.css";
 
+/** 섹션 위 작은 라벨(eyebrow). */
 export const eyebrow = style({
   marginBottom: vars.space[2],
   color: vars.color.textSecondary,
@@ -9,16 +10,19 @@ export const eyebrow = style({
   letterSpacing: 0,
 });
 
+/** 섹션 제목. */
 export const sectionTitle = style({
   fontSize: vars.font.size.lg,
   fontWeight: vars.font.weight.heavy,
   letterSpacing: 0,
 });
 
+/** 화면 상단 헤더 묶음. */
 export const viewHeader = style({
   marginBottom: vars.space[6],
 });
 
+/** 화면 큰 제목. */
 export const viewTitle = style({
   marginBottom: vars.space[2],
   fontSize: vars.font.size["3xl"],
@@ -26,24 +30,9 @@ export const viewTitle = style({
   letterSpacing: 0,
 });
 
+/** 화면 제목 아래 설명문. */
 export const viewDescription = style({
   color: vars.color.textSecondary,
   fontSize: vars.font.size.md,
   lineHeight: vars.font.lineHeight.relaxed,
-});
-
-export const segmentButton = style({
-  minHeight: 44,
-  border: 0,
-  borderRadius: vars.radius.sm,
-  color: vars.color.textSecondary,
-  background: "transparent",
-  cursor: "pointer",
-  fontWeight: vars.font.weight.extrabold,
-});
-
-export const selectedSegment = style({
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  boxShadow: vars.shadow.raised,
 });

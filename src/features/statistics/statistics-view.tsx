@@ -4,7 +4,8 @@ import { useState } from "react";
 import { sumIncome, useRoundEntries } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/button";
-import * as ui from "@/shared/styles/ui.css";
+import * as text from "@/shared/ui/text.css";
+import * as segmented from "@/shared/ui/segmented.css";
 import * as styles from "./statistics-view.css";
 
 type StatisticsTab = "monthly" | "yearly";
@@ -70,9 +71,9 @@ export function StatisticsView({
 
   return (
     <>
-      <div className={ui.viewHeader}>
-        <h1 className={ui.viewTitle}>수입 통계</h1>
-        <p className={ui.viewDescription}>
+      <div className={text.viewHeader}>
+        <h1 className={text.viewTitle}>수입 통계</h1>
+        <p className={text.viewDescription}>
           기간별 수입과 라운드 흐름을 확인합니다.
         </p>
       </div>
@@ -81,7 +82,7 @@ export function StatisticsView({
         {(["monthly", "yearly"] as const).map((item) => (
           <button
             key={item}
-            className={`${ui.segmentButton} ${tab === item ? ui.selectedSegment : ""}`}
+            className={`${segmented.segmentButton} ${tab === item ? segmented.selectedSegment : ""}`}
             type="button"
             role="tab"
             aria-selected={tab === item}
@@ -92,7 +93,7 @@ export function StatisticsView({
         ))}
       </div>
 
-      <div className={ui.eyebrow}>
+      <div className={text.eyebrow}>
         {tab === "monthly" ? `${year}년 ${month + 1}월` : `${year}년`}
       </div>
 
@@ -109,7 +110,7 @@ export function StatisticsView({
         />
       </div>
 
-      <h2 className={ui.sectionTitle}>
+      <h2 className={text.sectionTitle}>
         {tab === "monthly" ? "일별 수입" : "월별 수입"}
       </h2>
       <div className={styles.chart} aria-label="수입 막대그래프">

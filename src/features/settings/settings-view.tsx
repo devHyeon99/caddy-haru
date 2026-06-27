@@ -2,7 +2,7 @@
 
 import { LogOut } from "lucide-react";
 import { formatWon } from "@/shared/lib/format";
-import * as ui from "@/shared/styles/ui.css";
+import * as text from "@/shared/ui/text.css";
 import { useTheme, type ThemeMode } from "@/shared/theme";
 import { signOut } from "./sign-out";
 import * as styles from "./settings-view.css";
@@ -26,9 +26,9 @@ export function SettingsView({
 
   return (
     <>
-      <div className={ui.viewHeader}>
-        <h1 className={ui.viewTitle}>설정</h1>
-        <p className={ui.viewDescription}>
+      <div className={text.viewHeader}>
+        <h1 className={text.viewTitle}>설정</h1>
+        <p className={text.viewDescription}>
           소속 정보와 기본 입력값을 관리합니다.
         </p>
       </div>
@@ -39,7 +39,7 @@ export function SettingsView({
         <Setting label="오버피 빠른 선택" value="1만 · 2만 · 3만원" />
       </div>
 
-      <h2 className={ui.sectionTitle} style={{ marginTop: 28 }}>
+      <h2 className={text.sectionTitle} style={{ marginTop: 28 }}>
         화면 모드
       </h2>
       <div className={styles.themeControls}>

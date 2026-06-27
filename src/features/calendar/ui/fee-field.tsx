@@ -1,7 +1,7 @@
 "use client";
 
 import { MoneyInput } from "@/shared/ui/money-input";
-import * as styles from "./fee-field.css";
+import { field, fieldLabel } from "@/shared/ui/field.css";
 
 type FeeFieldProps = {
   label: string;
@@ -11,8 +11,8 @@ type FeeFieldProps = {
 
 export function FeeField({ label, value, onChangeAction }: FeeFieldProps) {
   return (
-    <div className={styles.field}>
-      <span className={styles.label}>{label}</span>
+    <div className={field}>
+      <span className={fieldLabel}>{label}</span>
       <MoneyInput
         value={value}
         aria-label={label}

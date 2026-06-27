@@ -1,6 +1,6 @@
 import { sumIncome, countNineRounds, type RoundEntry } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
-import * as ui from "@/shared/styles/ui.css";
+import * as text from "@/shared/ui/text.css";
 import * as styles from "./calendar-view.css";
 
 type MonthSummaryProps = {
@@ -17,7 +17,7 @@ export function MonthSummary({ monthEntries }: MonthSummaryProps) {
   return (
     <section className={styles.summary} aria-label="이번 달 요약">
       <div>
-        <div className={ui.eyebrow}>이번 달 수입</div>
+        <div className={text.eyebrow}>이번 달 수입</div>
         <div className={styles.summaryAmount}>
           {formatWon(sumIncome(monthEntries))}
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import * as styles from "@/shared/styles/auth-shell.css";
+import * as styles from "@/shared/ui/auth-shell.css";
 import { MoneyInput } from "@/shared/ui/money-input";
 import { formatManValue } from "@/shared/lib/format";
 import { createProfile, type OnboardingActionState } from "./create-profile";

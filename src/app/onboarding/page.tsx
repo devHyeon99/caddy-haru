@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { OnboardingForm } from "@/features/onboarding";
-import * as styles from "@/shared/styles/auth-shell.css";
+import * as styles from "@/shared/ui/auth-shell.css";
 import { createClient } from "@/shared/api/supabase/server";
 
 export const dynamic = "force-dynamic";

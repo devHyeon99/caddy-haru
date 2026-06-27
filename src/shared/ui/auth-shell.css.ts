@@ -129,16 +129,7 @@ export const error = style({
   lineHeight: vars.font.lineHeight.relaxed,
 });
 
-export const field = style({
-  display: "grid",
-  gap: vars.space[2],
-  marginBottom: vars.space[5],
-});
-
-export const label = style({
-  fontSize: vars.font.size.base,
-  fontWeight: vars.font.weight.extrabold,
-});
+export { field, fieldLabel as label } from "@/shared/ui/field.css";
 
 export const helpText = style({
   color: vars.color.textSecondary,

@@ -40,16 +40,7 @@ export const sheetHeader = style({
   marginBottom: vars.space[5],
 });
 
-export const field = style({
-  display: "grid",
-  gap: vars.space[2],
-  marginBottom: vars.space[5],
-});
-
-export const fieldLabel = style({
-  fontSize: vars.font.size.base,
-  fontWeight: vars.font.weight.extrabold,
-});
+export { field, fieldLabel } from "@/shared/ui/field.css";
 
 export const segment = style({
   display: "grid",

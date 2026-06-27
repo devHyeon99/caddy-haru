@@ -6,7 +6,8 @@ import { X } from "lucide-react";
 import { type PaymentMethod } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/button";
-import * as ui from "@/shared/styles/ui.css";
+import * as text from "@/shared/ui/text.css";
+import * as segmented from "@/shared/ui/segmented.css";
 import * as styles from "./round-sheet.css";
 import { FeeField } from "./fee-field";
 
@@ -73,10 +74,10 @@ export function RoundSheet({
             <div className={styles.sheetHandle} />
             <div className={styles.sheetHeader}>
               <div>
-                <div className={ui.eyebrow}>
+                <div className={text.eyebrow}>
                   {month + 1}월 {selectedDay}일
                 </div>
-                <Dialog.Title className={ui.sectionTitle}>
+                <Dialog.Title className={text.sectionTitle}>
                   {editingId
                     ? "라운드 수정"
                     : `${pendingRoundNumber}라운드 추가`}
@@ -113,8 +114,8 @@ export function RoundSheet({
                 {(["cash", "transfer"] as const).map((method) => (
                   <button
                     key={method}
-                    className={`${ui.segmentButton} ${
-                      paymentMethod === method ? ui.selectedSegment : ""
+                    className={`${segmented.segmentButton} ${
+                      paymentMethod === method ? segmented.selectedSegment : ""
                     }`}
                     type="button"
                     onClick={() => onPaymentMethodChangeAction(method)}
