@@ -48,7 +48,11 @@ export function DayRoundList({
               <div className={styles.cardHeader}>
                 <div className={styles.cardHeaderLeft}>
                   <span className={styles.roundLabel}>{index + 1}라운드</span>
-                  <Badge variant={entry.paymentMethod === "cash" ? "cash" : "transfer"}>
+                  <Badge
+                    variant={
+                      entry.paymentMethod === "cash" ? "cash" : "transfer"
+                    }
+                  >
                     {entry.paymentMethod === "cash" ? "현금" : "계좌이체"}
                   </Badge>
                   {entry.nineFee > 0 && <Badge variant="nine">나인추가</Badge>}
@@ -80,9 +84,7 @@ export function DayRoundList({
               </div>
 
               {/* 행 3: 메모 (있을 때만) */}
-              {entry.memo && (
-                <p className={styles.roundMemo}>{entry.memo}</p>
-              )}
+              {entry.memo && <p className={styles.roundMemo}>{entry.memo}</p>}
 
               {/* 행 4: 합계 */}
               <div className={styles.cardFooter}>

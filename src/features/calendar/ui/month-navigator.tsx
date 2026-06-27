@@ -18,13 +18,21 @@ export function MonthNavigator({
   return (
     <>
       <div className={styles.monthHeader}>
-        <Button variant="icon" aria-label="이전 달" onClick={() => onChangeMonth(-1)}>
+        <Button
+          variant="icon"
+          aria-label="이전 달"
+          onClick={() => onChangeMonth(-1)}
+        >
           <ChevronLeft size={22} />
         </Button>
         <h1 className={styles.monthTitle}>
           {year}년 {month + 1}월
         </h1>
-        <Button variant="icon" aria-label="다음 달" onClick={() => onChangeMonth(1)}>
+        <Button
+          variant="icon"
+          aria-label="다음 달"
+          onClick={() => onChangeMonth(1)}
+        >
           <ChevronRight size={22} />
         </Button>
       </div>

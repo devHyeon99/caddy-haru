@@ -72,7 +72,12 @@ export function RoundSheet({
               {editingId ? "라운드 수정" : `${pendingRoundNumber}라운드 추가`}
             </h2>
           </div>
-          <Button variant="icon" aria-label="닫기" disabled={isSaving} onClick={onCloseAction}>
+          <Button
+            variant="icon"
+            aria-label="닫기"
+            disabled={isSaving}
+            onClick={onCloseAction}
+          >
             <X size={21} />
           </Button>
         </div>

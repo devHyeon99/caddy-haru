@@ -180,5 +180,3 @@ export const dayAmount = style({
     [`${selectedDay} &`]: { color: vars.color.textInverse },
   },
 });
-
-
