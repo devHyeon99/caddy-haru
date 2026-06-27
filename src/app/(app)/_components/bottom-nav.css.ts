@@ -28,8 +28,8 @@ export const navLink = style({
   borderRadius: vars.radius.md,
   color: vars.color.textSecondary,
   textDecoration: "none",
-  fontSize: 11,
-  fontWeight: 700,
+  fontSize: vars.font.size.xs,
+  fontWeight: vars.font.weight.bold,
   selectors: {
     "&:hover": { background: vars.color.surfaceSubtle },
     "&:focus-visible": {
@@ -40,5 +40,5 @@ export const navLink = style({
 });
 
 export const activeNavLink = style({
-  color: vars.color.brandStrong,
+  color: vars.color.brandText,
 });

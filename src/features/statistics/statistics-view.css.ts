@@ -10,7 +10,7 @@ export const dataState = style({
   gap: vars.space[4],
   color: vars.color.textSecondary,
   textAlign: "center",
-  fontSize: 14,
+  fontSize: vars.font.size.md,
 });
 
 export const tabList = style({
@@ -41,14 +41,14 @@ export const metric = style({
 export const metricLabel = style({
   marginBottom: vars.space[2],
   color: vars.color.textSecondary,
-  fontSize: 12,
-  fontWeight: 700,
+  fontSize: vars.font.size.sm,
+  fontWeight: vars.font.weight.bold,
 });
 
 export const metricValue = style({
   overflowWrap: "anywhere",
-  fontSize: 18,
-  fontWeight: 820,
+  fontSize: vars.font.size.xl,
+  fontWeight: vars.font.weight.heavy,
   fontVariantNumeric: "tabular-nums",
 });
 
@@ -92,6 +92,6 @@ export const bar = style({
 
 export const barLabel = style({
   color: vars.color.textSecondary,
-  fontSize: 10,
+  fontSize: vars.font.size.xs,
   fontVariantNumeric: "tabular-nums",
 });

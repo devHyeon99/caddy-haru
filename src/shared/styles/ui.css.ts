@@ -4,14 +4,14 @@ import { vars } from "@/shared/theme/theme.css";
 export const eyebrow = style({
   marginBottom: vars.space[2],
   color: vars.color.textSecondary,
-  fontSize: 13,
-  fontWeight: 650,
+  fontSize: vars.font.size.base,
+  fontWeight: vars.font.weight.semibold,
   letterSpacing: 0,
 });
 
 export const sectionTitle = style({
-  fontSize: 17,
-  fontWeight: 800,
+  fontSize: vars.font.size.lg,
+  fontWeight: vars.font.weight.heavy,
   letterSpacing: 0,
 });
 
@@ -21,15 +21,15 @@ export const viewHeader = style({
 
 export const viewTitle = style({
   marginBottom: vars.space[2],
-  fontSize: 24,
-  fontWeight: 850,
+  fontSize: vars.font.size["3xl"],
+  fontWeight: vars.font.weight.black,
   letterSpacing: 0,
 });
 
 export const viewDescription = style({
   color: vars.color.textSecondary,
-  fontSize: 14,
-  lineHeight: 1.5,
+  fontSize: vars.font.size.md,
+  lineHeight: vars.font.lineHeight.relaxed,
 });
 
 export const segmentButton = style({
@@ -39,7 +39,7 @@ export const segmentButton = style({
   color: vars.color.textSecondary,
   background: "transparent",
   cursor: "pointer",
-  fontWeight: 750,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const selectedSegment = style({

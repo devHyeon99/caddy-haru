@@ -15,14 +15,14 @@ export const settingRow = style({
 });
 
 export const settingLabel = style({
-  fontSize: 14,
-  fontWeight: 750,
+  fontSize: vars.font.size.md,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const settingValue = style({
   color: vars.color.textSecondary,
   textAlign: "right",
-  fontSize: 13,
+  fontSize: vars.font.size.base,
 });
 
 export const settingButton = style({
@@ -38,7 +38,7 @@ export const settingButton = style({
   background: "transparent",
   cursor: "pointer",
   selectors: {
-    "&:hover": { color: vars.color.brandStrong },
+    "&:hover": { color: vars.color.brandText },
     "&:focus-visible": {
       outline: `3px solid ${vars.color.brandSoft}`,
       outlineOffset: -3,
@@ -61,11 +61,11 @@ export const themeButton = style({
   color: vars.color.textSecondary,
   background: vars.color.surface,
   cursor: "pointer",
-  fontWeight: 750,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const selectedThemeButton = style({
   borderColor: vars.color.actionPrimary,
-  color: vars.color.brandStrong,
+  color: vars.color.brandText,
   background: vars.color.brandSoft,
 });

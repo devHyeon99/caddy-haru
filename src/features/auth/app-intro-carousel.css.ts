@@ -50,7 +50,7 @@ const navigationButton = style({
   transform: "translateY(-50%)",
   selectors: {
     "&:hover": {
-      color: vars.color.brandStrong,
+      color: vars.color.brandText,
       background: vars.color.surfaceSubtle,
     },
     "&:focus-visible": {
@@ -82,22 +82,22 @@ export const icon = style({
   justifyContent: "center",
   marginBottom: vars.space[5],
   borderRadius: vars.radius.full,
-  color: vars.color.brandStrong,
+  color: vars.color.brandText,
   background: vars.color.brandSoft,
 });
 
 export const title = style({
   marginBottom: vars.space[2],
-  fontSize: 20,
+  fontSize: vars.font.size["2xl"],
   lineHeight: 1.35,
-  fontWeight: 850,
+  fontWeight: vars.font.weight.black,
   letterSpacing: 0,
 });
 
 export const description = style({
   maxWidth: 300,
   color: vars.color.textSecondary,
-  fontSize: 14,
+  fontSize: vars.font.size.md,
   lineHeight: 1.65,
 });
 

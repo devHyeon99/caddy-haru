@@ -10,9 +10,9 @@ export const sectionHeader = style({
 });
 
 export const sectionTotal = style({
-  color: vars.color.brandStrong,
-  fontSize: 16,
-  fontWeight: 800,
+  color: vars.color.brandText,
+  fontSize: vars.font.size.lg,
+  fontWeight: vars.font.weight.heavy,
   fontVariantNumeric: "tabular-nums",
 });
 
@@ -46,8 +46,8 @@ export const cardHeaderLeft = style({
 });
 
 export const roundLabel = style({
-  fontSize: 14,
-  fontWeight: 750,
+  fontSize: vars.font.size.md,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const feeBreakdown = style({
@@ -56,7 +56,7 @@ export const feeBreakdown = style({
   flexWrap: "wrap",
   gap: "0 6px",
   color: vars.color.textSecondary,
-  fontSize: 12,
+  fontSize: vars.font.size.sm,
   lineHeight: 1.45,
   fontVariantNumeric: "tabular-nums",
 });
@@ -66,7 +66,7 @@ export const roundMemo = style({
   padding: `${vars.space[2]} ${vars.space[3]}`,
   borderLeft: `3px solid ${vars.color.actionPrimary}`,
   color: vars.color.textSecondary,
-  fontSize: 12,
+  fontSize: vars.font.size.sm,
   lineHeight: 1.6,
   whiteSpace: "pre-wrap",
   wordBreak: "break-all",
@@ -82,13 +82,13 @@ export const cardFooter = style({
 
 export const incomeLabel = style({
   color: vars.color.textSecondary,
-  fontSize: 13,
-  fontWeight: 600,
+  fontSize: vars.font.size.base,
+  fontWeight: vars.font.weight.semibold,
 });
 
 export const roundIncome = style({
-  fontSize: 15,
-  fontWeight: 800,
+  fontSize: vars.font.size.lg,
+  fontWeight: vars.font.weight.heavy,
   fontVariantNumeric: "tabular-nums",
 });
 
@@ -96,5 +96,5 @@ export const emptyState = style({
   padding: `${vars.space[8]} 0`,
   color: vars.color.textSecondary,
   textAlign: "center",
-  fontSize: 14,
+  fontSize: vars.font.size.md,
 });

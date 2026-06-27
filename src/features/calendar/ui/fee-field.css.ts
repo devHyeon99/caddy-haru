@@ -8,6 +8,6 @@ export const field = style({
 });
 
 export const label = style({
-  fontSize: 13,
-  fontWeight: 750,
+  fontSize: vars.font.size.base,
+  fontWeight: vars.font.weight.extrabold,
 });

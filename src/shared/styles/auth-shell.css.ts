@@ -77,23 +77,23 @@ export const brand = style({
 
 export const brandName = style({
   marginBottom: vars.space[2],
-  color: vars.color.brandStrong,
-  fontSize: 30,
-  fontWeight: 850,
+  color: vars.color.brandText,
+  fontSize: vars.font.size["4xl"],
+  fontWeight: vars.font.weight.black,
   letterSpacing: 0,
 });
 
 export const title = style({
   marginBottom: vars.space[3],
-  fontSize: 24,
+  fontSize: vars.font.size["3xl"],
   lineHeight: 1.3,
-  fontWeight: 850,
+  fontWeight: vars.font.weight.black,
   letterSpacing: 0,
 });
 
 export const description = style({
   color: vars.color.textSecondary,
-  fontSize: 14,
+  fontSize: vars.font.size.md,
   lineHeight: 1.65,
 });
 
@@ -109,8 +109,8 @@ export const kakaoButton = style({
   color: "#191919",
   background: "#FEE500",
   cursor: "pointer",
-  fontSize: 15,
-  fontWeight: 800,
+  fontSize: vars.font.size.lg,
+  fontWeight: vars.font.weight.heavy,
   selectors: {
     "&:hover": { background: "#F4DC00" },
     "&:disabled": { cursor: "wait", opacity: 0.7 },
@@ -124,8 +124,8 @@ export const kakaoButton = style({
 export const error = style({
   marginTop: vars.space[4],
   color: vars.color.error,
-  fontSize: 13,
-  lineHeight: 1.5,
+  fontSize: vars.font.size.base,
+  lineHeight: vars.font.lineHeight.relaxed,
 });
 
 export const field = style({
@@ -135,14 +135,14 @@ export const field = style({
 });
 
 export const label = style({
-  fontSize: 13,
-  fontWeight: 750,
+  fontSize: vars.font.size.base,
+  fontWeight: vars.font.weight.extrabold,
 });
 
 export const helpText = style({
   color: vars.color.textSecondary,
-  fontSize: 12,
-  lineHeight: 1.5,
+  fontSize: vars.font.size.sm,
+  lineHeight: vars.font.lineHeight.relaxed,
 });
 
 export const input = style({
@@ -170,7 +170,7 @@ export const primaryButton = style({
   color: vars.color.textInverse,
   background: vars.color.actionPrimary,
   cursor: "pointer",
-  fontWeight: 800,
+  fontWeight: vars.font.weight.heavy,
   selectors: {
     "&:hover": { background: vars.color.actionPrimaryHover },
     "&:disabled": { cursor: "wait", opacity: 0.7 },
@@ -182,6 +182,6 @@ export const footnote = style({
   marginTop: vars.space[4],
   color: vars.color.textSecondary,
   textAlign: "center",
-  fontSize: 12,
+  fontSize: vars.font.size.sm,
   lineHeight: 1.6,
 });

@@ -16,8 +16,8 @@ export const input = style({
   borderRadius: vars.radius.md,
   color: vars.color.textPrimary,
   background: vars.color.surface,
-  fontSize: 18,
-  fontWeight: 750,
+  fontSize: vars.font.size.xl,
+  fontWeight: vars.font.weight.extrabold,
   fontVariantNumeric: "tabular-nums",
   outline: 0,
   selectors: {
@@ -31,8 +31,8 @@ export const input = style({
 export const suffix = style({
   position: "absolute",
   right: vars.space[4],
-  fontSize: 14,
-  fontWeight: 750,
+  fontSize: vars.font.size.md,
+  fontWeight: vars.font.weight.extrabold,
   color: vars.color.textSecondary,
   pointerEvents: "none",
   userSelect: "none",
