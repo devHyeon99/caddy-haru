@@ -13,24 +13,6 @@ export const dataState = style({
   fontSize: 14,
 });
 
-export const retryButton = style({
-  minHeight: 44,
-  padding: `0 ${vars.space[4]}`,
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  cursor: "pointer",
-  fontWeight: 750,
-  selectors: {
-    "&:hover": { background: vars.color.surfaceSubtle },
-    "&:focus-visible": {
-      outline: `3px solid ${vars.color.brandSoft}`,
-      outlineOffset: 2,
-    },
-  },
-});
-
 export const tabList = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",

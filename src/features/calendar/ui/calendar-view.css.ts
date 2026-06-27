@@ -13,24 +13,6 @@ export const dataState = style({
   fontSize: 14,
 });
 
-export const retryButton = style({
-  minHeight: 44,
-  padding: `0 ${vars.space[4]}`,
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  cursor: "pointer",
-  fontWeight: 750,
-  selectors: {
-    "&:hover": { background: vars.color.surfaceSubtle },
-    "&:focus-visible": {
-      outline: `3px solid ${vars.color.brandSoft}`,
-      outlineOffset: 2,
-    },
-  },
-});
-
 export const errorMessage = style({
   padding: vars.space[3],
   marginBottom: vars.space[4],
@@ -197,90 +179,4 @@ export const dayAmount = style({
   selectors: {
     [`${selectedDay} &`]: { color: vars.color.textInverse },
   },
-});
-
-export const sectionHeader = style({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: vars.space[4],
-  marginBottom: vars.space[3],
-});
-
-export const sectionTotal = style({
-  color: vars.color.brandStrong,
-  fontSize: 16,
-  fontWeight: 800,
-  fontVariantNumeric: "tabular-nums",
-});
-
-export const roundList = style({
-  borderTop: `1px solid ${vars.color.border}`,
-});
-
-export const roundRow = style({
-  minHeight: 74,
-  display: "grid",
-  gridTemplateColumns: "1fr auto auto",
-  alignItems: "center",
-  gap: vars.space[3],
-  borderBottom: `1px solid ${vars.color.border}`,
-});
-
-export const roundMeta = style({
-  minWidth: 0,
-});
-
-export const roundLabel = style({
-  display: "flex",
-  alignItems: "center",
-  gap: vars.space[2],
-  marginBottom: 4,
-  fontSize: 14,
-  fontWeight: 750,
-});
-
-export const paymentBadge = style({
-  padding: "3px 5px",
-  borderRadius: vars.radius.sm,
-  color: vars.color.textSecondary,
-  background: vars.color.surfaceSubtle,
-  fontSize: 11,
-  fontWeight: 700,
-});
-
-export const feeBreakdown = style({
-  display: "flex",
-  flexDirection: "row",
-  flexWrap: "wrap",
-  gap: "0 6px",
-  color: vars.color.textSecondary,
-  fontSize: 12,
-  lineHeight: 1.45,
-  fontVariantNumeric: "tabular-nums",
-  "@media": {
-    "screen and (max-width: 480px)": {
-      flexDirection: "column",
-      gap: 2,
-    },
-  },
-});
-
-export const roundIncome = style({
-  fontSize: 15,
-  fontWeight: 800,
-  fontVariantNumeric: "tabular-nums",
-});
-
-export const rowActions = style({
-  display: "flex",
-});
-
-export const emptyState = style({
-  padding: `${vars.space[8]} 0`,
-  borderTop: `1px solid ${vars.color.border}`,
-  borderBottom: `1px solid ${vars.color.border}`,
-  color: vars.color.textSecondary,
-  textAlign: "center",
-  fontSize: 14,
 });

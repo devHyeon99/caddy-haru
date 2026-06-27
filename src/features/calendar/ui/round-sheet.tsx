@@ -4,6 +4,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { type PaymentMethod } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
+import { Button } from "@/shared/ui/button";
 import * as ui from "@/shared/styles/ui.css";
 import * as styles from "./round-sheet.css";
 import { FeeField } from "./fee-field";
@@ -71,15 +72,14 @@ export function RoundSheet({
               {editingId ? "라운드 수정" : `${pendingRoundNumber}라운드 추가`}
             </h2>
           </div>
-          <button
-            className={ui.iconButton}
-            type="button"
+          <Button
+            variant="icon"
             aria-label="닫기"
             disabled={isSaving}
             onClick={onCloseAction}
           >
             <X size={21} />
-          </button>
+          </Button>
         </div>
 
         <FeeField
@@ -140,9 +140,9 @@ export function RoundSheet({
             {formError}
           </p>
         )}
-        <button className={ui.addButton} type="submit" disabled={isSaving}>
+        <Button type="submit" disabled={isSaving}>
           {isSaving ? "저장 중" : editingId ? "수정 저장" : "라운드 저장"}
-        </button>
+        </Button>
       </form>
     </div>
   );
