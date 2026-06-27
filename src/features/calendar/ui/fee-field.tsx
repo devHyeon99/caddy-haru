@@ -15,7 +15,7 @@ export function FeeField({ label, value, onChangeAction }: FeeFieldProps) {
       <span className={styles.label}>{label}</span>
       <MoneyInput
         value={value}
-        ariaLabel={label}
+        aria-label={label}
         onChangeAction={onChangeAction}
       />
     </div>

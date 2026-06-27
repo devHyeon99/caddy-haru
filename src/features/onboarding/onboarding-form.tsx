@@ -1,7 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import * as styles from "@/shared/styles/auth-shell.css";
+import { MoneyInput } from "@/shared/ui/money-input";
+import { formatManValue } from "@/shared/lib/format";
 import { createProfile, type OnboardingActionState } from "./create-profile";
 
 const initialState: OnboardingActionState = { error: null };
@@ -11,6 +13,7 @@ export function OnboardingForm() {
     createProfile,
     initialState,
   );
+  const [caddieFee, setCaddieFee] = useState(formatManValue(160_000));
 
   return (
     <form action={formAction}>
@@ -28,12 +31,10 @@ export function OnboardingForm() {
       </label>
       <label className={styles.field}>
         <span className={styles.label}>기본 캐디피</span>
-        <input
-          className={styles.input}
+        <MoneyInput
           name="defaultCaddieFee"
-          type="text"
-          inputMode="numeric"
-          defaultValue="150000"
+          value={caddieFee}
+          onChangeAction={setCaddieFee}
           aria-describedby="fee-description"
           required
         />
