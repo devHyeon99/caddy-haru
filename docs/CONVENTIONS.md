@@ -5,18 +5,20 @@
 
 ## 레이어 (어디에 두나)
 
-| 레이어 | 담는 것 | 예 |
-| --- | --- | --- |
-| `app/` | 라우트·페이지·레이아웃·프로바이더 | `app/login/page.tsx` |
-| `features/<name>/` | **한 feature에서만** 쓰는 UI·로직 | `features/calendar/ui/round-sheet.tsx` |
-| `entities/` | 도메인 데이터·타입·모델 | `entities/round` |
-| `shared/` | **2개 이상 feature**가 쓰거나 도메인 무관한 재사용물 | `shared/ui/button.tsx` |
+| 레이어             | 담는 것                                              | 예                                     |
+| ------------------ | ---------------------------------------------------- | -------------------------------------- |
+| `app/`             | 라우트·페이지·레이아웃·프로바이더                    | `app/login/page.tsx`                   |
+| `features/<name>/` | **한 feature에서만** 쓰는 UI·로직                    | `features/calendar/ui/round-sheet.tsx` |
+| `entities/`        | 도메인 데이터·타입·모델                              | `entities/round`                       |
+| `shared/`          | **2개 이상 feature**가 쓰거나 도메인 무관한 재사용물 | `shared/ui/button.tsx`                 |
 
 ### 의존 방향
+
 `app → features → entities → shared` 한 방향으로만 의존한다.
 **shared는 features를 import하지 않는다.** (feature가 shared를 쓰는 건 정상)
 
 ### 승격 규칙 (가장 중요)
+
 1. 새 코드는 **항상 가장 좁은 곳**(그걸 쓰는 feature)에서 시작한다.
 2. **다른 슬라이스에 두 번째 소비자**가 생기면 그때 `shared`로 올린다.
 3. "언젠가 쓸지도 몰라서" 미리 shared에 두지 않는다 (투기적 일반화 금지).
@@ -25,12 +27,12 @@
 
 ## `shared/` 내부
 
-| 폴더 | 역할 |
-| --- | --- |
-| `shared/ui/` | 재사용 **컴포넌트(.tsx)** + 그 스타일(.css.ts) + **합성용 스타일 프리미티브**(`inputShell`, `field`, `text`, `segmented`) |
-| `shared/lib/` | 순수 함수 (format, calendar) |
-| `shared/theme/` | 디자인 토큰 · 테마 |
-| `shared/api/` | 외부 클라이언트 (supabase 등) |
+| 폴더            | 역할                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `shared/ui/`    | 재사용 **컴포넌트(.tsx)** + 그 스타일(.css.ts) + **합성용 스타일 프리미티브**(`inputShell`, `field`, `text`, `segmented`) |
+| `shared/lib/`   | 순수 함수 (format, calendar)                                                                                              |
+| `shared/theme/` | 디자인 토큰 · 테마                                                                                                        |
+| `shared/api/`   | 외부 클라이언트 (supabase 등)                                                                                             |
 
 **공유 스타일은 `shared/ui` 한 곳에만 둔다.** (`shared/styles`는 폐지됨)
 
