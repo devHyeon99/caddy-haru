@@ -68,14 +68,14 @@ export const brandBody = style({
 });
 
 export const brandName = style({
-  fontSize: 19,
-  fontWeight: 800,
+  fontSize: vars.font.size.xl,
+  fontWeight: vars.font.weight.heavy,
   letterSpacing: 0,
 });
 
 export const courseName = style({
   marginTop: 2,
   color: vars.color.textSecondary,
-  fontSize: 12,
+  fontSize: vars.font.size.sm,
   letterSpacing: 0,
 });

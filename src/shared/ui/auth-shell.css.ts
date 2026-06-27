@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/theme/theme.css";
+import { inputShell } from "@/shared/ui/input.css";
 
 export const page = style({
   minHeight: "100vh",
@@ -77,23 +78,23 @@ export const brand = style({
 
 export const brandName = style({
   marginBottom: vars.space[2],
-  color: vars.color.brandStrong,
-  fontSize: 30,
-  fontWeight: 850,
+  color: vars.color.brandText,
+  fontSize: vars.font.size["4xl"],
+  fontWeight: vars.font.weight.black,
   letterSpacing: 0,
 });
 
 export const title = style({
   marginBottom: vars.space[3],
-  fontSize: 24,
+  fontSize: vars.font.size["3xl"],
   lineHeight: 1.3,
-  fontWeight: 850,
+  fontWeight: vars.font.weight.black,
   letterSpacing: 0,
 });
 
 export const description = style({
   color: vars.color.textSecondary,
-  fontSize: 14,
+  fontSize: vars.font.size.md,
   lineHeight: 1.65,
 });
 
@@ -109,8 +110,8 @@ export const kakaoButton = style({
   color: "#191919",
   background: "#FEE500",
   cursor: "pointer",
-  fontSize: 15,
-  fontWeight: 800,
+  fontSize: vars.font.size.lg,
+  fontWeight: vars.font.weight.heavy,
   selectors: {
     "&:hover": { background: "#F4DC00" },
     "&:disabled": { cursor: "wait", opacity: 0.7 },
@@ -124,43 +125,25 @@ export const kakaoButton = style({
 export const error = style({
   marginTop: vars.space[4],
   color: vars.color.error,
-  fontSize: 13,
-  lineHeight: 1.5,
+  fontSize: vars.font.size.base,
+  lineHeight: vars.font.lineHeight.relaxed,
 });
 
-export const field = style({
-  display: "grid",
-  gap: vars.space[2],
-  marginBottom: vars.space[5],
-});
-
-export const label = style({
-  fontSize: 13,
-  fontWeight: 750,
-});
+export { field, fieldLabel as label } from "@/shared/ui/field.css";
 
 export const helpText = style({
   color: vars.color.textSecondary,
-  fontSize: 12,
-  lineHeight: 1.5,
+  fontSize: vars.font.size.sm,
+  lineHeight: vars.font.lineHeight.relaxed,
 });
 
-export const input = style({
-  width: "100%",
-  minHeight: 50,
-  padding: `0 ${vars.space[4]}`,
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  outline: 0,
-  selectors: {
-    "&:focus": {
-      borderColor: vars.color.actionPrimary,
-      boxShadow: `0 0 0 3px ${vars.color.brandSoft}`,
-    },
+export const input = style([
+  inputShell,
+  {
+    minHeight: 50,
+    padding: `0 ${vars.space[4]}`,
   },
-});
+]);
 
 export const primaryButton = style({
   width: "100%",
@@ -170,7 +153,7 @@ export const primaryButton = style({
   color: vars.color.textInverse,
   background: vars.color.actionPrimary,
   cursor: "pointer",
-  fontWeight: 800,
+  fontWeight: vars.font.weight.heavy,
   selectors: {
     "&:hover": { background: vars.color.actionPrimaryHover },
     "&:disabled": { cursor: "wait", opacity: 0.7 },
@@ -182,6 +165,6 @@ export const footnote = style({
   marginTop: vars.space[4],
   color: vars.color.textSecondary,
   textAlign: "center",
-  fontSize: 12,
+  fontSize: vars.font.size.sm,
   lineHeight: 1.6,
 });

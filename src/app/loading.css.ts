@@ -116,14 +116,14 @@ export const textGroup = style({
 });
 
 export const brandName = style({
-  fontSize: 20,
-  fontWeight: 800,
+  fontSize: vars.font.size["2xl"],
+  fontWeight: vars.font.weight.heavy,
   letterSpacing: 0,
 });
 
 export const caption = style({
   color: vars.color.textSecondary,
-  fontSize: 13,
+  fontSize: vars.font.size.base,
 });
 
 export const dots = style({

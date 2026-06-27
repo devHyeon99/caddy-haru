@@ -128,29 +128,28 @@ export function CalendarView({
         onDeleteRound={form.remove}
       />
 
-      {form.sheetOpen && (
-        <RoundSheet
-          month={month}
-          selectedDay={selectedDay}
-          pendingRoundNumber={selectedEntries.length + 1}
-          editingId={form.editingId}
-          caddieFee={form.caddieFee}
-          overFee={form.overFee}
-          nineFee={form.nineFee}
-          paymentMethod={form.paymentMethod}
-          memo={form.memo}
-          formError={form.formError}
-          isSaving={isSaving}
-          formTotal={form.formTotal}
-          onCaddieFeeChangeAction={form.setCaddieFee}
-          onOverFeeChangeAction={form.setOverFee}
-          onNineFeeChangeAction={form.setNineFee}
-          onPaymentMethodChangeAction={form.setPaymentMethod}
-          onMemoChangeAction={form.setMemo}
-          onCloseAction={() => form.setSheetOpen(false)}
-          onSubmitAction={form.save}
-        />
-      )}
+      <RoundSheet
+        open={form.sheetOpen}
+        month={month}
+        selectedDay={selectedDay}
+        pendingRoundNumber={selectedEntries.length + 1}
+        editingId={form.editingId}
+        caddieFee={form.caddieFee}
+        overFee={form.overFee}
+        nineFee={form.nineFee}
+        paymentMethod={form.paymentMethod}
+        memo={form.memo}
+        formError={form.formError}
+        isSaving={isSaving}
+        formTotal={form.formTotal}
+        onCaddieFeeChangeAction={form.setCaddieFee}
+        onOverFeeChangeAction={form.setOverFee}
+        onNineFeeChangeAction={form.setNineFee}
+        onPaymentMethodChangeAction={form.setPaymentMethod}
+        onMemoChangeAction={form.setMemo}
+        onOpenChangeAction={form.setSheetOpen}
+        onSubmitAction={form.save}
+      />
     </>
   );
 }

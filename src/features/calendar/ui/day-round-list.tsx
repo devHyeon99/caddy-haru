@@ -3,7 +3,7 @@ import { sumIncome, type RoundEntry } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
-import * as ui from "@/shared/styles/ui.css";
+import * as text from "@/shared/ui/text.css";
 import * as styles from "./day-round-list.css";
 
 type DayRoundListProps = {
@@ -32,7 +32,7 @@ export function DayRoundList({
   return (
     <section aria-labelledby={headingId}>
       <div className={styles.sectionHeader}>
-        <h2 id={headingId} className={ui.sectionTitle}>
+        <h2 id={headingId} className={text.sectionTitle}>
           {month + 1}월 {selectedDay}일
         </h2>
         <p className={styles.sectionTotal}>

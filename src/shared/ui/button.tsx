@@ -1,15 +1,7 @@
-import * as styles from "./button.css";
-
-type ButtonVariant = "primary" | "outline" | "icon";
-
-const variantClass: Record<ButtonVariant, string> = {
-  primary: styles.primary,
-  outline: styles.outline,
-  icon: styles.icon,
-};
+import { button, type ButtonVariants } from "./button.css";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
+  variant?: ButtonVariants["variant"];
 };
 
 export function Button({
@@ -21,7 +13,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={[variantClass[variant], className].filter(Boolean).join(" ")}
+      className={[button({ variant }), className].filter(Boolean).join(" ")}
       {...props}
     >
       {children}

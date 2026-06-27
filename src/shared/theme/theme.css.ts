@@ -11,13 +11,19 @@ export const vars = createThemeContract({
     textInverse: null,
     border: null,
     borderStrong: null,
+    // 인터랙티브 채우기(버튼/FAB 배경, 카드 보더)
     actionPrimary: null,
     actionPrimaryHover: null,
+    // 브랜드 연한 면 + 포커스 링
     brandSoft: null,
-    brandStrong: null,
-    cash: null,
-    transfer: null,
-    nine: null,
+    // 브랜드 텍스트 강조색(금액/제목/활성 탭 등 color 전용)
+    brandText: null,
+    // 결제수단 도메인 색
+    payment: {
+      cash: null,
+      transfer: null,
+      nine: null,
+    },
     error: null,
     overlay: null,
   },
@@ -40,6 +46,32 @@ export const vars = createThemeContract({
     raised: null,
     sheet: null,
   },
+  font: {
+    weight: {
+      medium: null,
+      semibold: null,
+      bold: null,
+      extrabold: null,
+      heavy: null,
+      black: null,
+    },
+    size: {
+      xs: null,
+      sm: null,
+      base: null,
+      md: null,
+      lg: null,
+      xl: null,
+      "2xl": null,
+      "3xl": null,
+      "4xl": null,
+    },
+    lineHeight: {
+      tight: null,
+      normal: null,
+      relaxed: null,
+    },
+  },
 });
 
 const shared = {
@@ -58,6 +90,32 @@ const shared = {
     lg: "8px",
     full: "999px",
   },
+  font: {
+    weight: {
+      medium: "500",
+      semibold: "600",
+      bold: "700",
+      extrabold: "750",
+      heavy: "800",
+      black: "850",
+    },
+    size: {
+      xs: "11px",
+      sm: "12px",
+      base: "13px",
+      md: "14px",
+      lg: "16px",
+      xl: "18px",
+      "2xl": "20px",
+      "3xl": "24px",
+      "4xl": "30px",
+    },
+    lineHeight: {
+      tight: "1.2",
+      normal: "1.4",
+      relaxed: "1.5",
+    },
+  },
 };
 
 export const lightTheme = createTheme(vars, {
@@ -75,10 +133,12 @@ export const lightTheme = createTheme(vars, {
     actionPrimary: "#078765",
     actionPrimaryHover: "#066B51",
     brandSoft: "#C9F4E3",
-    brandStrong: "#066B51",
-    cash: "#A75C00",
-    transfer: "#2563EB",
-    nine: "#7C3AED",
+    brandText: "#066B51",
+    payment: {
+      cash: "#A75C00",
+      transfer: "#2563EB",
+      nine: "#7C3AED",
+    },
     error: "#C53B32",
     overlay: "rgba(9, 20, 15, 0.46)",
   },
@@ -103,10 +163,12 @@ export const darkTheme = createTheme(vars, {
     actionPrimary: "#4BD3A2",
     actionPrimaryHover: "#70E0B7",
     brandSoft: "#183C2F",
-    brandStrong: "#72E1B8",
-    cash: "#F0B45B",
-    transfer: "#78A7FF",
-    nine: "#C084FC",
+    brandText: "#72E1B8",
+    payment: {
+      cash: "#F0B45B",
+      transfer: "#78A7FF",
+      nine: "#C084FC",
+    },
     error: "#FF8C82",
     overlay: "rgba(0, 0, 0, 0.68)",
   },

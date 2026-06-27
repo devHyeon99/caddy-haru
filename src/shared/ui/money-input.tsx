@@ -2,28 +2,27 @@
 
 import * as styles from "./money-input.css";
 
-type MoneyInputProps = {
+type MoneyInputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "onChange" | "type" | "inputMode"
+> & {
   value: string;
-  placeholder?: string;
-  ariaLabel?: string;
   onChangeAction: (value: string) => void;
 };
 
 export function MoneyInput({
   value,
-  placeholder,
-  ariaLabel,
   onChangeAction,
+  ...props
 }: MoneyInputProps) {
   return (
     <div className={styles.wrapper}>
       <input
+        {...props}
         className={styles.input}
         type="text"
         inputMode="decimal"
         value={value}
-        placeholder={placeholder}
-        aria-label={ariaLabel}
         onChange={(e) => onChangeAction(e.target.value)}
       />
       <span className={styles.suffix}>만원</span>

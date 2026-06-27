@@ -1,3 +1,5 @@
+import { parseManInput } from "@/shared/lib/format";
+
 export type OnboardingValues = {
   courseName: string;
   defaultCaddieFee: number;
@@ -25,11 +27,12 @@ export function validateOnboarding(
     };
   }
 
-  if (!/^\d+$/.test(feeText)) {
+  // 입력은 "만원" 단위(소수 허용): "15" → 150,000원, "15.5" → 155,000원
+  if (!/^\d+(\.\d+)?$/.test(feeText)) {
     return { success: false, error: "기본 캐디피를 숫자로 입력해 주세요." };
   }
 
-  const defaultCaddieFee = Number(feeText);
+  const defaultCaddieFee = parseManInput(feeText);
   if (
     !Number.isSafeInteger(defaultCaddieFee) ||
     defaultCaddieFee > 10_000_000

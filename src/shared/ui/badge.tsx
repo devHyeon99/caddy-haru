@@ -1,12 +1,10 @@
-import * as styles from "./badge.css";
-
-type BadgeVariant = keyof typeof styles.variant;
+import { badge, type BadgeVariants } from "./badge.css";
 
 type BadgeProps = {
-  variant?: BadgeVariant;
+  variant?: BadgeVariants["variant"];
   children: React.ReactNode;
 };
 
-export function Badge({ variant = "default", children }: BadgeProps) {
-  return <span className={styles.variant[variant]}>{children}</span>;
+export function Badge({ variant, children }: BadgeProps) {
+  return <span className={badge({ variant })}>{children}</span>;
 }
