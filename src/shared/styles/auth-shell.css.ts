@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/theme/theme.css";
+import { inputShell } from "@/shared/ui/input.css";
 
 export const page = style({
   minHeight: "100vh",
@@ -145,22 +146,13 @@ export const helpText = style({
   lineHeight: vars.font.lineHeight.relaxed,
 });
 
-export const input = style({
-  width: "100%",
-  minHeight: 50,
-  padding: `0 ${vars.space[4]}`,
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  outline: 0,
-  selectors: {
-    "&:focus": {
-      borderColor: vars.color.actionPrimary,
-      boxShadow: `0 0 0 3px ${vars.color.brandSoft}`,
-    },
+export const input = style([
+  inputShell,
+  {
+    minHeight: 50,
+    padding: `0 ${vars.space[4]}`,
   },
-});
+]);
 
 export const primaryButton = style({
   width: "100%",

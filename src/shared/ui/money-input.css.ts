@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/theme/theme.css";
+import { inputShell } from "./input.css";
 
 export const wrapper = style({
   position: "relative",
@@ -7,26 +8,17 @@ export const wrapper = style({
   alignItems: "center",
 });
 
-export const input = style({
-  width: "100%",
-  minHeight: 50,
-  padding: `0 ${vars.space[4]}`,
-  paddingRight: "4rem",
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  fontSize: vars.font.size.xl,
-  fontWeight: vars.font.weight.extrabold,
-  fontVariantNumeric: "tabular-nums",
-  outline: 0,
-  selectors: {
-    "&:focus": {
-      borderColor: vars.color.actionPrimary,
-      boxShadow: `0 0 0 3px ${vars.color.brandSoft}`,
-    },
+export const input = style([
+  inputShell,
+  {
+    minHeight: 50,
+    padding: `0 ${vars.space[4]}`,
+    paddingRight: "4rem",
+    fontSize: vars.font.size.xl,
+    fontWeight: vars.font.weight.extrabold,
+    fontVariantNumeric: "tabular-nums",
   },
-});
+]);
 
 export const suffix = style({
   position: "absolute",

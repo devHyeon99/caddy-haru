@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/theme/theme.css";
+import { inputShell } from "@/shared/ui/input.css";
 
 export const overlay = style({
   position: "fixed",
@@ -59,23 +60,14 @@ export const segment = style({
   background: vars.color.surfaceSubtle,
 });
 
-export const textarea = style({
-  width: "100%",
-  minHeight: 76,
-  resize: "vertical",
-  padding: vars.space[3],
-  border: `1px solid ${vars.color.borderStrong}`,
-  borderRadius: vars.radius.md,
-  color: vars.color.textPrimary,
-  background: vars.color.surface,
-  outline: 0,
-  selectors: {
-    "&:focus": {
-      borderColor: vars.color.actionPrimary,
-      boxShadow: `0 0 0 3px ${vars.color.brandSoft}`,
-    },
+export const textarea = style([
+  inputShell,
+  {
+    minHeight: 76,
+    resize: "vertical",
+    padding: vars.space[3],
   },
-});
+]);
 
 export const sheetTotal = style({
   display: "flex",
