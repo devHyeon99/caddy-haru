@@ -7,7 +7,6 @@ import { type PaymentMethod } from "@/entities/round";
 import { formatWon } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/button";
 import * as text from "@/shared/ui/text.css";
-import * as segmented from "@/shared/ui/segmented.css";
 import * as styles from "./round-sheet.css";
 import { FeeField } from "./fee-field";
 
@@ -110,19 +109,23 @@ export function RoundSheet({
 
             <div className={styles.field}>
               <span className={styles.fieldLabel}>결제 수단</span>
-              <div className={styles.segment}>
-                {(["cash", "transfer"] as const).map((method) => (
-                  <button
-                    key={method}
-                    className={`${segmented.segmentButton} ${
-                      paymentMethod === method ? segmented.selectedSegment : ""
-                    }`}
-                    type="button"
-                    onClick={() => onPaymentMethodChangeAction(method)}
-                  >
-                    {method === "cash" ? "현금" : "계좌이체"}
-                  </button>
-                ))}
+              <div className={styles.paymentToggleGroup}>
+                <button
+                  type="button"
+                  className={styles.paymentToggleCash}
+                  data-selected={paymentMethod === "cash"}
+                  onClick={() => onPaymentMethodChangeAction("cash")}
+                >
+                  현금
+                </button>
+                <button
+                  type="button"
+                  className={styles.paymentToggleTransfer}
+                  data-selected={paymentMethod === "transfer"}
+                  onClick={() => onPaymentMethodChangeAction("transfer")}
+                >
+                  계좌이체
+                </button>
               </div>
             </div>
 
@@ -151,6 +154,15 @@ export function RoundSheet({
             <Button type="submit" disabled={isSaving}>
               {isSaving ? "저장 중" : editingId ? "수정 저장" : "라운드 저장"}
             </Button>
+            <Dialog.Close asChild>
+              <Button
+                variant="outline"
+                className={styles.closeButton}
+                disabled={isSaving}
+              >
+                닫기
+              </Button>
+            </Dialog.Close>
           </form>
         </Dialog.Content>
       </Dialog.Portal>
