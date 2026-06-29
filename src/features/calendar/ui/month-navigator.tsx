@@ -38,8 +38,17 @@ export function MonthNavigator({
       </div>
 
       <div className={styles.weekdays} aria-hidden="true">
-        {weekdays.map((weekday) => (
-          <div key={weekday} className={styles.weekday}>
+        {weekdays.map((weekday, index) => (
+          <div
+            key={weekday}
+            className={`${styles.weekday} ${
+              index === 0
+                ? styles.sundayNumber
+                : index === 6
+                  ? styles.saturdayNumber
+                  : ""
+            }`}
+          >
             {weekday}
           </div>
         ))}

@@ -20,28 +20,48 @@ export function CalendarGrid({
 }: CalendarGridProps) {
   return (
     <div className={styles.calendarGrid}>
-      {cells.map((cell, index) =>
-        cell ? (
+      {cells.map((cell, index) => {
+        if (!cell) {
+          return <div key={`empty-${index}`} className={styles.emptyDayCell} />;
+        }
+
+        const weekday = index % 7;
+        const total = dayTotals.get(cell.dateKey) ?? 0;
+        const isSelected = cell.day === selectedDay;
+
+        const cellClassName = [
+          styles.dayCell,
+          total > 0 && !isSelected ? styles.incomeDay : "",
+          isSelected ? styles.selectedDay : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        const numberClassName = [
+          styles.dayNumber,
+          weekday === 0 ? styles.sundayNumber : "",
+          weekday === 6 ? styles.saturdayNumber : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        return (
           <button
             key={cell.dateKey}
-            className={`${styles.dayCell} ${cell.day === selectedDay ? styles.selectedDay : ""}`}
+            className={cellClassName}
             type="button"
             aria-label={`${month + 1}월 ${cell.day}일${
-              dayTotals.get(cell.dateKey)
-                ? `, ${formatWon(dayTotals.get(cell.dateKey) ?? 0)}`
-                : ""
+              total ? `, ${formatWon(total)}` : ""
             }`}
             onClick={() => onSelectDay(cell.day)}
           >
-            <span className={styles.dayNumber}>{cell.day}</span>
+            <span className={numberClassName}>{cell.day}</span>
             <span className={styles.dayAmount}>
-              {formatCompactIncome(dayTotals.get(cell.dateKey) ?? 0)}
+              {formatCompactIncome(total)}
             </span>
           </button>
-        ) : (
-          <div key={`empty-${index}`} className={styles.emptyDayCell} />
-        ),
-      )}
+        );
+      })}
     </div>
   );
 }

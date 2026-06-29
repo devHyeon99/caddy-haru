@@ -113,15 +113,17 @@ export function CalendarView({
 
       <MonthSummary monthEntries={monthEntries} prevMonthEntries={prevMonthEntries} />
 
-      <MonthNavigator year={year} month={month} onChangeMonth={changeMonth} />
+      <div className={styles.calendarCard}>
+        <MonthNavigator year={year} month={month} onChangeMonth={changeMonth} />
 
-      <CalendarGrid
-        cells={cells}
-        month={month}
-        selectedDay={selectedDay}
-        dayTotals={dayTotals}
-        onSelectDay={setSelectedDay}
-      />
+        <CalendarGrid
+          cells={cells}
+          month={month}
+          selectedDay={selectedDay}
+          dayTotals={dayTotals}
+          onSelectDay={setSelectedDay}
+        />
+      </div>
 
       <DayRoundList
         month={month}
