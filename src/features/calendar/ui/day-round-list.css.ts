@@ -58,6 +58,7 @@ export const feeBreakdown = style({
   gap: "0 6px",
   color: vars.color.textSecondary,
   fontSize: vars.font.size.sm,
+  fontWeight: vars.font.weight.medium,
   lineHeight: 1.45,
   fontVariantNumeric: "tabular-nums",
 });
