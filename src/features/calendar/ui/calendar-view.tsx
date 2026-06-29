@@ -111,7 +111,10 @@ export function CalendarView({
         </div>
       )}
 
-      <MonthSummary monthEntries={monthEntries} prevMonthEntries={prevMonthEntries} />
+      <MonthSummary
+        monthEntries={monthEntries}
+        prevMonthEntries={prevMonthEntries}
+      />
 
       <div className={styles.calendarCard}>
         <MonthNavigator year={year} month={month} onChangeMonth={changeMonth} />
