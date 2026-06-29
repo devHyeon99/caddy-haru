@@ -49,6 +49,12 @@ export function CalendarView({
   const monthEntries = entries.filter((e) =>
     e.workDate.startsWith(monthPrefix),
   );
+
+  const prevDate = new Date(year, month - 1, 1);
+  const prevMonthPrefix = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, "0")}`;
+  const prevMonthEntries = entries.filter((e) =>
+    e.workDate.startsWith(prevMonthPrefix),
+  );
   const selectedEntries = entries.filter((e) => e.workDate === selectedDateKey);
   const cells = getMonthCells(year, month);
 
@@ -105,17 +111,22 @@ export function CalendarView({
         </div>
       )}
 
-      <MonthSummary monthEntries={monthEntries} />
-
-      <MonthNavigator year={year} month={month} onChangeMonth={changeMonth} />
-
-      <CalendarGrid
-        cells={cells}
-        month={month}
-        selectedDay={selectedDay}
-        dayTotals={dayTotals}
-        onSelectDay={setSelectedDay}
+      <MonthSummary
+        monthEntries={monthEntries}
+        prevMonthEntries={prevMonthEntries}
       />
+
+      <div className={styles.calendarCard}>
+        <MonthNavigator year={year} month={month} onChangeMonth={changeMonth} />
+
+        <CalendarGrid
+          cells={cells}
+          month={month}
+          selectedDay={selectedDay}
+          dayTotals={dayTotals}
+          onSelectDay={setSelectedDay}
+        />
+      </div>
 
       <DayRoundList
         month={month}

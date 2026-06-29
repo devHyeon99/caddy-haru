@@ -23,64 +23,13 @@ export const errorMessage = style({
   lineHeight: vars.font.lineHeight.relaxed,
 });
 
-export const summary = style({
-  display: "flex",
-  alignItems: "flex-end",
-  justifyContent: "space-between",
-  gap: vars.space[4],
-  padding: `${vars.space[5]} ${vars.space[5]}`,
-  marginBottom: vars.space[5],
-  background: vars.color.surfaceSubtle,
-  borderLeft: `4px solid ${vars.color.actionPrimary}`,
-  borderRadius: vars.radius.md,
-});
-
-export const summaryAmount = style({
-  fontSize: vars.font.size["4xl"],
-  lineHeight: 1.15,
-  fontWeight: vars.font.weight.heavy,
-  letterSpacing: 0,
-  fontVariantNumeric: "tabular-nums",
-  "@media": {
-    "screen and (max-width: 380px)": {
-      fontSize: vars.font.size["3xl"],
-    },
-  },
-});
-
-export const incomeBreakdown = style({
-  display: "flex",
-  flexDirection: "row",
-  gap: vars.space[2],
-  margin: 0,
-  marginTop: vars.space[2],
-  padding: 0,
-  listStyle: "none",
-  color: vars.color.textSecondary,
-  fontSize: vars.font.size.sm,
-  fontWeight: vars.font.weight.medium,
-  fontVariantNumeric: "tabular-nums",
-});
-
-export const roundCount = style({
-  flex: "0 0 auto",
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "flex-end",
-  gap: vars.space[4],
-  textAlign: "right",
-  color: vars.color.brandText,
-  fontSize: vars.font.size["2xl"],
-  fontWeight: vars.font.weight.heavy,
-  letterSpacing: 0,
-});
-
-export const roundCountLabel = style({
-  margin: 0,
-  color: vars.color.textSecondary,
-  fontSize: vars.font.size.xs,
-  fontWeight: vars.font.weight.semibold,
-  marginBottom: vars.space[1],
+export const calendarCard = style({
+  marginBottom: vars.space[6],
+  padding: vars.space[4],
+  border: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radius["2xl"],
+  background: vars.color.surface,
+  boxShadow: vars.shadow.card,
 });
 
 export const monthHeader = style({
@@ -101,7 +50,7 @@ export const monthTitle = style({
 export const weekdays = style({
   display: "grid",
   gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-  borderBottom: `1px solid ${vars.color.border}`,
+  marginBottom: vars.space[1],
 });
 
 export const weekday = style({
@@ -115,22 +64,24 @@ export const weekday = style({
 export const calendarGrid = style({
   display: "grid",
   gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-  marginBottom: vars.space[6],
+  gap: vars.space[1],
 });
 
 export const dayCell = style({
   minWidth: 0,
-  minHeight: 66,
+  minHeight: 64,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: 6,
-  padding: "8px 2px 5px",
+  justifyContent: "center",
+  gap: 4,
+  padding: "8px 2px",
   border: 0,
-  borderBottom: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radius.sm,
   color: vars.color.textPrimary,
   background: "transparent",
   cursor: "pointer",
+  transition: "background 120ms ease",
   selectors: {
     "&:hover": { background: vars.color.surfaceSubtle },
     "&:focus-visible": {
@@ -143,8 +94,14 @@ export const dayCell = style({
 });
 
 export const emptyDayCell = style({
-  minHeight: 66,
-  borderBottom: `1px solid ${vars.color.border}`,
+  minHeight: 64,
+});
+
+export const incomeDay = style({
+  background: vars.color.actionPrimarySubtle,
+  selectors: {
+    "&:hover": { background: vars.color.brandSoft },
+  },
 });
 
 export const selectedDay = style({
@@ -164,6 +121,17 @@ export const dayNumber = style({
   fontSize: vars.font.size.base,
   fontWeight: vars.font.weight.bold,
   fontVariantNumeric: "tabular-nums",
+  selectors: {
+    [`${selectedDay} &`]: { color: vars.color.textInverse },
+  },
+});
+
+export const sundayNumber = style({
+  color: vars.color.error,
+});
+
+export const saturdayNumber = style({
+  color: vars.color.payment.transfer,
 });
 
 export const dayAmount = style({

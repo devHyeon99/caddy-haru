@@ -186,7 +186,7 @@ export const lightTheme = createTheme(vars, {
       nine: "#7C3AED",
       nineSoft: "#F3EFFE",
     },
-    success: "#078765",
+    success: "#066B50",
     successSoft: "#E6F7F1",
     warning: "#D97706",
     warningSoft: "#FFFBEB",
