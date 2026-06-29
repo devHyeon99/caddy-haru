@@ -100,7 +100,7 @@ export function DayRoundList({
         <p className={styles.emptyState}>기록된 라운드가 없습니다.</p>
       )}
 
-      <Button disabled={!canAddRound} onClick={onAddRound}>
+      <Button className={styles.addButton} disabled={!canAddRound} onClick={onAddRound}>
         {canAddRound ? (
           <>
             <Plus size={19} aria-hidden="true" />

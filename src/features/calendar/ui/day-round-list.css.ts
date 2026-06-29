@@ -99,3 +99,7 @@ export const emptyState = style({
   textAlign: "center",
   fontSize: vars.font.size.md,
 });
+
+export const addButton = style({
+  marginTop: vars.space[3],
+});
