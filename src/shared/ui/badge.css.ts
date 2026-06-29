@@ -29,6 +29,16 @@ export const badge = recipe({
         background: "transparent",
         boxShadow: `inset 0 0 0 1.5px ${vars.color.payment.nine}`,
       },
+      success: {
+        color: vars.color.success,
+        background: vars.color.successSoft,
+        boxShadow: `inset 0 0 0 1.5px ${vars.color.success}`,
+      },
+      error: {
+        color: vars.color.error,
+        background: vars.color.errorSoft,
+        boxShadow: `inset 0 0 0 1.5px ${vars.color.error}`,
+      },
     },
   },
   defaultVariants: {
