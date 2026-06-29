@@ -17,7 +17,7 @@ export const sheet = style({
   bottom: 0,
   width: "min(100%, 760px)",
   margin: "0 auto",
-  maxHeight: "92vh",
+  maxHeight: "80vh",
   overflowY: "auto",
   padding: `${vars.space[5]} ${vars.space[5]} calc(${vars.space[6]} + env(safe-area-inset-bottom))`,
   borderRadius: "8px 8px 0 0",
@@ -42,20 +42,55 @@ export const sheetHeader = style({
 
 export { field, fieldLabel } from "@/shared/ui/field.css";
 
-export const segment = style({
+export const paymentToggleGroup = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  gap: 4,
-  padding: 4,
-  borderRadius: vars.radius.md,
-  background: vars.color.surfaceSubtle,
+  gap: vars.space[2],
 });
+
+const paymentToggleBase = {
+  minHeight: 48,
+  border: `1.5px solid ${vars.color.border}`,
+  borderRadius: vars.radius.md,
+  background: "transparent",
+  color: vars.color.textSecondary,
+  fontSize: vars.font.size.md,
+  fontWeight: vars.font.weight.extrabold,
+  cursor: "pointer",
+  transition: "border-color 0.15s, background 0.15s, color 0.15s",
+};
+
+export const paymentToggleCash = style([
+  paymentToggleBase,
+  {
+    selectors: {
+      "&[data-selected=true]": {
+        borderColor: vars.color.payment.cash,
+        background: vars.color.payment.cashSoft,
+        color: vars.color.payment.cash,
+      },
+    },
+  },
+]);
+
+export const paymentToggleTransfer = style([
+  paymentToggleBase,
+  {
+    selectors: {
+      "&[data-selected=true]": {
+        borderColor: vars.color.payment.transfer,
+        background: vars.color.payment.transferSoft,
+        color: vars.color.payment.transfer,
+      },
+    },
+  },
+]);
 
 export const textarea = style([
   inputShell,
   {
     minHeight: 76,
-    resize: "vertical",
+    resize: "none",
     padding: vars.space[3],
   },
 ]);
@@ -75,6 +110,10 @@ export const sheetTotalAmount = style({
   fontSize: vars.font.size["2xl"],
   fontWeight: vars.font.weight.black,
   fontVariantNumeric: "tabular-nums",
+});
+
+export const closeButton = style({
+  marginTop: vars.space[3],
 });
 
 export const formError = style({
