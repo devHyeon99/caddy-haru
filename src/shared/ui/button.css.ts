@@ -55,7 +55,7 @@ export const button = recipe({
         color: vars.color.textSecondary,
         background: "transparent",
         selectors: {
-          "&:hover": { background: vars.color.surface },
+          "&:hover": { background: vars.color.surfaceHover },
           "&:disabled": { opacity: 0.45 },
           "&:focus-visible": {
             outline: `3px solid ${vars.color.border}`,

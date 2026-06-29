@@ -29,7 +29,8 @@ export const roundCard = style({
   padding: `${vars.space[2]} ${vars.space[4]} ${vars.space[4]}`,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.md,
-  background: vars.color.surfaceSubtle,
+  background: vars.color.cardBg,
+  boxShadow: vars.shadow.card,
 });
 
 export const cardHeader = style({
