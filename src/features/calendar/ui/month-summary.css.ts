@@ -11,7 +11,7 @@ export const summary = style({
   borderLeft: `4px solid ${vars.color.actionPrimary}`,
   borderRadius: vars.radius.md,
   "@media": {
-    "screen and (min-width: 580px)": {
+    "screen and (min-width: 600px)": {
       flexDirection: "row",
       alignItems: "flex-end",
       justifyContent: "space-between",
