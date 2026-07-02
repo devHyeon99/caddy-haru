@@ -30,6 +30,7 @@ export const calendarCard = style({
   borderRadius: vars.radius["2xl"],
   background: vars.color.surface,
   boxShadow: vars.shadow.card,
+  touchAction: "pan-y",
 });
 
 export const monthHeader = style({
