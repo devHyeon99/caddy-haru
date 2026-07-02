@@ -44,7 +44,6 @@ export function CalendarView({
   } = useRoundEntries(year, courseName);
 
   const selectedDateKey = toDateKey(year, month, selectedDay);
-  const canAddRound = selectedDateKey <= initialDate;
   const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
   const monthEntries = entries.filter((e) =>
     e.workDate.startsWith(monthPrefix),
@@ -155,7 +154,6 @@ export function CalendarView({
         month={month}
         selectedDay={selectedDay}
         selectedEntries={selectedEntries}
-        canAddRound={canAddRound}
         isDeleting={isDeleting}
         onAddRound={form.openNew}
         onEditRound={form.openEdit}
