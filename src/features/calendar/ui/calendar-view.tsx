@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getRoundIncome, useRoundEntries } from "@/entities/round";
 import { getMonthCells, toDateKey } from "@/shared/lib/calendar";
 import { Button } from "@/shared/ui/button";
@@ -84,6 +84,25 @@ export function CalendarView({
     setSelectedDay(1);
   }
 
+  const touchStart = useRef({ x: 0, y: 0 });
+
+  function handleTouchStart(event: React.TouchEvent) {
+    touchStart.current = {
+      x: event.touches[0].clientX,
+      y: event.touches[0].clientY,
+    };
+  }
+
+  function handleTouchEnd(event: React.TouchEvent) {
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - touchStart.current.x;
+    const deltaY = touch.clientY - touchStart.current.y;
+
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      changeMonth(deltaX < 0 ? 1 : -1);
+    }
+  }
+
   if (isLoading) {
     return (
       <div className={styles.dataState} role="status">
@@ -116,7 +135,11 @@ export function CalendarView({
         prevMonthEntries={prevMonthEntries}
       />
 
-      <div className={styles.calendarCard}>
+      <div
+        className={styles.calendarCard}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <MonthNavigator year={year} month={month} onChangeMonth={changeMonth} />
 
         <CalendarGrid
