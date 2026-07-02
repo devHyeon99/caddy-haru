@@ -10,7 +10,6 @@ type DayRoundListProps = {
   month: number;
   selectedDay: number;
   selectedEntries: RoundEntry[];
-  canAddRound: boolean;
   isDeleting: boolean;
   onAddRound: () => void;
   onEditRound: (entry: RoundEntry) => void;
@@ -21,7 +20,6 @@ export function DayRoundList({
   month,
   selectedDay,
   selectedEntries,
-  canAddRound,
   isDeleting,
   onAddRound,
   onEditRound,
@@ -100,19 +98,9 @@ export function DayRoundList({
         <p className={styles.emptyState}>기록된 라운드가 없습니다.</p>
       )}
 
-      <Button
-        className={styles.addButton}
-        disabled={!canAddRound}
-        onClick={onAddRound}
-      >
-        {canAddRound ? (
-          <>
-            <Plus size={19} aria-hidden="true" />
-            라운드 추가
-          </>
-        ) : (
-          "미래 날짜에는 기록할 수 없습니다"
-        )}
+      <Button className={styles.addButton} onClick={onAddRound}>
+        <Plus size={19} aria-hidden="true" />
+        라운드 추가
       </Button>
     </section>
   );
