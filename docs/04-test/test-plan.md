@@ -97,16 +97,17 @@
 
 | ID | 확인 | 결과 |
 |---|---|---|
-| T-D01 | Worker 프록시 `redirect: 'manual'`로 302 그대로 전달 | ⬜ |
+| T-D01 | Worker 프록시 `redirect: 'manual'`로 302 그대로 전달 | ✅ 2026-11-28 운영 B1 → 302 `kauth.kakao.com`, B2 → 302 `/` |
 | T-D06 | Worker 정적 자산: SPA 폴백·`_headers` 캐시·`/api/health` 프록시 | ✅ 2026-11-27 배포: `/` 캐디하루, `/calendar` 200, `/assets/*` immutable, `/api/health` 프록시 200 |
 | T-D07 | 프록시 설정 누락 시 1101 대신 503 `proxy not configured` | 로컬 `wrangler dev` ✅ 2026-11-27 |
-| T-D02 | 여러 `Set-Cookie` 헤더가 프록시를 거쳐도 모두 전달 | ⬜ |
+| T-D02 | 여러 `Set-Cookie` 헤더가 프록시를 거쳐도 모두 전달 | ✅ 2026-11-28 B2의 state 삭제 + `__Host-sid` 두 개 → 로그인 후 B4 200 |
 | T-D03 | Render Docker 이미지 빌드·기동, `/api/health` 200 | ✅ 2026-11-27 `https://caddy-haru.onrender.com/api/health` → 200, `version` = main 커밋 |
-| T-D04 | Render 배포 훅·자동 배포 끄기 | ⬜ |
-| T-D05 | 카카오 동의 항목 없이 로그인 (운영 배포 후 실기기) | ⬜ |
+| T-D04 | Render 배포 훅·자동 배포 끄기 | ✅ 2026-11-28 무료 플랜에 Deploy Hook 있음. Auto-Deploy 끔, `deploy-api.yml` 첫 실행: 마이그레이션 적용 → 훅 200 → `ff35f93` 배포 |
+| T-D05 | 카카오 동의 항목 없이 로그인 (운영 배포 후 실기기) | ✅ 2026-11-28 iOS 실기기: 동의 화면에 "회원번호"만 표시 → 로그인 → B4 `id: 1` (AC-040-1). 첫 시도 KOE006(콘솔 Redirect URI 미등록)은 콘솔 수정으로 해결 |
 
 ## 변경 이력
 - 2026-11-27 작성: 설계 문서 4종의 테스트 표를 ID(T-U·T-I·T-E·T-W·T-M·T-D)로 통합, 도구(ADR-0010) 기록. 뼈대 단계 결과 반영(T-U01~05, T-E01)
 - 2026-11-27 Pages → Workers 반영(T-D01), T-D06 추가
 - 2026-11-27 첫 배포 결과: T-D03·T-D06 통과, T-D07 추가
+- 2026-11-28 운영 배포 확인: T-D01·02·04·05 통과
 - 2026-11-28 인증 구현: T-U07~09, T-I11·12, T-E21~25 추가. T-E01·08·09·11 통과, T-I10·E10·E12 일부 통과. 통합 테스트 실행 방식(§1) 기록

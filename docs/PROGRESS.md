@@ -63,7 +63,7 @@
 2. [x] ~~모노레포 뼈대~~ (PR #2 병합, CI 통과)
 3. [x] ~~첫 배포~~ (2026-11-27): Render Docker(Singapore 권장, Free) + Worker `caddy-haru` → `https://caddy-haru.eomhh99.workers.dev/api/health` 200. 카카오 Redirect URI 교체 완료(2026-11-28)
 4. [ ] Must 구현 (권장 순서: 인증(DB·세션) → 골프장 → 라운드 → 달력·통계)
-   - [x] 인증 API (`feat/auth` PR) — 병합 전 아래 6번 "인증 배포 준비" 필요
+   - [x] 인증 API (PR #4 병합, 2026-11-28) — 운영에서 카카오 로그인 → B4 `id: 1` 확인 (T-D05)
    - [ ] 인증 화면: 로그인(SCR-06, `/login?error=` 문구 T-W09)·서버 깨우기(SCR-00)·401 → `/login`·로그아웃(T-W08)
    - [ ] 골프장 (FR-004·006): `golf_clubs` 스키마, C1~C4, `ValidationPipe`(400 `fields`)·`INVALID_JSON` 처리, 격리 테스트 T-E02~07 시작
 5. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
@@ -71,9 +71,9 @@
    - [x] 카카오 개발자 콘솔 앱 등록 (2026-11-27, **Redirect URI는 임시 주소**)
    - [x] Cloudflare·Render·Neon 계정 준비 (2026-11-27)
    - [ ] **age 키 쌍 생성 → 백업 워크플로(`backup.yml`) 작업 때 함께** (2026-11-28 사용자 결정: 지금은 DB가 비어 있어 미룸). 방법: `brew install age` → `age-keygen -o ~/caddy-haru-backup.key` → 공개키만 `gh secret set BACKUP_AGE_RECIPIENT` → 개인키는 비밀번호 관리자 + 오프라인 보관 후 원본 삭제 → `brew uninstall age` (ADR-0006). **실데이터 기록 시작 전에 반드시 완료**
-   - [ ] **인증 배포 준비 (feat/auth 병합 전)**: ① Neon 프로젝트(AWS Singapore, PG 17) ② GitHub Secrets `DIRECT_DATABASE_URL`(direct)·`RENDER_DEPLOY_HOOK_URL` ③ Render 환경 변수 `DATABASE_URL`(pooled `-pooler`)·`KAKAO_CLIENT_ID`·`KAKAO_CLIENT_SECRET`·`KAKAO_REDIRECT_URI`·`APP_ORIGIN`, **`PROXY_SECRET`이 Render에도 Worker와 같은 값인지 확인**(없으면 `/api/health` 외 전부 403) ④ Render Auto-Deploy 끄기 ⑤ 병합 후 Actions `Deploy API` 성공 확인 → 실기기 로그인(T-D05)
+   - [x] ~~**인증 배포 준비**~~ (2026-11-28 완료, Neon PG 17 Singapore, Auto-Deploy 끔 → `deploy-api.yml`): ① Neon 프로젝트(AWS Singapore, PG 17) ② GitHub Secrets `DIRECT_DATABASE_URL`(direct)·`RENDER_DEPLOY_HOOK_URL` ③ Render 환경 변수 `DATABASE_URL`(pooled `-pooler`)·`KAKAO_CLIENT_ID`·`KAKAO_CLIENT_SECRET`·`KAKAO_REDIRECT_URI`·`APP_ORIGIN`, **`PROXY_SECRET`이 Render에도 Worker와 같은 값인지 확인**(없으면 `/api/health` 외 전부 403) ④ Render Auto-Deploy 끄기 ⑤ 병합 후 Actions `Deploy API` 성공 확인 → 실기기 로그인(T-D05)
    - [x] (2026-11-28 완료) Worker 첫 배포 뒤 카카오 Redirect URI를 `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback`으로 바꾸기
-7. [ ] 구현 1주차에 확인: ~~Drizzle 최신 안정판 버전 고정~~(0.45.4, 2026-11-28), Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Worker 프록시 `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2), 카카오 로그인 버튼 가이드·iOS 키패드 위 저장 버튼 (ui-design §8)
+7. [ ] 구현 1주차에 확인: ~~Drizzle 버전 고정, Render 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Worker 프록시 302·여러 `Set-Cookie`~~ (2026-11-28 모두 확인, T-D01·02·04·05). 남은 것: 카카오 로그인 버튼 가이드·iOS 키패드 위 저장 버튼 (ui-design §8)
 
 ## 막힌 것 / 사용자 결정 필요
 
