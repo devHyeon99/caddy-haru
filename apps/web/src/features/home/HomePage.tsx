@@ -1,29 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
-import type { HealthResponse } from '@caddy-haru/shared';
+import { Link } from 'react-router';
 import * as layout from '../../shared/ui/layout.css';
 
-// 뼈대용 임시 화면: 프록시·API 연결 확인. SCR-01 홈(FR-001 등)은 Must 구현 때 교체한다.
+// 임시 홈: 인증 가드(AC-040-4) 뒤에 보이는 자리. SCR-01 홈(FR-001·011)은 라운드 구현 때 교체한다.
 export function HomePage() {
-  const health = useQuery({
-    queryKey: ['health'],
-    queryFn: async (): Promise<HealthResponse> => {
-      const res = await fetch('/api/health', { cache: 'no-store' });
-      if (!res.ok) throw new Error(String(res.status));
-      return res.json() as Promise<HealthResponse>;
-    },
-  });
-
   return (
     <main className={layout.page}>
       <h1 className={layout.title}>캐디하루</h1>
-      <p className={layout.muted}>
-        서버 상태:{' '}
-        {health.isPending
-          ? '확인 중…'
-          : health.isError
-            ? '연결 안 됨'
-            : `정상 (${health.data.version})`}
-      </p>
+      <p className={layout.muted}>로그인됨. 라운드 기록 화면은 준비 중이에요.</p>
+      <nav className={layout.links}>
+        <Link to="/stats">통계</Link>
+        <Link to="/settings">설정</Link>
+      </nav>
     </main>
   );
 }

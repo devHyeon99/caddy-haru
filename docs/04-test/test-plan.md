@@ -10,7 +10,8 @@
 | 단위 | Vitest | `packages/shared/src/**/*.test.ts`, `apps/web/src/**/*.test.ts(x)`, `apps/api/src/**/*.spec.ts` | `pnpm test` |
 | 통합 (실제 PG) | Vitest + `postgres:17` | `apps/api/test/**/*.int-spec.ts` | 로컬 `docker compose up -d db`(테스트가 `caddy_haru_test` DB를 만들고 비운 뒤 `drizzle/` 마이그레이션 적용, DB가 꺼져 있으면 DB 테스트만 건너뜀), CI 서비스 컨테이너(`TEST_DATABASE_URL`, 연결 실패 = 실패) |
 | API E2E | Vitest + Supertest (Nest 앱을 메모리에서 띄움) | `apps/api/test/**/*.e2e-spec.ts` | `pnpm test` |
-| 화면 E2E | Playwright (뷰포트 360×640) | `apps/web/e2e/` (화면 구현 때 추가) | 미정 |
+| 화면 컴포넌트 | Vitest + jsdom + Testing Library (`@testing-library/react`), 메모리 라우터 + 가짜 `fetch`(`src/test/`), 시간은 `vi.useFakeTimers` | `apps/web/src/**/*.test.tsx` | `pnpm test` |
+| 화면 E2E | Playwright (뷰포트 360×640) | `apps/web/e2e/` (**아직 설정 없음** — T-W01·02·03·10을 할 때 추가) | 미정 |
 | 수동 | 실기기(iOS Safari·안드로이드 Chrome) | §5 | 체크리스트 |
 
 - 테스트 이름이나 주석에 **AC ID**를 적는다(CLAUDE.md §4-7).
@@ -81,15 +82,15 @@
 
 | ID | 테스트 | 방법 | AC | 결과 |
 |---|---|---|---|---|
-| T-W01 | 가로 스크롤 없음 | Playwright 360×640, 모든 라우트·상태에서 `scrollWidth ≤ clientWidth` | **AC-N001-1** | ⬜ |
+| T-W01 | 가로 스크롤 없음 | Playwright 360×640, 모든 라우트·상태에서 `scrollWidth ≤ clientWidth` | **AC-N001-1** | ⬜ (2026-11-28 로그인·깨우기·설정 화면은 로컬 브라우저 360px에서 `scrollWidth 360` 수동 확인. Playwright 미설정) |
 | T-W02 | 누르는 요소 44px | 같은 테스트에서 누르는 요소 전부 폭·높이 ≥ 44 | **AC-N001-2** | ⬜ |
 | T-W03 | 30초 입력 | 사용자 테스트 + 탭 수 회귀(3번 클릭 + 입력 1회로 D3) | **AC-N001-3** | ⬜ |
-| T-W04 | 깨우기 화면 | A1 지연·503 가짜 서버: 1.5초 전 안 보임, 이후 보임, 3분 후 실패 | NFR-002 | ⬜ |
-| T-W05 | 오버레이 저장 | 마지막 응답 15분 전으로 조작 → 저장 → D3가 한 번만 | NFR-002 | ⬜ |
+| T-W04 | 깨우기 화면 | A1 지연·503 가짜 서버: 1.5초 전 안 보임, 이후 보임, 3분 후 실패 | NFR-002 | ✅ 2026-11-28 Vitest(가짜 시계): `server-wake.test.ts`(1.5초·3초 간격·8초 제한·3분 실패·다시 시도·오프라인), `auth-flow.test.tsx`(화면 단계 → [다시 시도] → B4). 로컬 브라우저: API 끈 채 열기 → 깨우기 화면 → API 켜기 → 로그인 화면 |
+| T-W05 | 오버레이 저장 | 마지막 응답 15분 전으로 조작 → 저장 → D3가 한 번만 | NFR-002 | ✅ 2026-11-28 Vitest: `client.test.ts`·`WakeOverlay.test.tsx`(A1 503 → 200 뒤 POST 1번, [취소] → 안 보냄, 3분 → [다시 시도][닫기]). 실제 저장 화면은 라운드 구현 때 다시 확인 |
 | T-W06 | 오류 표시 | 필수 4칸 비우고 저장 → 4칸 모두 문구 | **AC-001-2** | ⬜ |
 | T-W07 | 자동 채움 | 컴포넌트 테스트 | AC-005-1·2·4, AC-006-1·2·3, AC-008-1·3·5·9 | ⬜ |
-| T-W08 | 로그아웃 뒤로 가기 | 로그아웃 → `history.back()` → 로그인 화면, 데이터 없음 | **AC-040-3** | ⬜ |
-| T-W09 | 로그인 오류 문구 | `/login?error=…` 각 문구 | **AC-040-5** | ⬜ |
+| T-W08 | 로그아웃 뒤로 가기 | 로그아웃 → `history.back()` → 로그인 화면, 데이터 없음 | **AC-040-3** | ✅ 2026-11-28 Vitest `auth-flow.test.tsx`(B3 204 → 캐시 비움 → `/login` REPLACE → 뒤로 → B4 401 → 로그인, 데이터 문자열 없음, B3 네트워크 오류도 `/login`). 로컬 브라우저(실제 API·DB 세션)로 같은 흐름 확인 |
+| T-W09 | 로그인 오류 문구 | `/login?error=…` 각 문구 | **AC-040-5** | ✅ 2026-11-28 Vitest `login-error.test.ts`·`LoginPage.test.tsx`(cancelled·state·kakao·xyz, 주소에서 `error` 제거). 로컬 브라우저 360px: 배너·버튼 328×52 |
 | T-W10 | 시트·대화상자 뒤로 가기 | 날짜 → 시트·`date` → 뒤로 → 닫힘·`date` 제거. 대화상자 뒤로 = 취소 | AC-003-3, ADR-0009 | ⬜ |
 | T-M01 | 실기기 키패드 | iOS Safari에서 숫자 키패드 위 [저장] 보임 | ui-design §8 | ⬜ |
 
@@ -111,3 +112,4 @@
 - 2026-11-27 첫 배포 결과: T-D03·T-D06 통과, T-D07 추가
 - 2026-11-28 운영 배포 확인: T-D01·02·04·05 통과
 - 2026-11-28 인증 구현: T-U07~09, T-I11·12, T-E21~25 추가. T-E01·08·09·11 통과, T-I10·E10·E12 일부 통과. 통합 테스트 실행 방식(§1) 기록
+- 2026-11-28 인증 화면: T-W04·05·08·09 통과(Vitest 컴포넌트·단위, jsdom + Testing Library 도입). Playwright는 아직 설정하지 않음(T-W01·02·03·10 때 추가). T-U06(주소 쿼리 파서)은 이번 범위에 없음(달력·통계 때)

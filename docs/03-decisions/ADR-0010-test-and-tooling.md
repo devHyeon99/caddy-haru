@@ -18,6 +18,7 @@
 | 항목 | 선택 |
 |---|---|
 | 단위·통합·API E2E | **Vitest** (모든 패키지). api는 `unplugin-swc`로 데코레이터 메타데이터 생성 |
+| 화면 컴포넌트 (2026-11-28 추가) | Vitest + **jsdom** 31.0.1 + **Testing Library** (`@testing-library/react` 16.3.3·`dom` 10.4.2·`user-event` 14.6.13). web의 Vitest 환경은 jsdom. 같은 Vitest 안이라 이 ADR의 "도구 하나" 원칙을 유지한다 |
 | API E2E 방식 | `@nestjs/testing`으로 앱을 메모리에서 띄우고 **Supertest**로 호출. `main.ts`와 같은 설정은 `configureApp()` 하나로 공유 |
 | 화면 E2E | **Playwright** (ui-design §6 그대로, 화면 구현 때 추가) |
 | 린트·포맷 | ESLint(flat config) + typescript-eslint + react-hooks, Prettier |
@@ -30,3 +31,6 @@
 - 좋은 점: `pnpm test` 하나로 세 패키지를 같은 방식으로 돌린다. 테스트 문법이 하나라 배우기 쉽다.
 - 감수할 점: NestJS 예제의 `jest.fn()` 등은 `vi.fn()`으로 바꿔 읽는다. `unplugin-swc`가 Vitest 주 버전을 따라오는지 올릴 때 확인한다.
 - 해야 할 일: DB 통합 테스트를 시작할 때 CI에 `postgres:17` 서비스 컨테이너를 추가한다(architecture §4).
+
+## 변경 이력
+- 2026-11-28 화면 컴포넌트 테스트 도구(jsdom + Testing Library) 추가 — 인증 화면 구현(T-W04·05·08·09)
