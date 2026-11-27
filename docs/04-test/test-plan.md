@@ -1,6 +1,6 @@
 # 테스트 계획
 
-> 상태: 초안 · 최종 수정일: 2026-11-27
+> 상태: 초안 · 최종 수정일: 2026-11-28
 > 출처: `api-spec.md` §11, `data-model.md` §7, `ui-design.md` §6. 이 문서가 테스트 목록의 기준이 되고, 설계 문서의 표는 이 문서를 가리킨다.
 
 ## 1. 도구 · 실행 (ADR-0010)
@@ -8,7 +8,7 @@
 | 수준 | 도구 | 위치 | 실행 |
 |---|---|---|---|
 | 단위 | Vitest | `packages/shared/src/**/*.test.ts`, `apps/web/src/**/*.test.ts(x)`, `apps/api/src/**/*.spec.ts` | `pnpm test` |
-| 통합 (실제 PG) | Vitest + `postgres:17` | `apps/api/test/**/*.int-spec.ts` (DB 작업 때 추가) | 로컬 `docker compose up -d db`, CI 서비스 컨테이너 |
+| 통합 (실제 PG) | Vitest + `postgres:17` | `apps/api/test/**/*.int-spec.ts` | 로컬 `docker compose up -d db`(테스트가 `caddy_haru_test` DB를 만들고 비운 뒤 `drizzle/` 마이그레이션 적용, DB가 꺼져 있으면 DB 테스트만 건너뜀), CI 서비스 컨테이너(`TEST_DATABASE_URL`, 연결 실패 = 실패) |
 | API E2E | Vitest + Supertest (Nest 앱을 메모리에서 띄움) | `apps/api/test/**/*.e2e-spec.ts` | `pnpm test` |
 | 화면 E2E | Playwright (뷰포트 360×640) | `apps/web/e2e/` (화면 구현 때 추가) | 미정 |
 | 수동 | 실기기(iOS Safari·안드로이드 Chrome) | §5 | 체크리스트 |
@@ -26,6 +26,9 @@
 | T-U04 | `isRoundSlot` | 1·2·3만 허용 | FR-005 | ✅ 2026-11-27 |
 | T-U05 | `keysToInvalidateAfterRoundChange` | 그 달 D1·E1 + 그날 D1 | AC-001-1, AC-003-4 | ✅ 2026-11-27 |
 | T-U06 | 주소 쿼리 파서(`month`·`date`) | 잘못된 값 → 이번 달로 대체 | ADR-0009 | ⬜ |
+| T-U07 | 쿠키 읽기·쓰기 (`cookies.spec.ts`) | 중복·인코딩·따옴표, `HttpOnly; Secure; SameSite=Lax; Path=/` | ADR-0004 | ✅ 2026-11-28 |
+| T-U08 | 세션 수명 (`session-policy.spec.ts`) | 30일, 15일 미만이면 연장 | ADR-0004 | ✅ 2026-11-28 |
+| T-U09 | 카카오 클라이언트 (`kakao.client.spec.ts`) | 인가 주소에 `scope` 없음, 토큰 교환 요청 형식, 2^63-1 회원번호 원문 유지, 안쪽 `id` 무시, 실패 → `KakaoError` | FR-040 | ✅ 2026-11-28 |
 
 ## 3. 통합 테스트 (실제 PostgreSQL — `data-model.md` §7)
 
@@ -40,24 +43,26 @@
 | T-I07 | 골프장 이름 중복 | 보이는 이름 두 개 → 위반 / 숨긴 이름 + 새 이름 → 성공 | AC-004-2, Q-026 | ⬜ |
 | T-I08 | 기본 골프장 하나 | `is_default` 두 개 → 위반, 숨긴 골프장 기본 지정 → 위반 | AC-004-3·5 | ⬜ |
 | T-I09 | 정수 집계 | AC-011-1·5 데이터로 SQL 합계·평균 일치 | AC-011-1·3·5, AC-N005-2 | ⬜ |
-| T-I10 | 스키마 일치 | 마이그레이션 후 `pg_constraint`·`pg_indexes`에 §4 제약 이름이 모두 있음 | NFR-005, ADR-0003 | ⬜ |
+| T-I10 | 스키마 일치 | 마이그레이션 후 `pg_constraint`·`pg_indexes`에 §4 제약 이름이 모두 있음 | NFR-005, ADR-0003 | 🔶 2026-11-28 `users`·`sessions`만 (`schema.int-spec.ts`). 골프장·라운드 때 확장 |
+| T-I11 | 사용자 유니크 | 같은 카카오 회원번호 두 번 → `users_provider_user_key` 위반, `provider`는 kakao만, 2^63-1 문자열 저장 | AC-040-2 | ✅ 2026-11-28 |
+| T-I12 | 세션 제약 | 해시 31바이트 → CHECK 위반, 없는 사용자 → FK 위반, 사용자 삭제 → 세션 CASCADE | ADR-0004 | ✅ 2026-11-28 |
 
 ## 4. API E2E (`api-spec.md` §11)
 
 | ID | 테스트 | 검증 | AC | 결과 |
 |---|---|---|---|---|
-| T-E01 | **헬스** | DB 없이(`DATABASE_URL` 없음) A1 → 200, `Cache-Control: no-store`, 응답 형식. `/health`(접두사 없음) → 404 | NFR-002 | ✅ 2026-11-27 (DB 가짜 주입 방식은 DB 모듈 생기면 보강) |
+| T-E01 | **헬스** | DB 없이(`DATABASE_URL` 없음, `DatabaseService`를 접근 시 실패하는 가짜로) A1 → 200, `Cache-Control: no-store`, 응답 형식. `/health`(접두사 없음) → 404 | NFR-002 | ✅ 2026-11-28 (DB 가짜 주입 보강. 이 테스트가 `@Public()` 누락으로 401이 되던 버그를 잡음) |
 | T-E02 | **격리: 경로 ID** | B 쿠키로 A의 D2·D4·D5·C3·C4 → 404, A 데이터 불변 | **AC-N003-1** | ⬜ |
 | T-E03 | **격리: 응답 구분 불가** | 위 응답과 "없는 ID" 응답을 `requestId`만 빼고 비교 → 같음 | **AC-N003-1** | ⬜ |
 | T-E04 | **격리: 본문 ID** | B가 A의 `golfClubId`로 D3·D4 → 404 `GOLF_CLUB_NOT_FOUND` | **AC-N003-1** | ⬜ |
 | T-E05 | 격리: `userId` 주입 | 본문에 `userId` → 400 `UNKNOWN_FIELD` | NFR-003 | ⬜ |
 | T-E06 | **격리: 목록·집계** | B의 D1·E1·E2·F1·C1에 A 데이터 없음, 각자 합계 일치 | **AC-N003-2**, AC-004-7 | ⬜ |
 | T-E07 | 라우트 누락 감지 | `:id` 라우트 전부가 격리 표에 있음 | AC-N003-1 | ⬜ |
-| T-E08 | 인증 없음 | 쿠키 없이 비공개 라우트 → 401 | **AC-040-4** | ⬜ |
-| T-E09 | 로그아웃 | B3 후 같은 쿠키로 B4 → 401 | **AC-040-3** | ⬜ |
-| T-E10 | Origin | 다른 Origin으로 D3 → 403, 데이터 변화 없음 | NFR-003 | ⬜ |
-| T-E11 | 프록시 비밀 | `X-Proxy-Secret` 없음/틀림 → 403 `FORBIDDEN_PROXY`(A1은 예외) | architecture §5.1 | ⬜ |
-| T-E12 | 에러 형식 | 모든 4xx가 ADR-0008 형식 | ADR-0008 | ⬜ |
+| T-E08 | 인증 없음 | 쿠키 없이 비공개 라우트 → 401. **Nest 메타데이터에서 `@Public()`이 아닌 라우트를 모두 뽑아** 검사 → 새 라우트도 자동 포함. 없는 토큰·만료 세션 → 401 | **AC-040-4** | ✅ 2026-11-28 |
+| T-E09 | 로그아웃 | B3 후 같은 쿠키로 B4 → 401, 세션 행 삭제, 쿠키 `Max-Age=0`. 세션 없어도 204, 다른 기기 세션은 유지 | **AC-040-3** | ✅ 2026-11-28 |
+| T-E10 | Origin | 다른 Origin·Origin 없음으로 POST → 403 `FORBIDDEN_ORIGIN`, 데이터 변화 없음. GET은 검사 안 함 | NFR-003 | 🔶 2026-11-28 B3로 확인. D3는 라운드 구현 때 추가 |
+| T-E11 | 프록시 비밀 | `X-Proxy-Secret` 없음/틀림 → 403 `FORBIDDEN_PROXY`(A1은 예외, 없는 경로도 403) | architecture §5.1 | ✅ 2026-11-28 |
+| T-E12 | 에러 형식 | 모든 4xx가 ADR-0008 형식, `requestId` = `X-Request-Id` | ADR-0008 | 🔶 2026-11-28 401·403·404. 400·409·422는 해당 기능 때 |
 | T-E13 | 입력 검증 | 캐디피 0·-1·1.5·"150000"·1,000,001, 오버피 -1, 나인추가 3 → 400 + `fields` | AC-001-2·3, AC-002-3, AC-008-10 | ⬜ |
 | T-E14 | 필수 항목 모두 표시 | 필수 4개 빼고 D3 → `fields` 4개 | AC-001-2 | ⬜ |
 | T-E15 | 나인추가 규칙 | 2부 + 1회 → 422, 1부를 2부로 PATCH → 422, 금액 생략 → 77,777 | AC-008-1·7·9 | ⬜ |
@@ -66,6 +71,11 @@
 | T-E18 | FR-007 | 기본 캐디피 변경 → 기존 라운드·통계 불변 | AC-007-1·2·3 | ⬜ |
 | T-E19 | 통계 | AC-011-1·5 시드 → E1 일치, 빈 달 → 평균 `null` | AC-011-1~5, AC-N005-2 | ⬜ |
 | T-E20 | CSV (Should) | BOM, 헤더, 수식 주입 이스케이프, 367일 → 422 | FR-031 | ⬜ |
+| T-E21 | B1 로그인 시작 | 302 → 카카오 인가 주소, `__Host-oauth_state`(32바이트 base64url, 10분) | FR-040 | ✅ 2026-11-28 |
+| T-E22 | B2 처음 로그인 | 사용자·세션 생성, 302 `/`, `__Host-sid` 속성(30일), DB에는 SHA-256 해시만, state 쿠키 삭제 | **AC-040-1**, ADR-0004 | ✅ 2026-11-28 |
+| T-E23 | B2 재로그인 | 같은 회원번호 → 같은 `users` 행(B4 `id` 같음), 그 사용자의 만료 세션 정리 | **AC-040-2** | ✅ 2026-11-28 |
+| T-E24 | B2 실패 경로 | 취소 → `cancelled`, state 불일치·쿠키 없음 → `state`, 카카오 실패·기타 오류·`code` 없음 → `kakao`. 모두 세션 없음·state 쿠키 삭제 | **AC-040-5** | ✅ 2026-11-28 |
+| T-E25 | 세션 슬라이딩 | 남은 기간 14일 → 30일 연장 + `Set-Cookie`, 15일 이상 → `Set-Cookie` 없음. B4 응답에 카카오 회원번호 없음 | ADR-0004, AC-040-2 | ✅ 2026-11-28 |
 
 ## 5. 화면 E2E · 수동 (`ui-design.md` §6)
 
@@ -93,9 +103,10 @@
 | T-D02 | 여러 `Set-Cookie` 헤더가 프록시를 거쳐도 모두 전달 | ⬜ |
 | T-D03 | Render Docker 이미지 빌드·기동, `/api/health` 200 | ✅ 2026-11-27 `https://caddy-haru.onrender.com/api/health` → 200, `version` = main 커밋 |
 | T-D04 | Render 배포 훅·자동 배포 끄기 | ⬜ |
-| T-D05 | 카카오 동의 항목 없이 로그인 | ⬜ |
+| T-D05 | 카카오 동의 항목 없이 로그인 (운영 배포 후 실기기) | ⬜ |
 
 ## 변경 이력
 - 2026-11-27 작성: 설계 문서 4종의 테스트 표를 ID(T-U·T-I·T-E·T-W·T-M·T-D)로 통합, 도구(ADR-0010) 기록. 뼈대 단계 결과 반영(T-U01~05, T-E01)
 - 2026-11-27 Pages → Workers 반영(T-D01), T-D06 추가
 - 2026-11-27 첫 배포 결과: T-D03·T-D06 통과, T-D07 추가
+- 2026-11-28 인증 구현: T-U07~09, T-I11·12, T-E21~25 추가. T-E01·08·09·11 통과, T-I10·E10·E12 일부 통과. 통합 테스트 실행 방식(§1) 기록

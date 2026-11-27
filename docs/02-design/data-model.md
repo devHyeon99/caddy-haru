@@ -335,3 +335,4 @@ WHERE user_id = $1                                     -- NFR-003
 - 2026-11-27 ERD·엔티티 정의·목표 DDL·집계·추적표 작성 → 상태 "검토중" (FR-007 금액 복사 저장, Q-017 유니크, Q-018 숨기기 + RESTRICT, FR-008 CHECK, ADR-0005 복합 FK, `users`·`sessions`). Q-026 반영: 이름 유니크는 보이는 골프장끼리만. ORM은 Drizzle(ADR-0003)
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
 - 2026-11-27 §7 테스트 표를 `test-plan.md` §3(T-I01~10)으로 이관
+- 2026-11-28 `users`·`sessions` 구현(Drizzle `apps/api/src/database/schema.ts`, 마이그레이션 `apps/api/drizzle/0000_init_users_sessions.sql`). DDL 변경 없음. 제약 이름은 PostgreSQL 기본 이름(`users_provider_check`, `sessions_token_hash_check`, `sessions_user_id_fkey`)으로 명시
