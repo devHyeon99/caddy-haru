@@ -52,3 +52,4 @@ PROGRESS 다음 할 일 2번 — pnpm workspaces 뼈대, CI, test-plan 통합, A
 - 1101 오류: 변수를 빌드 변수 칸에 넣어서 → **런타임 변수 및 시크릿**으로 옮겨 해결. `API_ORIGIN`은 `wrangler.jsonc` `vars`로, 누락 시 503 반환하도록 프록시 수정
 - 결과: `https://caddy-haru.eomhh99.workers.dev/api/health` 200 (T-D03·T-D06 ✅)
 - Render Auto-Deploy는 DB 작업 전까지 켜 둠. 나중에 끄고 `deploy-api.yml`(마이그레이션 → 배포 훅)로 전환
+- PR #3 프리뷰 빌드 실패(`versions upload` 이름 불일치) → 비-main 브랜치는 `wrangler preview`로 변경
