@@ -80,3 +80,4 @@ NestJS(ADR-0002) + Neon PostgreSQL에서 쓸 ORM(쿼리 빌더 포함)을 정한
 ## 변경 이력
 - 2026-11-27 제안 작성 (선택지 비교)
 - 2026-11-27 승인 (사용자 선택: Drizzle)
+- 2026-11-28 버전 고정: `drizzle-orm` **0.45.4**, `drizzle-kit` **0.31.11** (npm `latest` 태그. v1은 아직 `1.0.0-rc.6`이라 방침대로 0.x 안정판). 0.45에는 `bytea` 컬럼이 없어 `customType`으로 정의(`sessions.token_hash`). 첫 마이그레이션 `0000_init_users_sessions.sql`이 data-model §4 DDL과 같음을 리뷰·T-I10으로 확인

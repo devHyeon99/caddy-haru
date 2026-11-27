@@ -5,7 +5,10 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [swc.vite({ module: { type: 'es6' } })],
   test: {
-    include: ['src/**/*.spec.ts', 'test/**/*.e2e-spec.ts'],
+    include: ['src/**/*.spec.ts', 'test/**/*.e2e-spec.ts', 'test/**/*.int-spec.ts'],
     environment: 'node',
+    // 통합·E2E 테스트는 DB 하나를 같이 쓰므로 파일을 차례로 실행한다 (test-plan §1)
+    globalSetup: ['test/support/global-setup.ts'],
+    fileParallelism: false,
   },
 });

@@ -1,0 +1,51 @@
+# API 배포 — CI 통과한 main만: 마이그레이션 → Render 배포 훅 (architecture §8.2, ADR-0003)
+# 규칙: 서버 시작 시 마이그레이션 금지(CLAUDE.md §7). 마이그레이션은 여기서 Neon direct 연결로만 적용한다.
+# 전제: Render Auto-Deploy 끔, GitHub Secrets DIRECT_DATABASE_URL·RENDER_DEPLOY_HOOK_URL
+# 마이그레이션은 expand–contract: 이전 버전 코드가 새 스키마에서도 동작해야 한다 (배포 훅이 실패해도 안전)
+name: Deploy API
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 배포는 한 번에 하나씩, 진행 중인 배포를 취소하지 않는다 (마이그레이션 중단 방지)
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # CI가 검사한 바로 그 커밋
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @caddy-haru/api...
+      - name: 마이그레이션 (Neon direct)
+        run: pnpm --filter @caddy-haru/api run db:migrate
+        env:
+          DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
+      - name: Render 배포 훅
+        run: |
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "$RENDER_DEPLOY_HOOK_URL")
+          echo "Render 배포 훅 응답: $code"
+          test "$code" -ge 200 -a "$code" -lt 300
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

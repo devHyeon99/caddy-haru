@@ -1,6 +1,6 @@
 # 시스템 아키텍처
 
-> 상태: **확정** · 최종 수정일: 2026-11-27
+> 상태: **확정** · 최종 수정일: 2026-11-28
 > 선행 조건: SRS Must 요구사항 확정, ADR-0002(기술 스택)
 > 관련 결정: ADR-0002 기술 스택 · ADR-0009 프론트 라이브러리 · ADR-0004 로그인 세션 · ADR-0005 데이터 분리 강제 · ADR-0006 백업 · ADR-0007 모노레포 · ADR-0003 ORM(Drizzle) · 데이터 모델: `data-model.md`
 
@@ -334,7 +334,7 @@ export default {
 |---|---|
 | `redirect: 'manual'` | OAuth 302(카카오 이동, `/` 복귀)를 브라우저가 받아야 한다 |
 | 응답 헤더를 그대로 복사 | 여러 개의 `Set-Cookie`가 사라지지 않게 |
-| `X-Proxy-Secret` 추가, NestJS가 검사 (`ProxySecretMiddleware`, 불일치 시 403) | `*.onrender.com`으로 직접 오는 요청 차단. 쿠키는 앱 도메인에 묶여 있어 직접 호출에는 원래 실리지 않지만, 방어를 한 겹 더 둔다 |
+| `X-Proxy-Secret` 추가, NestJS가 검사 (`ProxySecretMiddleware`, 불일치 시 403. 서버에 `PROXY_SECRET`이 없으면 모두 거부 — fail closed. 로컬 개발은 Vite 프록시가 같은 헤더를 붙인다) | `*.onrender.com`으로 직접 오는 요청 차단. 쿠키는 앱 도메인에 묶여 있어 직접 호출에는 원래 실리지 않지만, 방어를 한 겹 더 둔다 |
 | NestJS `app.set('trust proxy', true)`, `setGlobalPrefix('api')` | 클라이언트 IP·https 판단, 경로를 프록시와 맞춤 |
 | 프록시는 상태·로직 없음 | Workers 무료 한도(요청당 CPU 10ms)는 대기 시간을 세지 않음 → 느린 Render 응답도 한도에 영향 없음 |
 
@@ -488,7 +488,7 @@ caddy-haru/
 
 ### 8.2 배포 흐름
 - **프론트**: Cloudflare **Workers Builds** Git 연동(Worker `caddy-haru`). 루트 디렉터리 = 저장소 루트(pnpm 설치 자동), 빌드 `pnpm --filter @caddy-haru/web... build`, 배포 `pnpm --filter @caddy-haru/web run deploy`(`scripts/deploy.mjs`: Workers Builds의 `WORKERS_CI_BRANCH`가 `main`이면 `wrangler deploy`, 아니면 `wrangler preview` → 브랜치별 Preview 주소만, 프로덕션 불변. `versions upload`는 이 프로젝트의 프리뷰 빌드에서 이름 불일치 오류가 나서 쓰지 않음). Node 버전은 루트 `.nvmrc`(24). 카카오 Redirect URI는 프로덕션 주소만 등록하므로 로그인은 프로덕션에서만 확인.
-- **백엔드**: Render 자동 배포를 끄고, GitHub Actions `deploy-api.yml`이 main 푸시 때 `테스트 → 마이그레이션(DIRECT_DATABASE_URL) → Render 배포 훅 호출` 순서로 실행한다. 서버 시작 시 마이그레이션을 돌리지 않는 이유는 §5.2(깨우기가 DB를 깨우면 안 됨)와 같다.
+- **백엔드**: Render 자동 배포를 끄고, GitHub Actions `deploy-api.yml`이 **main의 CI가 성공한 뒤**(`workflow_run`, 그 커밋 그대로) `마이그레이션(drizzle-kit migrate, DIRECT_DATABASE_URL) → Render 배포 훅 호출` 순서로 실행한다. 테스트는 CI가 이미 실행했으므로 반복하지 않는다. 서버 시작 시 마이그레이션을 돌리지 않는 이유는 §5.2(깨우기가 DB를 깨우면 안 됨)와 같다.
 - **마이그레이션 규칙**: 확장 → 배포 → 정리(expand–contract). 컬럼 삭제·이름 변경은 코드가 더 이상 쓰지 않게 배포한 다음 단계에서 한다. 이전 버전 코드가 새 스키마에서도 동작해야 한다.
 
 > 구현 전 확인 (2026-11-27 기준 미확인): Render 무료 플랜의 배포 훅 제공 여부와 자동 배포 끄기 옵션, 카카오 앱에서 동의 항목 없이 로그인 가능한지, Worker 프록시에서 `redirect: 'manual'`과 여러 `Set-Cookie` 전달 동작. 안 되면 이 절과 관련 ADR을 갱신한다.
@@ -556,3 +556,4 @@ flowchart LR
 - 2026-11-27 첫 배포: `API_ORIGIN`을 `wrangler.jsonc`로, `PROXY_SECRET`은 런타임 비밀. 설정 누락 시 Worker가 503 반환(§5.1)
 - 2026-11-27 §8.2 PR 브랜치 배포: `wrangler versions upload` → `wrangler preview` (Workers Builds 프리뷰 빌드 이름 불일치 오류)
 - 2026-11-27 §8.2 PR Preview: `wrangler.jsonc` `previews.vars`. Preview에는 `PROXY_SECRET`을 두지 않아 `/api`는 503(운영 API·데이터와 분리, 화면 확인 전용)
+- 2026-11-28 인증 구현 반영: §5.1 프록시 비밀 fail closed·로컬 Vite 프록시 헤더, §8.2 `deploy-api.yml`은 CI 성공 후(`workflow_run`) 마이그레이션 → 배포 훅

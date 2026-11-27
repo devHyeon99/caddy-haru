@@ -1,6 +1,6 @@
 # API 명세
 
-> 상태: **확정** · 최종 수정일: 2026-11-27
+> 상태: **확정** · 최종 수정일: 2026-11-28
 > 선행 문서: SRS(Must 확정), `architecture.md`(검토중), `data-model.md`(검토중)
 > 관련 결정: ADR-0004 DB 세션 · ADR-0005 데이터 분리(남의 ID = 404) · **ADR-0008 에러 응답 형식**
 > 요청·응답 타입은 `packages/shared/src/api/`에 TypeScript로 한 번만 정의하고 web·api가 같이 쓴다(ADR-0007).
@@ -39,7 +39,7 @@
 
 | 헤더 | 값 | 이유 |
 |---|---|---|
-| `Cache-Control` | 인증이 필요한 모든 응답과 `/api/health`에 `no-store` | 로그아웃 후 뒤로 가기·공용 캐시에 데이터가 남지 않게 (AC-040-3) |
+| `Cache-Control` | **모든 API 응답**에 `no-store` (인증 응답·`/api/health`·에러 포함) | 로그아웃 후 뒤로 가기·공용 캐시에 데이터가 남지 않게 (AC-040-3) |
 | `X-Request-Id` | 요청마다 무작위 ID. 에러 본문의 `requestId`와 같다 | 사용자가 오류 화면을 캡처해 보내면 Render 로그에서 찾기 |
 | `Location` | `201` 응답에 새 리소스 경로 | REST 관례 |
 
@@ -246,6 +246,9 @@ Set-Cookie: __Host-oauth_state=<무작위>; HttpOnly; Secure; SameSite=Lax; Path
 | `error=access_denied`(동의 취소) | `302 Location: /login?error=cancelled` | **AC-040-5** |
 | `state` 불일치·쿠키 없음 | `302 Location: /login?error=state` | CSRF 방어 |
 | 카카오 토큰 교환·사용자 조회 실패 | `302 Location: /login?error=kakao` + 서버 로그 | — |
+| 카카오가 `access_denied` 외의 `error`를 붙임, `code` 없음 | `302 Location: /login?error=kakao` | — |
+
+검사 순서: `error` 쿼리 → `state`(쿼리 = 쿠키, 상수 시간 비교) → `code` → 카카오 호출.
 
 성공 응답 헤더:
 ```http
@@ -862,3 +865,4 @@ Cache-Control: no-store
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
 - 2026-11-27 §11 테스트 표를 `test-plan.md` §4(T-E01~20)로 이관. 프록시 비밀 테스트(T-E11) 추가
 - 2026-11-27 Base URL 설명: Pages Functions → Worker 프록시 (ADR-0002 개정)
+- 2026-11-28 인증 구현 반영: §1.3 `Cache-Control: no-store`를 모든 API 응답으로(구현이 전역 미들웨어), B2에 카카오 기타 오류·`code` 없음 → `error=kakao`와 검사 순서 추가
