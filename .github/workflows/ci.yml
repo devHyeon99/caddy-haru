@@ -1,5 +1,5 @@
 # CI — 포맷 · 린트 · 타입 검사 · 테스트 · 빌드 (architecture §7)
-# DB 테스트가 생기면 postgres:17 서비스 컨테이너를 추가한다.
+# DB 통합·E2E 테스트는 postgres:17 서비스 컨테이너를 쓴다 (test-plan §1). CI에서는 DB 연결 실패 = 테스트 실패.
 name: CI
 
 on:
@@ -18,6 +18,22 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_USER: caddy_haru
+          POSTGRES_PASSWORD: caddy_haru
+          POSTGRES_DB: caddy_haru_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U caddy_haru"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://caddy_haru:caddy_haru@localhost:5432/caddy_haru_test
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
