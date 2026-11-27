@@ -50,4 +50,12 @@
 - 확정된 문서를 바꿀 때는 문서 하단 "변경 이력"에 한 줄 추가
 
 ## 7. 기술 스택
-> 미정 — Phase 2(설계)에서 ADR로 결정한 뒤 여기에 요약한다.
+> 상세와 근거: `docs/03-decisions/ADR-0002-tech-stack.md`
+- 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Pages
+- 백엔드: NestJS + TypeScript (REST API) → Render 무료 (Dockerfile)
+- DB: Neon (PostgreSQL) · ORM은 ADR-0003에서 결정 예정
+- 인증: 카카오 OAuth(이메일 없이 회원번호) + **DB 세션**(`__Host-sid` httpOnly 쿠키, 토큰은 SHA-256 해시로 저장, ADR-0004). `/api/*`는 Pages Functions 프록시로 같은 도메인 유지
+- 데이터 분리: Repository 메서드 첫 인자 `userId: UserId` 필수, `WHERE id AND user_id`, 복합 FK (ADR-0005)
+- 백업: Neon 즉시 복원(6시간) + GitHub Actions 매일 age 암호화 `pg_dump`(90일), 개인키는 GitHub 밖 (ADR-0006)
+- 저장소: pnpm workspaces 모노레포 `apps/web`, `apps/api`, `packages/shared` (ADR-0007). 상세 설계: `docs/02-design/architecture.md`
+- 지켜야 할 규칙: `/api/health`는 DB 접근 금지, 서버 메모리에 상태 저장 금지, 서버 시작 시 DB 연결·마이그레이션 금지(lazy 연결), 모든 쿼리에 사용자 ID 강제(NFR-003), Render 무료 서비스는 1개만
