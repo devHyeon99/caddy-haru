@@ -403,7 +403,7 @@ sequenceDiagram
 ## 7. 모노레포 디렉터리 구조 (ADR-0007)
 
 ```
-caddy/
+caddy-haru/
 ├── apps/
 │   ├── web/                              # React + Vite SPA → Cloudflare Pages
 │   │   ├── functions/
@@ -517,13 +517,13 @@ flowchart LR
 - `schedule: cron '0 18 * * *'`(UTC 18시 = 한국 03시) + `workflow_dispatch`(수동 실행).
 - Neon과 같은 주 버전의 `postgresql-client`(17)를 설치하고 `pg_dump --format=custom --no-owner --no-privileges "$DIRECT_DATABASE_URL"` 실행.
 - 암호화 전에 `pg_restore --list`로 아카이브가 깨지지 않았는지 검사한다. 잡 요약(Job Summary)에는 테이블별 **행 수만** 기록한다(데이터 내용은 쓰지 않음).
-- `age -r "$BACKUP_AGE_RECIPIENT"`로 암호화 → `caddy-YYYYMMDD.dump.age` → `actions/upload-artifact`(`retention-days: 90`). **평문 덤프는 디스크·로그·아티팩트에 남기지 않는다** (공개 저장소의 아티팩트는 GitHub에 로그인한 누구나 받을 수 있다).
+- `age -r "$BACKUP_AGE_RECIPIENT"`로 암호화 → `caddy-haru-YYYYMMDD.dump.age` → `actions/upload-artifact`(`retention-days: 90`). **평문 덤프는 디스크·로그·아티팩트에 남기지 않는다** (공개 저장소의 아티팩트는 GitHub에 로그인한 누구나 받을 수 있다).
 - 복호화 개인키는 GitHub에 두지 않는다 → 워크플로나 저장소가 털려도 백업을 읽을 수 없다.
 - 실패하면 GitHub이 메일로 알린다. **주의:** 공개 저장소는 60일 동안 활동이 없으면 예약 워크플로가 자동으로 꺼진다. GitHub이 미리 경고 메일을 보내므로, 받으면 다시 켠다.
 
 **복원 절차** (Phase 4 운영 문서로 옮길 예정)
 1. *6시간 안*: Neon 콘솔 → Restore → 시각 선택. 가능하면 먼저 그 시각의 **분기(branch)를 만들어 데이터 확인** 후 루트 복원.
-2. *그 이전*: Actions에서 원하는 날짜의 아티팩트 내려받기 → `age -d -i <개인키> caddy-YYYYMMDD.dump.age > caddy.dump` → 새 Neon 분기(또는 로컬 postgres:17)에 `pg_restore --no-owner -d <URL> caddy.dump` → 확인 후 연결 문자열 교체.
+2. *그 이전*: Actions에서 원하는 날짜의 아티팩트 내려받기 → `age -d -i <개인키> caddy-haru-YYYYMMDD.dump.age > caddy-haru.dump` → 새 Neon 분기(또는 로컬 postgres:17)에 `pg_restore --no-owner -d <URL> caddy-haru.dump` → 확인 후 연결 문자열 교체.
 3. **복원 연습**: 실사용 시작 전 1회, 이후 분기마다 1회, 2단계 절차로 로컬에 복원해 행 수를 비교한다. 결과를 세션 로그에 남긴다(AC-N004-2 증거).
 
 ---
@@ -543,3 +543,4 @@ flowchart LR
 - 2026-11-27 `ui-design.md` 반영: §10 화면 문구 항목 완료 표시
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
 - 2026-11-27 ADR-0009(프론트 라이브러리) 반영: 기술 스택 표, 관련 결정
+- 2026-11-27 프로젝트 이름 캐디하루 반영: 디렉터리 루트 `caddy-haru/`, 백업 파일 이름 `caddy-haru-YYYYMMDD.dump.age`

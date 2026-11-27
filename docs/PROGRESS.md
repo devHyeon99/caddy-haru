@@ -25,6 +25,7 @@
 - [x] 2026-11-27 **`ui-design.md` 작성 (검토중):** 화면 13개(SCR-00 깨우기·00o 오버레이·06 로그인·01 홈·02/02e 라운드 추가·수정·03/03d 달력·날짜 시트·04 통계·05/05f 설정·골프장, DLG-01·02), 화면 흐름도 2개, 360px 와이어프레임, 서버 에러 → 화면 매핑, `/login?error=` 문구, **30초 흐름 = 3탭 + 5키(약 10초)**, 검증 방법. SRS §6 "설계 문서" 칸 채움 → **설계 문서 4종 초안 완료**
 
 - [x] 2026-11-27 **M1 달성: 설계 4종 확정** (architecture·data-model·api-spec·ui-design, 사용자 승인) → **Phase 3 진입**
+- [x] 2026-11-27 **앱 이름 = 캐디하루** (영문 CaddyHaru, 식별자 `caddy-haru`, 헌장 §0). GitHub 공개 저장소 `devHyeon99/caddy-haru` 생성
 - [x] 2026-11-27 **ADR-0009 프론트 라이브러리 결정:** React Router · TanStack Query(메모리 캐시만, 저장 재시도 없음, 포커스 시 재요청 끔) · vanilla-extract · Radix Dialog + vaul. 시트 열림 = 주소 `date`, 뒤로 가기 = 닫기
 
 ## 확정된 핵심 사항 (요약)
@@ -56,7 +57,11 @@
 2. [ ] 모노레포 뼈대(pnpm workspaces, `apps/web`·`apps/api`·`packages/shared`, CI) + `test-plan.md`에 api-spec §11·ui-design §6 옮기기. 이때 ADR-0009 라이브러리 최신 안정판 버전 고정, **vaul 유지보수 상태·React 호환 확인**, 초기 JS gzip 크기 측정
 3. [ ] Must 구현 시작 (권장 순서: health·인증 → 골프장 → 라운드 → 달력·통계)
 4. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
-5. [ ] 사용자 할 일 (구현 시작 전까지): 카카오 개발자 콘솔 앱 등록(Redirect URI `https://<도메인>/api/auth/kakao/callback`), Cloudflare·Render·Neon 계정 준비 (원래 GitHub 계정 사용), **age 키 쌍 생성 후 개인키를 비밀번호 관리자 + 오프라인에 보관**
+5. [ ] 사용자 할 일 (구현 시작 전까지)
+   - [x] 카카오 개발자 콘솔 앱 등록 (2026-11-27, **Redirect URI는 임시 주소**)
+   - [x] Cloudflare·Render·Neon 계정 준비 (2026-11-27)
+   - [ ] **age 키 쌍 생성** 후 개인키를 비밀번호 관리자 + 오프라인에 보관, 공개키(`age1…`)만 GitHub Secret `BACKUP_AGE_RECIPIENT`로 (ADR-0006)
+   - [ ] Cloudflare Pages 프로젝트를 `caddy-haru`로 만든 뒤 카카오 Redirect URI를 `https://caddy-haru.pages.dev/api/auth/kakao/callback`으로 바꾸기
 6. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Pages Functions `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2), 카카오 로그인 버튼 가이드·iOS 키패드 위 저장 버튼 (ui-design §8)
 
 ## 막힌 것 / 사용자 결정 필요

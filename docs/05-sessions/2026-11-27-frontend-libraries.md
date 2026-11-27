@@ -26,3 +26,8 @@ PROGRESS "다음 할 일" 1번 — 라우터·서버 상태 캐시·스타일·�
 ## 다음 세션에 넘길 것
 - `docs/phase2-architecture` → `main` PR로 합치기
 - 모노레포 뼈대 때: 버전 고정, vaul 유지보수 상태·React 호환 확인(문제 시 Radix Dialog 시트로 대체), 초기 JS gzip 측정
+
+## 추가: 이름·저장소 (같은 날 이어서)
+- 앱 이름 **캐디하루**, 영문 `CaddyHaru`, 식별자 `caddy-haru` (헌장 §0, 용어집, CLAUDE.md, SRS §1, architecture 디렉터리·백업 파일명)
+- 루트 `README.md` 추가, GitHub 공개 저장소 `devHyeon99/caddy-haru` 생성 후 `main`·`docs/phase2-architecture` 푸시, PR 생성
+- 사용자 준비: 카카오 앱 등록(임시 Redirect URI)·계정 준비 완료, age 키는 다음에 생성
