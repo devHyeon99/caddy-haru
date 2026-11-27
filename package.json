@@ -8,6 +8,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
+    "dev": "pnpm --filter @caddy-haru/shared build && pnpm --parallel --filter @caddy-haru/api --filter @caddy-haru/web run dev",
     "build": "pnpm -r --workspace-concurrency=1 run build",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm -r run test",
