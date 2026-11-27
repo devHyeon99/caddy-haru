@@ -1,0 +1,13 @@
+import 'reflect-metadata';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module.js';
+import { configureApp } from './app.js';
+
+// 규칙: 시작할 때 DB 연결·마이그레이션을 하지 않는다 (lazy 연결, CLAUDE.md §7, architecture §5.2)
+async function bootstrap(): Promise<void> {
+  const app = configureApp(await NestFactory.create(AppModule));
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port, '0.0.0.0');
+}
+
+void bootstrap();

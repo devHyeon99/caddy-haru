@@ -1,0 +1,9 @@
+packages:
+  - apps/*
+  - packages/*
+
+# 설치 스크립트를 허용할 패키지 (네이티브 바이너리 내려받기)
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+  workerd: true

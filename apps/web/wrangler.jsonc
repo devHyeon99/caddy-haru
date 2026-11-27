@@ -1,0 +1,19 @@
+// Cloudflare Workers 설정 — ADR-0002(2026-11-27 개정), architecture §5.1·§8
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "caddy-haru",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  // 대시보드에서 넣은 변수(API_ORIGIN 등)를 배포 때 지우지 않는다. PROXY_SECRET은 비밀(secret)로 넣는다.
+  "keep_vars": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // 모르는 경로는 index.html (React Router가 처리)
+    "not_found_handling": "single-page-application",
+    // /api/*만 Worker 코드가 먼저 받는다. 나머지 정적 요청은 무료·무제한(Worker 호출 한도에 안 들어감)
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": { "enabled": true },
+}

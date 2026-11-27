@@ -13,7 +13,7 @@
 
 | 항목 | 규칙 | 근거 |
 |---|---|---|
-| Base URL | `https://<앱 도메인>/api` — Pages Functions가 Render로 전달(같은 도메인, CORS 없음) | architecture §5.1 |
+| Base URL | `https://caddy-haru.eomhh99.workers.dev/api` (이하 예시의 `<도메인>`) — Worker 프록시가 Render로 전달(같은 도메인, CORS 없음) | architecture §5.1 |
 | 형식 | 요청·응답 본문은 `application/json; charset=utf-8`. 예외: CSV 내보내기(`text/csv`), 리다이렉트(302), 본문 없는 응답(204) | — |
 | 필드 이름 | `camelCase`. DB 컬럼 `nine_ext_count` → `nineExtCount` | data-model §2 |
 | 금액 | **원 단위 JSON 정수**(`150000`). 문자열·소수·지수 표기 거부. 응답의 합계도 정수 | NFR-005, AC-N005-1 |
@@ -806,7 +806,7 @@ Cache-Control: no-store
 
 ---
 
-## 11. 테스트 연결 (Phase 3에서 구현, `04-test/test-plan.md`로 옮김)
+## 11. 테스트 연결 (→ `04-test/test-plan.md` §4로 옮김, 2026-11-27. 이후 변경은 test-plan에서)
 
 | 테스트 | 수준 | 검증 | AC |
 |---|---|---|---|
@@ -860,3 +860,5 @@ Cache-Control: no-store
 - 2026-11-27 ADR-0008 사용자 승인
 - 2026-11-27 Q-027 승인: 날짜 허용 범위 2000-01-01 ~ 2099-12-31
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
+- 2026-11-27 §11 테스트 표를 `test-plan.md` §4(T-E01~20)로 이관. 프록시 비밀 테스트(T-E11) 추가
+- 2026-11-27 Base URL 설명: Pages Functions → Worker 프록시 (ADR-0002 개정)

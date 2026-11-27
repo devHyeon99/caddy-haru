@@ -16,8 +16,8 @@ flowchart LR
     SPA[React SPA]
   end
   subgraph CF["Cloudflare (같은 도메인)"]
-    PG[Pages<br/>정적 파일]
-    PF["Pages Functions<br/>/api/* 프록시"]
+    PG[Workers 정적 자산<br/>SPA]
+    PF["Worker 코드<br/>/api/* 프록시"]
   end
   subgraph Render["Render 무료 (Docker)"]
     API[NestJS API]
@@ -39,7 +39,7 @@ flowchart LR
 | 구성 요소 | 역할 | 상태 저장 |
 |---|---|---|
 | React SPA | 화면, 입력 검증(1차), 서버 깨우기 UX | 화면 상태만 (로그인 정보는 모름: httpOnly) |
-| Pages Functions | `/api/*`를 Render로 그대로 전달 → 브라우저 입장에서 도메인 하나 | 없음 |
+| Worker 프록시 | `/api/*`를 Render로 그대로 전달 → 브라우저 입장에서 도메인 하나 | 없음 |
 | NestJS API | 인증, 업무 규칙, 데이터 분리 강제(NFR-003), 통계 계산 | **없음** (세션은 DB, ADR-0002 규칙 4) |
 | Neon | 모든 영속 데이터 + 세션 | 있음 |
 
@@ -48,15 +48,16 @@ flowchart LR
 ## 2. 기술 스택
 | 영역 | 선택 | 근거 ADR |
 |---|---|---|
-| 프론트엔드 | React + Vite + TypeScript (SPA) · React Router · TanStack Query · vanilla-extract · Radix Dialog + vaul | ADR-0002, ADR-0009 |
+| 프론트엔드 | React + Vite + TypeScript (SPA) · React Router · TanStack Query · vanilla-extract · Radix Dialog | ADR-0002, ADR-0009 |
 | 백엔드 | NestJS + TypeScript, REST API | ADR-0002 |
 | DB | Neon (서버리스 PostgreSQL) | ADR-0002 |
+| 테스트·도구 | Vitest(전 패키지, api는 SWC) + Supertest · Playwright · ESLint + Prettier · TypeScript 6.0 · Node 24 | ADR-0010 |
 | ORM | Drizzle (`node-postgres` 드라이버, 버전 고정) | **ADR-0003** |
 | 인증 | 카카오 OAuth 2.0 인가 코드 방식 + **DB 세션**(httpOnly 쿠키에 불투명 토큰) | ADR-0002, **ADR-0004** |
 | 데이터 분리 | Repository 메서드에 **명시적 `userId`** + DB 복합 FK | **ADR-0005** |
 | 백업 | Neon 즉시 복원(6시간) + GitHub Actions 매일 `pg_dump`(age 암호화, 90일) | **ADR-0006** |
 | 저장소 | pnpm workspaces 모노레포 | **ADR-0007** |
-| 배포/호스팅 | Cloudflare Pages(프론트 + `/api` 프록시), Render 무료(백엔드, Dockerfile) | ADR-0002 |
+| 배포/호스팅 | Cloudflare Workers(정적 자산 + `/api` 프록시, Worker 1개), Render 무료(백엔드, Dockerfile) | ADR-0002(개정) |
 
 ---
 
@@ -204,7 +205,7 @@ it.each(cases)('AC-N003-1 %s %s: B가 A의 데이터에 접근하면 404', async
 - **이메일 없이 카카오 회원번호로 가입한다.** 카카오 동의 항목은 아무것도 요청하지 않는다(닉네임·이메일 없음). `/v2/user/me` 응답의 `id`(회원번호, 앱마다 고유한 64비트 정수)만 쓴다. 저장할 때는 `users(provider='kakao', provider_user_id TEXT UNIQUE)` 형태로 둔다. JS `number`의 정밀도를 넘을 수 있어서 문자열로 저장한다.
 - **카카오 access token은 저장하지 않는다.** 로그인할 때 회원번호를 얻는 데 한 번만 쓰고 버린다. 이후 카카오 API를 호출할 일이 없기 때문이다.
 - **로그인 상태 = DB 세션.** 쿠키에는 무작위 토큰(32바이트, base64url)만 넣고, DB `sessions`에는 그 **SHA-256 해시**, `user_id`, `expires_at`을 저장한다. DB가 유출돼도 해시로는 쿠키를 만들 수 없다.
-- **카카오 콜백 주소도 같은 도메인**: `https://<앱 도메인>/api/auth/kakao/callback` (Pages Functions가 Render로 전달). 카카오 개발자 콘솔의 Redirect URI에 등록한다.
+- **카카오 콜백 주소도 같은 도메인**: `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback` (Worker 프록시가 Render로 전달). 카카오 개발자 콘솔의 Redirect URI에 등록한다.
 
 | 쿠키 | 값 | 속성 | 수명 |
 |---|---|---|---|
@@ -222,7 +223,7 @@ sequenceDiagram
   autonumber
   actor U as 캐디(휴대폰)
   participant W as React SPA
-  participant P as Pages Functions<br/>(/api/* 프록시)
+  participant P as Worker 프록시<br/>(/api/*)
   participant A as NestJS API (Render)
   participant K as 카카오 (kauth/kapi)
   participant D as Neon DB
@@ -261,7 +262,7 @@ sequenceDiagram
 sequenceDiagram
   autonumber
   participant W as React SPA
-  participant P as Pages Functions
+  participant P as Worker 프록시
   participant A as NestJS (SessionGuard)
   participant D as Neon DB
 
@@ -298,32 +299,35 @@ sequenceDiagram
 
 ---
 
-## 5. Cloudflare Pages Functions 프록시 · 서버 깨우기 (NFR-002)
+## 5. Cloudflare Worker 프록시 · 서버 깨우기 (NFR-002)
 
 ### 5.1 프록시 구조
-파일: `apps/web/functions/api/[[path]].ts` → `/api/`로 시작하는 모든 경로를 받는다. 정적 파일(`/`, `/assets/*`)은 Functions를 거치지 않고 Pages가 바로 응답한다.
+Worker 1개(`caddy-haru`)가 정적 자산과 프록시를 함께 맡는다(ADR-0002 개정). 설정 `apps/web/wrangler.jsonc`의 `assets.run_worker_first = ["/api/*"]` 때문에 **`/api/*`만 Worker 코드**(`apps/web/worker/index.ts`)가 받고, 정적 파일(`/`, `/assets/*`)과 SPA 경로는 정적 자산이 바로 응답한다(`not_found_handling = "single-page-application"`).
 
 ```ts
-// apps/web/functions/api/[[path]].ts (의사 코드)
-export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
-  const url = new URL(request.url);
-  const target = new URL(url.pathname + url.search, env.API_ORIGIN); // /api 접두사 유지
+// apps/web/worker/index.ts (요약)
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    const target = new URL(url.pathname + url.search, env.API_ORIGIN); // /api 접두사 유지
 
-  const headers = new Headers(request.headers);
-  headers.delete('host');
-  headers.set('x-proxy-secret', env.PROXY_SECRET);
-  headers.set('x-forwarded-for', request.headers.get('cf-connecting-ip') ?? '');
-  headers.set('x-forwarded-proto', 'https');
-  headers.set('x-forwarded-host', url.host);
+    const headers = new Headers(request.headers);
+    headers.delete('host');
+    headers.set('x-proxy-secret', env.PROXY_SECRET);
+    headers.set('x-forwarded-for', request.headers.get('cf-connecting-ip') ?? '');
+    headers.set('x-forwarded-proto', 'https');
+    headers.set('x-forwarded-host', url.host);
 
-  const res = await fetch(target, {
-    method: request.method,
-    headers,
-    body: ['GET', 'HEAD'].includes(request.method) ? undefined : request.body,
-    redirect: 'manual', // 카카오로 가는 302를 Worker가 따라가지 않고 브라우저에 그대로 전달
-  });
-  return new Response(res.body, res); // 상태 코드·Set-Cookie 등 헤더 그대로
-};
+    const res = await fetch(target, {
+      method: request.method,
+      headers,
+      body: ['GET', 'HEAD'].includes(request.method) ? undefined : request.body,
+      redirect: 'manual', // 카카오로 가는 302를 Worker가 따라가지 않고 브라우저에 그대로 전달
+    });
+    return new Response(res.body, res); // 상태 코드·Set-Cookie 등 헤더 그대로
+  },
+} satisfies ExportedHandler<Env>;
 ```
 
 | 규칙 | 이유 |
@@ -352,7 +356,7 @@ sequenceDiagram
   autonumber
   actor U as 캐디
   participant W as React SPA
-  participant P as Pages Functions
+  participant P as Worker 프록시
   participant R as Render (잠듦)
 
   U->>W: 앱 열기
@@ -405,9 +409,10 @@ sequenceDiagram
 ```
 caddy-haru/
 ├── apps/
-│   ├── web/                              # React + Vite SPA → Cloudflare Pages
-│   │   ├── functions/
-│   │   │   └── api/[[path]].ts           # /api/* → Render 프록시 (§5.1)
+│   ├── web/                              # React + Vite SPA → Cloudflare Workers
+│   │   ├── worker/
+│   │   │   └── index.ts                  # 정적 자산 + /api/* → Render 프록시 (§5.1)
+│   │   ├── wrangler.jsonc                # Worker 설정 (정적 자산·run_worker_first)
 │   │   ├── public/
 │   │   ├── src/
 │   │   │   ├── app/                      # 라우터, 전역 Provider, 인증 가드(401 → /login)
@@ -471,22 +476,22 @@ caddy-haru/
 ### 8.1 환경 변수
 | 변수 | 위치 | 설명 |
 |---|---|---|
-| `API_ORIGIN` | Cloudflare Pages | `https://<서비스>.onrender.com` |
-| `PROXY_SECRET` | Pages + Render | 프록시 비밀 헤더 값 (양쪽 동일, 무작위 32바이트) |
+| `API_ORIGIN` | Cloudflare Worker (변수) | `https://<서비스>.onrender.com` |
+| `PROXY_SECRET` | Worker(비밀) + Render | 프록시 비밀 헤더 값 (양쪽 동일, 무작위 32바이트) |
 | `DATABASE_URL` | Render | Neon **pooled** 연결 문자열 (`-pooler` 호스트) |
 | `KAKAO_CLIENT_ID`, `KAKAO_CLIENT_SECRET` | Render | 카카오 REST API 키, Client Secret |
-| `KAKAO_REDIRECT_URI` | Render | `https://<앱 도메인>/api/auth/kakao/callback` |
-| `APP_ORIGIN` | Render | Origin 검사·로그인 후 리다이렉트 기준 |
+| `KAKAO_REDIRECT_URI` | Render | `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback` |
+| `APP_ORIGIN` | Render | `https://caddy-haru.eomhh99.workers.dev` — Origin 검사·로그인 후 리다이렉트 기준 |
 | `DIRECT_DATABASE_URL` | GitHub Secrets | Neon **direct** 연결 (마이그레이션·`pg_dump`용, PgBouncer 경유 금지) |
 | `RENDER_DEPLOY_HOOK_URL` | GitHub Secrets | Render 배포 훅 |
 | `BACKUP_AGE_RECIPIENT` | GitHub Secrets (또는 저장소 변수) | age **공개키** (복호화 키는 GitHub에 두지 않음, §9) |
 
 ### 8.2 배포 흐름
-- **프론트**: Cloudflare Pages Git 연동. 루트 디렉터리 `apps/web`, 빌드 `pnpm --filter web build`, 출력 `dist`, Functions 디렉터리 `apps/web/functions`. PR마다 미리보기 배포(Preview는 `API_ORIGIN`을 같은 Render로 두되, 카카오 Redirect URI가 프로덕션 도메인만 등록돼 있어 로그인은 프로덕션에서만 확인).
+- **프론트**: Cloudflare **Workers Builds** Git 연동(Worker `caddy-haru`). 루트 디렉터리 = 저장소 루트(pnpm 설치 자동), 빌드 `pnpm --filter @caddy-haru/web... build`, 배포 `pnpm --filter @caddy-haru/web run deploy`(`scripts/deploy.mjs`: Workers Builds의 `WORKERS_CI_BRANCH`가 `main`이면 `wrangler deploy`, 아니면 `wrangler versions upload` → 미리보기 URL만, 프로덕션 불변). Node 버전은 루트 `.nvmrc`(24). 카카오 Redirect URI는 프로덕션 주소만 등록하므로 로그인은 프로덕션에서만 확인.
 - **백엔드**: Render 자동 배포를 끄고, GitHub Actions `deploy-api.yml`이 main 푸시 때 `테스트 → 마이그레이션(DIRECT_DATABASE_URL) → Render 배포 훅 호출` 순서로 실행한다. 서버 시작 시 마이그레이션을 돌리지 않는 이유는 §5.2(깨우기가 DB를 깨우면 안 됨)와 같다.
 - **마이그레이션 규칙**: 확장 → 배포 → 정리(expand–contract). 컬럼 삭제·이름 변경은 코드가 더 이상 쓰지 않게 배포한 다음 단계에서 한다. 이전 버전 코드가 새 스키마에서도 동작해야 한다.
 
-> 구현 전 확인 (2026-11-27 기준 미확인): Render 무료 플랜의 배포 훅 제공 여부와 자동 배포 끄기 옵션, 카카오 앱에서 동의 항목 없이 로그인 가능한지, Pages Functions에서 `redirect: 'manual'`과 여러 `Set-Cookie` 전달 동작. 안 되면 이 절과 관련 ADR을 갱신한다.
+> 구현 전 확인 (2026-11-27 기준 미확인): Render 무료 플랜의 배포 훅 제공 여부와 자동 배포 끄기 옵션, 카카오 앱에서 동의 항목 없이 로그인 가능한지, Worker 프록시에서 `redirect: 'manual'`과 여러 `Set-Cookie` 전달 동작. 안 되면 이 절과 관련 ADR을 갱신한다.
 
 ---
 
@@ -544,3 +549,7 @@ flowchart LR
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
 - 2026-11-27 ADR-0009(프론트 라이브러리) 반영: 기술 스택 표, 관련 결정
 - 2026-11-27 프로젝트 이름 캐디하루 반영: 디렉터리 루트 `caddy-haru/`, 백업 파일 이름 `caddy-haru-YYYYMMDD.dump.age`
+- 2026-11-27 모노레포 뼈대 반영: ADR-0010(테스트·도구), 프론트 라이브러리에서 vaul 제외(ADR-0009 개정)
+- 2026-11-27 ADR-0002 개정 반영: Pages Functions → Workers 정적 자산 + Worker 프록시(구성도, §5.1, §7 디렉터리, §8 변수·배포)
+- 2026-11-27 §8.2 배포 명령: 브랜치를 보고 배포/미리보기를 고르는 `scripts/deploy.mjs` (대시보드에 비프로덕션 설정이 보이지 않아서)
+- 2026-11-27 앱 주소 확정: `https://caddy-haru.eomhh99.workers.dev` (§8.1)
