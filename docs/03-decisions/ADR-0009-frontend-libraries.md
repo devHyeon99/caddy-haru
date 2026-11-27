@@ -1,6 +1,6 @@
-# ADR-0009: 프론트엔드 라이브러리 — React Router · TanStack Query · vanilla-extract · Radix Dialog + vaul
+# ADR-0009: 프론트엔드 라이브러리 — React Router · TanStack Query · vanilla-extract · Radix Dialog
 
-> 상태: 승인 · 날짜: 2026-11-27 (사용자 승인 2026-11-27)
+> 상태: 승인 · 날짜: 2026-11-27 (사용자 승인 2026-11-27) · **2026-11-27 개정: 바텀 시트를 vaul 대신 Radix Dialog로** (아래 "개정")
 
 ## 배경 (Context)
 `ui-design.md` §1.4·§8은 라우터, 서버 상태 캐시, 스타일 방식, 바텀 시트·대화상자를 Phase 3 시작 때 정하도록 남겨 두었다. 설계에서 이미 정한 요구는 다음과 같다.
@@ -55,7 +55,7 @@
 | 서버 상태 | **TanStack Query** | 아래 "Query 기본값" 참고 |
 | 스타일 | **vanilla-extract** (`@vanilla-extract/css` + Vite 플러그인, 필요하면 `recipes`) | `createGlobalTheme`으로 토큰(색·간격·글자 크기·`touchMin: 44px`) 한 곳에 정의. 컴포넌트 옆에 `*.css.ts` |
 | 대화상자 | **Radix Dialog** (`@radix-ui/react-dialog`) | DLG-01·02. 바깥 누르기·Esc = 취소(AC-003-3)라서 AlertDialog가 아니라 Dialog를 쓰고, 처음 포커스를 [취소]로 지정 |
-| 바텀 시트 | **vaul** (`Drawer`) | SCR-03d. 열림 상태는 주소의 `date`에서 읽는다(아래) |
+| 바텀 시트 | ~~vaul~~ → **Radix Dialog를 시트 모양으로** (개정) | SCR-03d. 열림 상태는 주소의 `date`에서 읽는다(아래). 화면 아래에 붙이고 손잡이는 모양만 둔다. 닫기는 [✕]·바깥 누르기·Esc·뒤로 가기 |
 
 **Query 기본값** (설계 요구를 코드로 옮긴 것)
 - 저장소는 기본 메모리 캐시만 쓴다. **persister를 붙이지 않는다**(ui-design §1.4).
@@ -86,3 +86,9 @@
 - 해야 할 일
   - `ui-design.md` §1.4·§8의 "Phase 3 시작 시 정한다"를 이 ADR로 연결(완료).
   - E2E(Playwright)에서 시트 열고 뒤로 가기 → 시트 닫힘·주소에서 `date` 제거 확인(ui-design §6에 추가).
+
+## 개정 (2026-11-27, 사용자 승인)
+- 뼈대를 만들며 확인한 결과 **vaul 저장소 README에 "This repo is unmaintained"가 명시**돼 있고 마지막 배포는 1.1.2(2024-12)다. React 19는 peer 범위에 있지만 이후 버그·호환 문제를 직접 떠안게 된다.
+- 위 "감수할 점"의 대안대로 **바텀 시트도 Radix Dialog로 만든다.** 대화상자와 같은 코드·같은 접근성 동작을 쓰고 의존성이 하나 준다.
+- 잃는 것: 끌어서 닫기(스와이프). 설계의 손잡이는 모양만 남기고, 필요해지면 Pointer Events로 끌어내리기만 직접 추가한다(별도 결정 없이 ui-design 변경 이력에 기록).
+- 뼈대 빌드 측정: 초기 JS **gzip 110KB**(React·Router·Query, Radix 미포함) → 목표 200KB 안.

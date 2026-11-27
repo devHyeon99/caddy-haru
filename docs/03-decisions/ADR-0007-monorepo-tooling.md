@@ -20,7 +20,7 @@ ADR-0002에서 저장소 하나에 `apps/web`(React)과 `apps/api`(NestJS)를 �
 - `pnpm-workspace.yaml`: `apps/*`, `packages/*`
 - `packages/shared`: 런타임 의존성 없는 순수 TypeScript. 도메인 상수, 계산 함수, API 요청·응답 타입
 - 루트 `package.json`의 `packageManager` 필드로 pnpm 버전을 고정(Corepack)
-- Render Docker 빌드는 저장소 루트를 컨텍스트로 잡고 `pnpm --filter api... build`로 shared까지 빌드한다. Cloudflare Pages는 루트에서 `pnpm --filter web build`
+- Render Docker 빌드는 저장소 루트를 컨텍스트로 잡고 `pnpm --filter @caddy-haru/api... build`로 shared까지 빌드한다. Cloudflare Pages는 루트에서 `pnpm --filter @caddy-haru/web... build`
 - 디렉터리 구조: `docs/02-design/architecture.md` §7
 
 ## 근거 / 결과 (Consequences)
@@ -34,3 +34,4 @@ ADR-0002에서 저장소 하나에 `apps/web`(React)과 `apps/api`(NestJS)를 �
 
 ## 변경 이력
 - 2026-11-27 작성·승인 (사용자 선택: pnpm workspaces)
+- 2026-11-27 패키지 이름 반영: `--filter @caddy-haru/web`·`@caddy-haru/api`

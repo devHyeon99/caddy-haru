@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+.wrangler/
+playwright-report/
+test-results/
+# 백업 개인키·덤프는 절대 커밋하지 않는다 (ADR-0006)
+*.key
+*.dump
+*.dump.age

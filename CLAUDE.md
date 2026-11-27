@@ -53,7 +53,8 @@
 
 ## 7. 기술 스택
 > 상세와 근거: `docs/03-decisions/ADR-0002-tech-stack.md`
-- 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Pages · React Router · TanStack Query(메모리 캐시만) · vanilla-extract · Radix Dialog + vaul (ADR-0009)
+- 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Pages · React Router · TanStack Query(메모리 캐시만) · vanilla-extract · Radix Dialog(시트 포함) (ADR-0009)
+- 테스트·도구: Vitest 전 패키지(api는 SWC) + Supertest, 화면 E2E Playwright, TypeScript **6.0 고정**, Node 24, 의존성 정확한 버전 (ADR-0010). 테스트 목록은 `docs/04-test/test-plan.md`
 - 백엔드: NestJS + TypeScript (REST API) → Render 무료 (Dockerfile)
 - DB: Neon (PostgreSQL) · ORM: **Drizzle** (버전 고정, 스키마는 `docs/02-design/data-model.md` §4 DDL과 일치, ADR-0003)
 - 인증: 카카오 OAuth(이메일 없이 회원번호) + **DB 세션**(`__Host-sid` httpOnly 쿠키, 토큰은 SHA-256 해시로 저장, ADR-0004). `/api/*`는 Pages Functions 프록시로 같은 도메인 유지

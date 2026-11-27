@@ -1,0 +1,37 @@
+# CI — 포맷 · 린트 · 타입 검사 · 테스트 · 빌드 (architecture §7)
+# DB 테스트가 생기면 postgres:17 서비스 컨테이너를 추가한다.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm build
+      - name: 초기 JS 크기 (NFR-002 목표 gzip 200KB 이하)
+        run: |
+          for f in apps/web/dist/assets/index-*.js; do
+            size=$(gzip -c "$f" | wc -c)
+            echo "$f gzip ${size} bytes"
+            if [ "$size" -gt 204800 ]; then echo "::error::초기 JS가 gzip 200KB를 넘었습니다"; exit 1; fi
+          done

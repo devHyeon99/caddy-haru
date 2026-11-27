@@ -48,9 +48,10 @@ flowchart LR
 ## 2. 기술 스택
 | 영역 | 선택 | 근거 ADR |
 |---|---|---|
-| 프론트엔드 | React + Vite + TypeScript (SPA) · React Router · TanStack Query · vanilla-extract · Radix Dialog + vaul | ADR-0002, ADR-0009 |
+| 프론트엔드 | React + Vite + TypeScript (SPA) · React Router · TanStack Query · vanilla-extract · Radix Dialog | ADR-0002, ADR-0009 |
 | 백엔드 | NestJS + TypeScript, REST API | ADR-0002 |
 | DB | Neon (서버리스 PostgreSQL) | ADR-0002 |
+| 테스트·도구 | Vitest(전 패키지, api는 SWC) + Supertest · Playwright · ESLint + Prettier · TypeScript 6.0 · Node 24 | ADR-0010 |
 | ORM | Drizzle (`node-postgres` 드라이버, 버전 고정) | **ADR-0003** |
 | 인증 | 카카오 OAuth 2.0 인가 코드 방식 + **DB 세션**(httpOnly 쿠키에 불투명 토큰) | ADR-0002, **ADR-0004** |
 | 데이터 분리 | Repository 메서드에 **명시적 `userId`** + DB 복합 FK | **ADR-0005** |
@@ -482,7 +483,7 @@ caddy-haru/
 | `BACKUP_AGE_RECIPIENT` | GitHub Secrets (또는 저장소 변수) | age **공개키** (복호화 키는 GitHub에 두지 않음, §9) |
 
 ### 8.2 배포 흐름
-- **프론트**: Cloudflare Pages Git 연동. 루트 디렉터리 `apps/web`, 빌드 `pnpm --filter web build`, 출력 `dist`, Functions 디렉터리 `apps/web/functions`. PR마다 미리보기 배포(Preview는 `API_ORIGIN`을 같은 Render로 두되, 카카오 Redirect URI가 프로덕션 도메인만 등록돼 있어 로그인은 프로덕션에서만 확인).
+- **프론트**: Cloudflare Pages Git 연동. 루트 디렉터리 `apps/web`, 빌드 `pnpm --filter @caddy-haru/web... build`, 출력 `dist`, Functions 디렉터리 `apps/web/functions`. PR마다 미리보기 배포(Preview는 `API_ORIGIN`을 같은 Render로 두되, 카카오 Redirect URI가 프로덕션 도메인만 등록돼 있어 로그인은 프로덕션에서만 확인).
 - **백엔드**: Render 자동 배포를 끄고, GitHub Actions `deploy-api.yml`이 main 푸시 때 `테스트 → 마이그레이션(DIRECT_DATABASE_URL) → Render 배포 훅 호출` 순서로 실행한다. 서버 시작 시 마이그레이션을 돌리지 않는 이유는 §5.2(깨우기가 DB를 깨우면 안 됨)와 같다.
 - **마이그레이션 규칙**: 확장 → 배포 → 정리(expand–contract). 컬럼 삭제·이름 변경은 코드가 더 이상 쓰지 않게 배포한 다음 단계에서 한다. 이전 버전 코드가 새 스키마에서도 동작해야 한다.
 
@@ -544,3 +545,4 @@ flowchart LR
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
 - 2026-11-27 ADR-0009(프론트 라이브러리) 반영: 기술 스택 표, 관련 결정
 - 2026-11-27 프로젝트 이름 캐디하루 반영: 디렉터리 루트 `caddy-haru/`, 백업 파일 이름 `caddy-haru-YYYYMMDD.dump.age`
+- 2026-11-27 모노레포 뼈대 반영: ADR-0010(테스트·도구), 프론트 라이브러리에서 vaul 제외(ADR-0009 개정)
