@@ -1,4 +1,4 @@
-# ADR-0002: 기술 스택 — React + NestJS + Neon, Cloudflare Pages · Render 무료 배포
+# ADR-0002: 기술 스택 — React + NestJS + Neon, Cloudflare Workers(정적 자산) · Render 무료 배포
 
 > 상태: 승인 · 날짜: 2026-11-27
 
@@ -47,7 +47,7 @@ Phase 2(설계)에 들어가기 전에 프론트엔드·백엔드·DB·인증·�
 | 영역 | 선택 |
 |---|---|
 | 프론트엔드 | React + Vite + TypeScript (SPA) |
-| 프론트 호스팅 | **Cloudflare Pages** (정적 파일) |
+| 프론트 호스팅 | ~~Cloudflare Pages~~ → **Cloudflare Workers 정적 자산** (2026-11-27 개정, 아래) |
 | 백엔드 | **NestJS** + TypeScript, REST API |
 | 백엔드 호스팅 | **Render 무료** Web Service, Dockerfile로 배포 |
 | DB | **Neon** (서버리스 PostgreSQL) |
@@ -57,15 +57,15 @@ Phase 2(설계)에 들어가기 전에 프론트엔드·백엔드·DB·인증·�
 
 ```mermaid
 flowchart LR
-  U[캐디 휴대폰 브라우저] -->|"/ (정적 파일)"| CF[Cloudflare Pages<br/>React SPA]
-  U -->|"/api/*"| PF[Pages Functions<br/>프록시]
+  U[캐디 휴대폰 브라우저] -->|"/ (정적 파일)"| CF[Workers 정적 자산<br/>React SPA]
+  U -->|"/api/*"| PF[Worker 코드<br/>프록시]
   PF --> R[Render 무료<br/>NestJS API]
   R --> N[(Neon<br/>PostgreSQL)]
   R <-->|OAuth| K[카카오 로그인]
 ```
 
 ### 설계 규칙
-1. **같은 도메인 유지:** `/api/*` 요청은 Cloudflare Pages Functions가 Render로 대신 전달한다. 그래서 브라우저 입장에서는 도메인이 하나다. 아이폰 Safari의 다른 도메인 쿠키 차단과 CORS 문제를 피하기 위한 규칙이다.
+1. **같은 도메인 유지:** `/api/*` 요청은 Cloudflare Worker(같은 Worker의 코드, `run_worker_first`)가 Render로 대신 전달한다. 그래서 브라우저 입장에서는 도메인이 하나다. 아이폰 Safari의 다른 도메인 쿠키 차단과 CORS 문제를 피하기 위한 규칙이다.
 2. **잠든 서버 대응 (NFR-002):** 앱을 열면 바로 `GET /api/health`를 보내 서버를 깨운다. 깨는 동안에는 "서버 깨우는 중" 안내를 보여준다.
 3. **`/api/health`는 DB에 접근하지 않는다.** 서버를 깨우는 요청이 Neon까지 깨우지 않게 하기 위해서다. 아래 한도 계산을 참고한다.
 4. **서버에 상태를 두지 않는다:** Render 무료 서버는 언제든 재시작될 수 있다. 그래서 로그인 상태는 서명된 쿠키(JWT 등)나 DB로 관리하고 서버 메모리에는 두지 않는다.
@@ -83,8 +83,8 @@ flowchart LR
 | Neon 계산 | 프로젝트당 월 100 CU-시간, 5분 쉬면 잠듦 | 하루 최대 30번 깨어나고 매번 5분 유지된다고 넉넉히 잡으면 0.25 CU × 2.5시간 × 30일 ≈ 19 CU-시간 | 약 19% |
 | Neon 저장 | 프로젝트당 1GB (매달 초기화되지 않음) | 1년 약 11,000건 + 인덱스 ≈ 10MB 미만 | 약 1% |
 | Neon 전송 | 프로젝트당 월 5GB | JSON 응답 위주, 월 수십 MB | 약 1% |
-| Cloudflare Pages Functions | Workers 무료 한도와 공유: 하루 10만 요청, 요청당 CPU 10ms(대기 시간 제외) | 하루 약 1,000 API 요청 | 약 1% |
-| Cloudflare Pages 정적 파일 | 정적 요청·전송량 무료 | — | 구현 착수 전 한도표 재확인 |
+| Cloudflare Worker (`/api/*`만) | Workers 무료: 하루 10만 요청, 요청당 CPU 10ms(대기 시간 제외) | 하루 약 1,000 API 요청 | 약 1% |
+| Cloudflare Workers 정적 자산 | 정적 요청 무료·무제한(Worker 호출 수에 안 들어감) | — | 첫 배포 때 재확인 |
 
 **주의:** 크론으로 깨우는 요청이 DB까지 건드리면 Neon이 24시간 켜진다. 그러면 0.25 CU × 744시간 = 186 CU-시간으로 한도(100)를 넘는다. 약 16일째에 DB가 정지된다 → 설계 규칙 3의 근거.
 
@@ -107,7 +107,7 @@ flowchart LR
 
 **구현 전에 확인할 것**
 - 카카오 이메일 동의 항목은 비즈 앱 전환이 필요할 수 있다. 이메일 없이 카카오 회원번호만으로 가입하는 방식을 기본으로 한다.
-- Cloudflare Pages 정적 파일·빌드 한도와 Pages Functions의 프록시 동작을 확인한다.
+- Workers 정적 자산·Workers Builds 한도와 Worker 프록시 동작(`redirect: 'manual'`, 여러 `Set-Cookie`)을 확인한다.
 - 백업(AC-N004-2) 방식은 `architecture.md`에서 정한다. 후보는 GitHub Actions 정기 `pg_dump`와 Neon 복원 기능이다. → **ADR-0006에서 둘 다 쓰기로 결정** (2026-11-27)
 
 **이후 학습 과제 (MVP 범위 아님)**
@@ -124,7 +124,18 @@ flowchart LR
 - Vercel: [Hobby plan](https://vercel.com/docs/plans/hobby), [Acceptable Use Policy](https://vercel.com/legal/acceptable-use-policy), [NestJS on Vercel](https://vercel.com/docs/frameworks/backend/nestjs)
 - Netlify: [Credit-based plans](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/)
 
+## 개정: 프론트 호스팅 Pages → Workers 정적 자산 (2026-11-27, 사용자 승인)
+- 배경: 첫 배포 준비 중 Cloudflare 대시보드의 "만들기"가 기본으로 **Workers**를 만들고, Pages는 **"레거시 Pages 워크플로"**로 표시됐다. 새 기능이 Workers 쪽에 먼저 들어오므로 나중에 옮겨야 할 가능성이 크다.
+- 결정: 같은 Worker 하나(`caddy-haru`)가 **정적 자산(SPA)**과 **`/api/*` 프록시 코드**를 함께 맡는다. 설정은 `apps/web/wrangler.jsonc`, 코드는 `apps/web/worker/index.ts`.
+  - `assets.not_found_handling = "single-page-application"` → 모르는 경로는 `index.html`
+  - `assets.run_worker_first = ["/api/*"]` → `/api/*`만 Worker 코드가 받고, 나머지 정적 요청은 Worker를 거치지 않는다(무료·무제한)
+  - `keep_vars: true` → 대시보드에서 넣은 `API_ORIGIN`이 배포 때 지워지지 않게. `PROXY_SECRET`은 비밀(secret)
+- 그대로인 것: 같은 도메인 원칙(쿠키·CORS), 프록시 규칙(`redirect: 'manual'`, 헤더 그대로), 비용 0원, Render·Neon.
+- 감수할 점: 기본 주소가 `caddy-haru.pages.dev`에서 **`caddy-haru.<계정 서브도메인>.workers.dev`**로 길어진다. 카카오 Redirect URI도 이 주소로 등록한다.
+- 확인: 로컬 `wrangler dev`에서 `/api/health` 프록시 200, SPA 폴백 200, `_headers` 장기 캐시 적용(2026-11-27).
+
 ## 변경 이력
 - 2026-11-27 작성·승인 (사용자 선택: React + NestJS, Render 무료, 크론 없이 시작)
 - 2026-11-27 후속 결정 연결: 세션 방식 ADR-0004(DB 세션), 데이터 분리 ADR-0005, 백업 ADR-0006, 모노레포 ADR-0007
 - 2026-11-27 ORM 결정 연결: ADR-0003(Drizzle)
+- 2026-11-27 **개정 (사용자 승인):** 프론트 호스팅을 Cloudflare Pages → Workers 정적 자산으로 (Pages가 "레거시"로 표시됨)

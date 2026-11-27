@@ -37,3 +37,10 @@ PROGRESS 다음 할 일 2번 — pnpm workspaces 뼈대, CI, test-plan 통합, A
 - PR 병합 후 CI 첫 실행 확인
 - 첫 배포(test-plan §6): Render Docker + Pages(`caddy-haru`) → Pages 주소로 `/api/health` 200, 카카오 Redirect URI 교체
 - 사용자: age 키 생성
+
+## 추가: Pages → Workers 전환 (같은 날 이어서)
+- Cloudflare 대시보드가 Pages를 "레거시"로 표시 → 사용자 승인으로 **ADR-0002 개정**: Workers 정적 자산 + 같은 Worker의 `/api/*` 프록시
+- `apps/web/functions/` 삭제 → `apps/web/worker/index.ts` + `wrangler.jsonc`(SPA 폴백, `run_worker_first`, `keep_vars`), wrangler 4.168.0 고정
+- 확인: `wrangler deploy --dry-run` 통과, 로컬 `wrangler dev`에서 `/api/health` 프록시 200 · SPA 폴백 200 · `_headers` 캐시 적용
+- 문서: ADR-0002 개정 절, architecture §1·§5.1·§7·§8, api-spec, ADR-0007, test-plan(T-D01·T-D06), CLAUDE.md, README, PROGRESS
+- 남은 것: 대시보드 Worker `caddy-haru` 빌드 설정 변경 → 첫 배포, 카카오 Redirect URI를 workers.dev 주소로

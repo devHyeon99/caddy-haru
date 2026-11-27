@@ -53,11 +53,11 @@
 
 ## 7. 기술 스택
 > 상세와 근거: `docs/03-decisions/ADR-0002-tech-stack.md`
-- 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Pages · React Router · TanStack Query(메모리 캐시만) · vanilla-extract · Radix Dialog(시트 포함) (ADR-0009)
+- 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Workers 정적 자산 · React Router · TanStack Query(메모리 캐시만) · vanilla-extract · Radix Dialog(시트 포함) (ADR-0009)
 - 테스트·도구: Vitest 전 패키지(api는 SWC) + Supertest, 화면 E2E Playwright, TypeScript **6.0 고정**, Node 24, 의존성 정확한 버전 (ADR-0010). 테스트 목록은 `docs/04-test/test-plan.md`
 - 백엔드: NestJS + TypeScript (REST API) → Render 무료 (Dockerfile)
 - DB: Neon (PostgreSQL) · ORM: **Drizzle** (버전 고정, 스키마는 `docs/02-design/data-model.md` §4 DDL과 일치, ADR-0003)
-- 인증: 카카오 OAuth(이메일 없이 회원번호) + **DB 세션**(`__Host-sid` httpOnly 쿠키, 토큰은 SHA-256 해시로 저장, ADR-0004). `/api/*`는 Pages Functions 프록시로 같은 도메인 유지
+- 인증: 카카오 OAuth(이메일 없이 회원번호) + **DB 세션**(`__Host-sid` httpOnly 쿠키, 토큰은 SHA-256 해시로 저장, ADR-0004). `/api/*`는 같은 Worker의 프록시 코드(`run_worker_first`)로 같은 도메인 유지 (ADR-0002 개정)
 - 데이터 분리: Repository 메서드 첫 인자 `userId: UserId` 필수, `WHERE id AND user_id`, 복합 FK (ADR-0005)
 - 백업: Neon 즉시 복원(6시간) + GitHub Actions 매일 age 암호화 `pg_dump`(90일), 개인키는 GitHub 밖 (ADR-0006)
 - 저장소: pnpm workspaces 모노레포 `apps/web`, `apps/api`, `packages/shared` (ADR-0007). 상세 설계: `docs/02-design/architecture.md`

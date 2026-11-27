@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react(), vanillaExtractPlugin()],
   server: {
-    // 로컬 개발: /api는 NestJS(3000)로 — 운영에서는 Pages Functions 프록시가 같은 역할 (architecture §5.1)
+    // 로컬 개발: /api는 NestJS(3000)로 — 운영에서는 Worker 프록시(worker/index.ts)가 같은 역할 (architecture §5.1)
     proxy: { '/api': 'http://localhost:3000' },
   },
   build: {

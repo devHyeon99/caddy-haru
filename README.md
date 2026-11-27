@@ -4,4 +4,4 @@
 
 - 상태: Phase 3 구현 중 — [진행 현황](docs/PROGRESS.md)
 - 문서: [docs/README.md](docs/README.md) (요구사항 → 설계 → ADR → 세션 로그)
-- 스택: React + Vite · NestJS · Neon(PostgreSQL) · Drizzle · Cloudflare Pages + Render 무료 ([ADR-0002](docs/03-decisions/ADR-0002-tech-stack.md))
+- 스택: React + Vite · NestJS · Neon(PostgreSQL) · Drizzle · Cloudflare Workers + Render 무료 ([ADR-0002](docs/03-decisions/ADR-0002-tech-stack.md))

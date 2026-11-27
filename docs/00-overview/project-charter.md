@@ -8,7 +8,7 @@
 |---|---|---|
 | 앱·프로젝트 이름 (화면, 문서) | **캐디하루** | 로그인 화면 제목, `<title>` |
 | 영문 브랜드 (영문이 필요한 화면·README 제목) | **CaddyHaru** | `README.md` 제목, PWA `name` |
-| 식별자 (저장소·패키지·서비스·도메인·파일 이름) | **`caddy-haru`** | GitHub `devHyeon99/caddy-haru`, `@caddy-haru/shared`, Cloudflare Pages·Render 서비스 이름, 백업 파일 `caddy-haru-YYYYMMDD.dump.age` |
+| 식별자 (저장소·패키지·서비스·도메인·파일 이름) | **`caddy-haru`** | GitHub `devHyeon99/caddy-haru`, `@caddy-haru/shared`, Cloudflare Worker·Render 서비스 이름, 백업 파일 `caddy-haru-YYYYMMDD.dump.age` |
 
 식별자는 URL·npm 패키지·Cloudflare/Render 서비스 이름이 소문자만 허용하거나 대소문자를 구분하지 않으므로 소문자 + 하이픈(kebab-case)으로 통일한다.
 

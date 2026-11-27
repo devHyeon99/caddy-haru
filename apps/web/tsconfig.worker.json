@@ -2,12 +2,12 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.functions.tsbuildinfo",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.worker.tsbuildinfo",
     "lib": ["ES2023"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
     "types": ["@cloudflare/workers-types"]
   },
-  "include": ["functions"]
+  "include": ["worker"]
 }
