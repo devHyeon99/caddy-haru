@@ -53,3 +53,4 @@ PROGRESS 다음 할 일 2번 — pnpm workspaces 뼈대, CI, test-plan 통합, A
 - 결과: `https://caddy-haru.eomhh99.workers.dev/api/health` 200 (T-D03·T-D06 ✅)
 - Render Auto-Deploy는 DB 작업 전까지 켜 둠. 나중에 끄고 `deploy-api.yml`(마이그레이션 → 배포 훅)로 전환
 - PR #3 프리뷰 빌드 실패(`versions upload` 이름 불일치) → 비-main 브랜치는 `wrangler preview`로 변경
+- 이어서 `wrangler preview`가 `previews` 블록을 요구 → `previews.vars.API_ORIGIN` 추가, Preview에는 PROXY_SECRET 없음(503, 운영과 분리)
