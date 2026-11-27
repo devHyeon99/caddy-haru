@@ -131,7 +131,7 @@ flowchart LR
   - `assets.run_worker_first = ["/api/*"]` → `/api/*`만 Worker 코드가 받고, 나머지 정적 요청은 Worker를 거치지 않는다(무료·무제한)
   - `keep_vars: true` → 대시보드에서 넣은 `API_ORIGIN`이 배포 때 지워지지 않게. `PROXY_SECRET`은 비밀(secret)
 - 그대로인 것: 같은 도메인 원칙(쿠키·CORS), 프록시 규칙(`redirect: 'manual'`, 헤더 그대로), 비용 0원, Render·Neon.
-- 감수할 점: 기본 주소가 `caddy-haru.pages.dev`에서 **`caddy-haru.<계정 서브도메인>.workers.dev`**로 길어진다. 카카오 Redirect URI도 이 주소로 등록한다.
+- 감수할 점: 기본 주소가 `caddy-haru.pages.dev`에서 **`caddy-haru.eomhh99.workers.dev`**로 길어진다(미리보기: `*-caddy-haru.eomhh99.workers.dev`). 카카오 Redirect URI도 이 주소로 등록한다.
 - 확인: 로컬 `wrangler dev`에서 `/api/health` 프록시 200, SPA 폴백 200, `_headers` 장기 캐시 적용(2026-11-27).
 
 ## 변경 이력

@@ -13,7 +13,7 @@
 
 | 항목 | 규칙 | 근거 |
 |---|---|---|
-| Base URL | `https://<앱 도메인>/api` — Worker 프록시가 Render로 전달(같은 도메인, CORS 없음) | architecture §5.1 |
+| Base URL | `https://caddy-haru.eomhh99.workers.dev/api` (이하 예시의 `<도메인>`) — Worker 프록시가 Render로 전달(같은 도메인, CORS 없음) | architecture §5.1 |
 | 형식 | 요청·응답 본문은 `application/json; charset=utf-8`. 예외: CSV 내보내기(`text/csv`), 리다이렉트(302), 본문 없는 응답(204) | — |
 | 필드 이름 | `camelCase`. DB 컬럼 `nine_ext_count` → `nineExtCount` | data-model §2 |
 | 금액 | **원 단위 JSON 정수**(`150000`). 문자열·소수·지수 표기 거부. 응답의 합계도 정수 | NFR-005, AC-N005-1 |

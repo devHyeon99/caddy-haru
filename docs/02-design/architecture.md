@@ -205,7 +205,7 @@ it.each(cases)('AC-N003-1 %s %s: B가 A의 데이터에 접근하면 404', async
 - **이메일 없이 카카오 회원번호로 가입한다.** 카카오 동의 항목은 아무것도 요청하지 않는다(닉네임·이메일 없음). `/v2/user/me` 응답의 `id`(회원번호, 앱마다 고유한 64비트 정수)만 쓴다. 저장할 때는 `users(provider='kakao', provider_user_id TEXT UNIQUE)` 형태로 둔다. JS `number`의 정밀도를 넘을 수 있어서 문자열로 저장한다.
 - **카카오 access token은 저장하지 않는다.** 로그인할 때 회원번호를 얻는 데 한 번만 쓰고 버린다. 이후 카카오 API를 호출할 일이 없기 때문이다.
 - **로그인 상태 = DB 세션.** 쿠키에는 무작위 토큰(32바이트, base64url)만 넣고, DB `sessions`에는 그 **SHA-256 해시**, `user_id`, `expires_at`을 저장한다. DB가 유출돼도 해시로는 쿠키를 만들 수 없다.
-- **카카오 콜백 주소도 같은 도메인**: `https://<앱 도메인>/api/auth/kakao/callback` (Worker 프록시가 Render로 전달). 카카오 개발자 콘솔의 Redirect URI에 등록한다.
+- **카카오 콜백 주소도 같은 도메인**: `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback` (Worker 프록시가 Render로 전달). 카카오 개발자 콘솔의 Redirect URI에 등록한다.
 
 | 쿠키 | 값 | 속성 | 수명 |
 |---|---|---|---|
@@ -480,8 +480,8 @@ caddy-haru/
 | `PROXY_SECRET` | Worker(비밀) + Render | 프록시 비밀 헤더 값 (양쪽 동일, 무작위 32바이트) |
 | `DATABASE_URL` | Render | Neon **pooled** 연결 문자열 (`-pooler` 호스트) |
 | `KAKAO_CLIENT_ID`, `KAKAO_CLIENT_SECRET` | Render | 카카오 REST API 키, Client Secret |
-| `KAKAO_REDIRECT_URI` | Render | `https://<앱 도메인>/api/auth/kakao/callback` |
-| `APP_ORIGIN` | Render | Origin 검사·로그인 후 리다이렉트 기준 |
+| `KAKAO_REDIRECT_URI` | Render | `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback` |
+| `APP_ORIGIN` | Render | `https://caddy-haru.eomhh99.workers.dev` — Origin 검사·로그인 후 리다이렉트 기준 |
 | `DIRECT_DATABASE_URL` | GitHub Secrets | Neon **direct** 연결 (마이그레이션·`pg_dump`용, PgBouncer 경유 금지) |
 | `RENDER_DEPLOY_HOOK_URL` | GitHub Secrets | Render 배포 훅 |
 | `BACKUP_AGE_RECIPIENT` | GitHub Secrets (또는 저장소 변수) | age **공개키** (복호화 키는 GitHub에 두지 않음, §9) |
@@ -552,3 +552,4 @@ flowchart LR
 - 2026-11-27 모노레포 뼈대 반영: ADR-0010(테스트·도구), 프론트 라이브러리에서 vaul 제외(ADR-0009 개정)
 - 2026-11-27 ADR-0002 개정 반영: Pages Functions → Workers 정적 자산 + Worker 프록시(구성도, §5.1, §7 디렉터리, §8 변수·배포)
 - 2026-11-27 §8.2 배포 명령: 브랜치를 보고 배포/미리보기를 고르는 `scripts/deploy.mjs` (대시보드에 비프로덕션 설정이 보이지 않아서)
+- 2026-11-27 앱 주소 확정: `https://caddy-haru.eomhh99.workers.dev` (§8.1)

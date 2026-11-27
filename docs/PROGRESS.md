@@ -59,14 +59,14 @@
 
 1. [x] ~~`docs/phase2-architecture` → main 병합~~ (PR #1, 2026-11-27)
 2. [ ] 모노레포 뼈대 PR(`chore/monorepo-scaffold`) 리뷰·병합 → CI 첫 실행 확인
-3. [ ] 첫 배포 확인 (test-plan §6): Render(Docker, `apps/api/Dockerfile`) + Cloudflare Worker(`caddy-haru`, Workers Builds) → `/api/health`가 workers.dev 주소로 200. 이어서 카카오 Redirect URI 교체
+3. [ ] 첫 배포 확인 (test-plan §6): Render(Docker, `apps/api/Dockerfile`) + Cloudflare Worker(`caddy-haru`, Workers Builds) → `https://caddy-haru.eomhh99.workers.dev/api/health` 200. 이어서 카카오 Redirect URI 교체
 4. [ ] Must 구현 (권장 순서: 인증(DB·세션) → 골프장 → 라운드 → 달력·통계)
 5. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
 6. [ ] 사용자 할 일 (구현 시작 전까지)
    - [x] 카카오 개발자 콘솔 앱 등록 (2026-11-27, **Redirect URI는 임시 주소**)
    - [x] Cloudflare·Render·Neon 계정 준비 (2026-11-27)
    - [ ] **age 키 쌍 생성** 후 개인키를 비밀번호 관리자 + 오프라인에 보관, 공개키(`age1…`)만 GitHub Secret `BACKUP_AGE_RECIPIENT`로 (ADR-0006)
-   - [ ] Worker 첫 배포 뒤 카카오 Redirect URI를 `https://caddy-haru.<계정 서브도메인>.workers.dev/api/auth/kakao/callback`으로 바꾸기
+   - [ ] Worker 첫 배포 뒤 카카오 Redirect URI를 `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback`으로 바꾸기
 7. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Worker 프록시 `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2), 카카오 로그인 버튼 가이드·iOS 키패드 위 저장 버튼 (ui-design §8)
 
 ## 막힌 것 / 사용자 결정 필요
