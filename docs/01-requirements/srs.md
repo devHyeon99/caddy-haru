@@ -183,17 +183,17 @@
 
 | 요구사항 | 설계 문서 | 구현 위치 | 테스트 | 상태 |
 |---|---|---|---|---|
-| FR-001 | | | | |
-| FR-002 | | | | |
-| FR-003 | | | | |
-| FR-004 | | | | |
-| FR-005 | | | | |
-| FR-006 | | | | |
-| FR-007 | | | | |
-| FR-008 | | | | |
-| FR-010 | | | | |
-| FR-011 | | | | |
-| FR-040 | | | | |
+| FR-001 | ui-design SCR-02 · api-spec D3 · data-model §3.4 | | | 설계 확정 |
+| FR-002 | ui-design SCR-02 · api-spec D3·D4 · data-model §3.4 | | | 설계 확정 |
+| FR-003 | ui-design SCR-02e·DLG-01 · api-spec D2·D4·D5 | | | 설계 확정 |
+| FR-004 | ui-design SCR-05·05f·DLG-02 · api-spec C1~C4 · data-model §3.3 | | | 설계 확정 |
+| FR-005 | ui-design §3.2·SCR-02 · api-spec D1·D3(409) · data-model §3.4 유니크 | | | 설계 확정 |
+| FR-006 | ui-design SCR-02·05f · api-spec C1~C3 | | | 설계 확정 |
+| FR-007 | ui-design SCR-05f · api-spec C3 · data-model §3.4 복사 저장 | | | 설계 확정 |
+| FR-008 | ui-design SCR-02 나인추가 · api-spec D3·D4·E1 · data-model §3.4 | | | 설계 확정 |
+| FR-010 | ui-design SCR-03·03d · api-spec E1·D1 | | | 설계 확정 |
+| FR-011 | ui-design SCR-04·01 · api-spec E1 · data-model §5 | | | 설계 확정 |
+| FR-040 | ui-design SCR-06·00 · api-spec B1~B4 · architecture §4 · ADR-0004 | | | 설계 확정 |
 
 ## 변경 이력
 - 2026-11-26 초안 생성 (요구사항 후보 나열)
@@ -205,3 +205,5 @@
 - 2026-11-26 FR-008 가정 확정: 나인추가 최대 **2회**(사용자 수정, AC-008-10 추가), 절반 금액 원 단위 내림·직접 수정 금액 유지는 승인
 - 2026-11-27 NFR-002(Should·초안)에 백엔드 콜드 스타트 예외 추가 (ADR-0002, Render 무료 배포). AC-N001-3 측정 시작점은 Q-025로 확인 중
 - 2026-11-27 **확정 후 변경 (사용자 승인, Q-025):** AC-N001-3 측정 시작점을 "서버가 응답 가능한 상태(깨어난 뒤)"로 명확히 함
+- 2026-11-27 §6 추적성 매트릭스 "설계 문서" 칸 채움 (요구사항·인수 조건 변경 없음)
+- 2026-11-27 §6 상태 칸 "설계 확정" (설계 4종 사용자 승인)

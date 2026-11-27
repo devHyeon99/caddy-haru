@@ -5,7 +5,7 @@
 
 ## 현재 단계
 
-**Phase 2 — 설계** · 목표: M1 설계 확정 2026-12-05
+**Phase 3 — 구현** · M1 설계 확정 2026-11-27 달성 (목표 12-05보다 빠름) · 다음 목표: M3 실사용 2026-12-26
 
 ## 최근 완료
 
@@ -21,6 +21,10 @@
 - [x] 2026-11-27 **`data-model.md` 작성 (검토중):** ERD, `users`·`sessions`·`golf_clubs`·`rounds` 컬럼별 요구사항 ID, 목표 DDL(CHECK·부분 유니크·복합 FK `RESTRICT`), 정수 집계(반 라운드 단위), 제약 테스트 목록
 - [x] 2026-11-27 **ADR-0003 ORM = Drizzle** (Prisma·TypeORM과 비교, 버전 고정, SQL 마이그레이션 리뷰). Q-026 해결: 숨긴 골프장과 같은 이름 추가 **허용**
 - [x] 2026-11-27 **`api-spec.md` 작성 (검토중):** 엔드포인트 17개(health·인증 4·골프장 4·라운드 5·월/연 통계·CSV), 요청/응답 JSON·검증 규칙·상태 코드·AC, 400(형식)/409(유니크)/422(업무 규칙) 구분, **남의 리소스 ID = 404**(403은 Origin·프록시 비밀에만), 테스트 연결. **ADR-0008 에러 형식 승인**, **Q-027 해결: 날짜 허용 범위 2000~2099**
+
+- [x] 2026-11-27 **`ui-design.md` 작성 (검토중):** 화면 13개(SCR-00 깨우기·00o 오버레이·06 로그인·01 홈·02/02e 라운드 추가·수정·03/03d 달력·날짜 시트·04 통계·05/05f 설정·골프장, DLG-01·02), 화면 흐름도 2개, 360px 와이어프레임, 서버 에러 → 화면 매핑, `/login?error=` 문구, **30초 흐름 = 3탭 + 5키(약 10초)**, 검증 방법. SRS §6 "설계 문서" 칸 채움 → **설계 문서 4종 초안 완료**
+
+- [x] 2026-11-27 **M1 달성: 설계 4종 확정** (architecture·data-model·api-spec·ui-design, 사용자 승인) → **Phase 3 진입**
 
 ## 확정된 핵심 사항 (요약)
 
@@ -40,17 +44,18 @@
 - 모노레포: pnpm workspaces, `packages/shared`에 계산식·상수·API 타입 (ADR-0007)
 - ORM: **Drizzle**, 스키마 = `data-model.md` §4 DDL, 마이그레이션은 생성 SQL을 PR에서 리뷰 후 Actions에서 적용 (ADR-0003)
 - 데이터: 금액은 라운드에 복사 저장(FR-007), `UNIQUE (user_id, played_on, slot)`, 골프장 숨김은 `hidden_at` + 복합 FK `RESTRICT`, 기본 골프장은 `is_default` 부분 유니크
+- UI: 하단 탭 4개(홈·달력·통계·설정), 홈에서 C1·D1 미리 불러와 폼 즉시 채움, 저장 버튼은 상단 바 + 폼 하단 두 곳, 달력 칸은 만 원 축약(정확한 금액은 시트), 깨우기 화면은 1.5초 뒤부터·3분 뒤 실패, 사용 중 오버레이는 깨어난 뒤 저장을 한 번만 전송 (ui-design)
 - 일정: **1개월 안 실사용** (M3 2026-12-26)
 - 목적: 실사용 + 학습/포트폴리오
 
 ## 다음 할 일 (우선순위 순)
 
-1. [ ] **사용자 확인:** `api-spec.md` 검토
-2. [ ] `02-design/ui-design.md` 화면 흐름·와이어프레임 ("서버 깨우는 중"·로그인 오류 화면 포함, architecture §5.3)
-3. [ ] `ui-design.md`가 끝나면 `architecture.md`·`data-model.md`·`api-spec.md` 상태를 "확정"으로 → M1 설계 확정. SRS §6 추적성 매트릭스 "설계 문서" 칸 채우기
+1. [ ] 프론트 라이브러리(라우터·서버 상태 캐시·스타일·시트/대화상자) 결정 → 트레이드오프 있으면 ADR-0009
+2. [ ] 모노레포 뼈대(pnpm workspaces, `apps/web`·`apps/api`·`packages/shared`, CI) + `test-plan.md`에 api-spec §11·ui-design §6 옮기기
+3. [ ] Must 구현 시작 (권장 순서: health·인증 → 골프장 → 라운드 → 달력·통계)
 4. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
 5. [ ] 사용자 할 일 (구현 시작 전까지): 카카오 개발자 콘솔 앱 등록(Redirect URI `https://<도메인>/api/auth/kakao/callback`), Cloudflare·Render·Neon 계정 준비 (원래 GitHub 계정 사용), **age 키 쌍 생성 후 개인키를 비밀번호 관리자 + 오프라인에 보관**
-6. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Pages Functions `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2)
+6. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Pages Functions `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2), 카카오 로그인 버튼 가이드·iOS 키패드 위 저장 버튼 (ui-design §8)
 
 ## 막힌 것 / 사용자 결정 필요
 
@@ -66,5 +71,11 @@
 
 - Phase 0 → 1: 헌장의 목적·범위·성공 기준이 "확정" — ✅
 - Phase 1 → 2: SRS의 Must 요구사항 전부 "확정", open-questions에 Must 관련 미해결 없음 — ✅
-- Phase 2 → 3: 아키텍처·데이터 모델 확정 (둘 다 검토중), 기술 스택 ADR 작성 (✅ ADR-0002, ✅ ADR-0003)
+- Phase 2 → 3 (2026-11-27): ✅ **통과**
+  - ✅ 설계 문서 4종 작성: architecture · data-model · api-spec · ui-design
+  - ✅ 4종 상태 "확정" (2026-11-27 사용자 승인)
+  - ✅ 기술 스택 ADR (ADR-0002, ORM ADR-0003, 인증·분리·백업·모노레포·에러 ADR-0004~0008)
+  - ✅ Must 요구사항 전부 설계에 연결 (SRS §6 "설계 문서" 칸 11개 모두 채움)
+  - ✅ open-questions 미해결 0개
+  - ⬜ (구현 전 준비, 전환 조건은 아님) 사용자 계정·카카오 앱 등록·age 키, 프론트 라이브러리 결정
 - Phase 3 → 4: Must 요구사항 전부 구현 + 테스트 통과
