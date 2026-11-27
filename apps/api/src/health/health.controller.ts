@@ -1,11 +1,14 @@
 import { Controller, Get, Header } from '@nestjs/common';
 import type { HealthResponse } from '@caddy-haru/shared';
+import { Public } from '../common/decorators/public.decorator.js';
 
 /**
  * A1 GET /api/health — 서버 깨어 있음 확인 (NFR-002, api-spec.md A1)
  * 규칙: DB·세션에 접근하지 않는다 (architecture §5.2, CLAUDE.md §7).
  * 이 컨트롤러는 어떤 Provider도 주입받지 않는다 → DB 의존성을 가질 수 없다.
+ * `@Public()`: 전역 SessionGuard가 세션을 DB에서 찾기 전에 통과시킨다.
  */
+@Public()
 @Controller('health')
 export class HealthController {
   private readonly version = (process.env.GIT_SHA ?? process.env.RENDER_GIT_COMMIT ?? 'dev').slice(
