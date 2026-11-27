@@ -44,3 +44,4 @@ PROGRESS 다음 할 일 2번 — pnpm workspaces 뼈대, CI, test-plan 통합, A
 - 확인: `wrangler deploy --dry-run` 통과, 로컬 `wrangler dev`에서 `/api/health` 프록시 200 · SPA 폴백 200 · `_headers` 캐시 적용
 - 문서: ADR-0002 개정 절, architecture §1·§5.1·§7·§8, api-spec, ADR-0007, test-plan(T-D01·T-D06), CLAUDE.md, README, PROGRESS
 - 남은 것: 대시보드 Worker `caddy-haru` 빌드 설정 변경 → 첫 배포, 카카오 Redirect URI를 workers.dev 주소로
+- 대시보드에 비프로덕션 배포 명령·빌드 변수 칸이 안 보임 → `apps/web/scripts/deploy.mjs`로 브랜치별 분기(main만 `wrangler deploy`), Node 버전은 `.nvmrc`

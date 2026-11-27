@@ -10,8 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
-    "deploy": "wrangler deploy",
-    "deploy:preview": "wrangler versions upload"
+    "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {
     "@caddy-haru/shared": "workspace:*",
