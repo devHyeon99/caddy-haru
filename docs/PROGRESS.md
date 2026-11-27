@@ -27,6 +27,7 @@
 - [x] 2026-11-27 **M1 달성: 설계 4종 확정** (architecture·data-model·api-spec·ui-design, 사용자 승인) → **Phase 3 진입**
 - [x] 2026-11-27 **모노레포 뼈대** (브랜치 `chore/monorepo-scaffold`): pnpm workspaces, `packages/shared`(도메인 상수·계산식·에러 타입, 단위 테스트 17개), `apps/api`(NestJS 12, `/api/health` + E2E), `apps/web`(Vite 8·React 19·Router·Query·vanilla-extract, Worker 프록시), CI, Dockerfile, PR 템플릿. 초기 JS **gzip 110KB**
 - [x] 2026-11-27 **ADR-0010** 테스트·도구(Vitest 통일, TypeScript 6.0 고정, Node 24). **ADR-0009 개정**: vaul 유지보수 중단 → 시트도 Radix Dialog. `test-plan.md`에 설계 4종 테스트 표 통합(T-U·I·E·W·D)
+- [x] 2026-11-27 **첫 배포 성공**: 브라우저 → Worker(`caddy-haru.eomhh99.workers.dev`) → Render(`caddy-haru.onrender.com`) `/api/health` 200. Render Auto-Deploy는 DB·마이그레이션 전까지 켜 둠(이후 `deploy-api.yml`로 전환)
 - [x] 2026-11-27 **ADR-0002 개정: Cloudflare Pages → Workers 정적 자산** (대시보드에서 Pages가 "레거시"로 표시). Worker 1개가 SPA + `/api/*` 프록시(`run_worker_first`). 로컬 `wrangler dev`로 프록시·SPA 폴백 확인
 - [x] 2026-11-27 **앱 이름 = 캐디하루** (영문 CaddyHaru, 식별자 `caddy-haru`, 헌장 §0). GitHub 공개 저장소 `devHyeon99/caddy-haru` 생성
 - [x] 2026-11-27 **ADR-0009 프론트 라이브러리 결정:** React Router · TanStack Query(메모리 캐시만, 저장 재시도 없음, 포커스 시 재요청 끔) · vanilla-extract · Radix Dialog + vaul. 시트 열림 = 주소 `date`, 뒤로 가기 = 닫기
@@ -58,8 +59,8 @@
 ## 다음 할 일 (우선순위 순)
 
 1. [x] ~~`docs/phase2-architecture` → main 병합~~ (PR #1, 2026-11-27)
-2. [ ] 모노레포 뼈대 PR(`chore/monorepo-scaffold`) 리뷰·병합 → CI 첫 실행 확인
-3. [ ] 첫 배포 확인 (test-plan §6): Render(Docker, `apps/api/Dockerfile`) + Cloudflare Worker(`caddy-haru`, Workers Builds) → `https://caddy-haru.eomhh99.workers.dev/api/health` 200. 이어서 카카오 Redirect URI 교체
+2. [x] ~~모노레포 뼈대~~ (PR #2 병합, CI 통과)
+3. [x] ~~첫 배포~~ (2026-11-27): Render Docker(Singapore 권장, Free) + Worker `caddy-haru` → `https://caddy-haru.eomhh99.workers.dev/api/health` 200. 남은 것: 카카오 Redirect URI 교체(사용자)
 4. [ ] Must 구현 (권장 순서: 인증(DB·세션) → 골프장 → 라운드 → 달력·통계)
 5. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
 6. [ ] 사용자 할 일 (구현 시작 전까지)

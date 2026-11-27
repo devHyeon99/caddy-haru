@@ -88,12 +88,14 @@
 | ID | 확인 | 결과 |
 |---|---|---|
 | T-D01 | Worker 프록시 `redirect: 'manual'`로 302 그대로 전달 | ⬜ |
-| T-D06 | Worker 정적 자산: SPA 폴백·`_headers` 캐시·`/api/health` 프록시 | 로컬 `wrangler dev` ✅ 2026-11-27 · 배포 ⬜ |
+| T-D06 | Worker 정적 자산: SPA 폴백·`_headers` 캐시·`/api/health` 프록시 | ✅ 2026-11-27 배포: `/` 캐디하루, `/calendar` 200, `/assets/*` immutable, `/api/health` 프록시 200 |
+| T-D07 | 프록시 설정 누락 시 1101 대신 503 `proxy not configured` | 로컬 `wrangler dev` ✅ 2026-11-27 |
 | T-D02 | 여러 `Set-Cookie` 헤더가 프록시를 거쳐도 모두 전달 | ⬜ |
-| T-D03 | Render Docker 이미지 빌드·기동, `/api/health` 200 | ⬜ (로컬은 `pnpm deploy` 결과물 단독 실행으로 확인, Docker 빌드는 미확인) |
+| T-D03 | Render Docker 이미지 빌드·기동, `/api/health` 200 | ✅ 2026-11-27 `https://caddy-haru.onrender.com/api/health` → 200, `version` = main 커밋 |
 | T-D04 | Render 배포 훅·자동 배포 끄기 | ⬜ |
 | T-D05 | 카카오 동의 항목 없이 로그인 | ⬜ |
 
 ## 변경 이력
 - 2026-11-27 작성: 설계 문서 4종의 테스트 표를 ID(T-U·T-I·T-E·T-W·T-M·T-D)로 통합, 도구(ADR-0010) 기록. 뼈대 단계 결과 반영(T-U01~05, T-E01)
 - 2026-11-27 Pages → Workers 반영(T-D01), T-D06 추가
+- 2026-11-27 첫 배포 결과: T-D03·T-D06 통과, T-D07 추가

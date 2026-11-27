@@ -5,7 +5,11 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-11-01",
   "workers_dev": true,
-  // 대시보드에서 넣은 변수(API_ORIGIN 등)를 배포 때 지우지 않는다. PROXY_SECRET은 비밀(secret)로 넣는다.
+  // 공개 값은 코드에 둔다. PROXY_SECRET은 대시보드 "런타임 변수 및 시크릿"에 비밀로만 넣는다(코드·빌드 변수 금지).
+  "vars": {
+    "API_ORIGIN": "https://caddy-haru.onrender.com",
+  },
+  // 대시보드에서 직접 넣은 변수를 배포 때 지우지 않는다(비밀은 원래 유지됨).
   "keep_vars": true,
   "assets": {
     "directory": "./dist",

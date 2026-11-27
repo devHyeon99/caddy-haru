@@ -45,3 +45,10 @@ PROGRESS 다음 할 일 2번 — pnpm workspaces 뼈대, CI, test-plan 통합, A
 - 문서: ADR-0002 개정 절, architecture §1·§5.1·§7·§8, api-spec, ADR-0007, test-plan(T-D01·T-D06), CLAUDE.md, README, PROGRESS
 - 남은 것: 대시보드 Worker `caddy-haru` 빌드 설정 변경 → 첫 배포, 카카오 Redirect URI를 workers.dev 주소로
 - 대시보드에 비프로덕션 배포 명령·빌드 변수 칸이 안 보임 → `apps/web/scripts/deploy.mjs`로 브랜치별 분기(main만 `wrangler deploy`), Node 버전은 `.nvmrc`
+
+## 추가: 첫 배포 (같은 날 이어서)
+- PR #2 병합 → Workers Builds main 빌드 성공(Node 24·pnpm 11 자동 감지, `branch=main → wrangler deploy`). `@swc/core` postinstall 경고는 빌드 환경 캐시 권한 문제로 웹 빌드와 무관
+- Render: Docker(`apps/api/Dockerfile`, 컨텍스트 루트), Free → `/api/health` 200, `version` 4e969e1
+- 1101 오류: 변수를 빌드 변수 칸에 넣어서 → **런타임 변수 및 시크릿**으로 옮겨 해결. `API_ORIGIN`은 `wrangler.jsonc` `vars`로, 누락 시 503 반환하도록 프록시 수정
+- 결과: `https://caddy-haru.eomhh99.workers.dev/api/health` 200 (T-D03·T-D06 ✅)
+- Render Auto-Deploy는 DB 작업 전까지 켜 둠. 나중에 끄고 `deploy-api.yml`(마이그레이션 → 배포 훅)로 전환

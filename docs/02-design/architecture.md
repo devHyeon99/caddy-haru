@@ -476,8 +476,8 @@ caddy-haru/
 ### 8.1 환경 변수
 | 변수 | 위치 | 설명 |
 |---|---|---|
-| `API_ORIGIN` | Cloudflare Worker (변수) | `https://<서비스>.onrender.com` |
-| `PROXY_SECRET` | Worker(비밀) + Render | 프록시 비밀 헤더 값 (양쪽 동일, 무작위 32바이트) |
+| `API_ORIGIN` | Cloudflare Worker (`wrangler.jsonc` `vars`) | `https://caddy-haru.onrender.com` |
+| `PROXY_SECRET` | Worker **런타임** 비밀(대시보드, 빌드 변수 아님) + Render | 프록시 비밀 헤더 값 (양쪽 동일, 무작위 32바이트) |
 | `DATABASE_URL` | Render | Neon **pooled** 연결 문자열 (`-pooler` 호스트) |
 | `KAKAO_CLIENT_ID`, `KAKAO_CLIENT_SECRET` | Render | 카카오 REST API 키, Client Secret |
 | `KAKAO_REDIRECT_URI` | Render | `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback` |
@@ -553,3 +553,4 @@ flowchart LR
 - 2026-11-27 ADR-0002 개정 반영: Pages Functions → Workers 정적 자산 + Worker 프록시(구성도, §5.1, §7 디렉터리, §8 변수·배포)
 - 2026-11-27 §8.2 배포 명령: 브랜치를 보고 배포/미리보기를 고르는 `scripts/deploy.mjs` (대시보드에 비프로덕션 설정이 보이지 않아서)
 - 2026-11-27 앱 주소 확정: `https://caddy-haru.eomhh99.workers.dev` (§8.1)
+- 2026-11-27 첫 배포: `API_ORIGIN`을 `wrangler.jsonc`로, `PROXY_SECRET`은 런타임 비밀. 설정 누락 시 Worker가 503 반환(§5.1)
