@@ -555,3 +555,4 @@ flowchart LR
 - 2026-11-27 앱 주소 확정: `https://caddy-haru.eomhh99.workers.dev` (§8.1)
 - 2026-11-27 첫 배포: `API_ORIGIN`을 `wrangler.jsonc`로, `PROXY_SECRET`은 런타임 비밀. 설정 누락 시 Worker가 503 반환(§5.1)
 - 2026-11-27 §8.2 PR 브랜치 배포: `wrangler versions upload` → `wrangler preview` (Workers Builds 프리뷰 빌드 이름 불일치 오류)
+- 2026-11-27 §8.2 PR Preview: `wrangler.jsonc` `previews.vars`. Preview에는 `PROXY_SECRET`을 두지 않아 `/api`는 503(운영 API·데이터와 분리, 화면 확인 전용)

@@ -9,6 +9,13 @@
   "vars": {
     "API_ORIGIN": "https://caddy-haru.onrender.com",
   },
+  // PR 브랜치 Preview(wrangler preview) 설정. Render 무료 서비스는 1개뿐이라 주소는 같지만,
+  // Preview에는 PROXY_SECRET을 넣지 않는다 → 프록시가 503을 돌려주고 운영 API·데이터에 닿지 않는다(화면 확인 전용).
+  "previews": {
+    "vars": {
+      "API_ORIGIN": "https://caddy-haru.onrender.com",
+    },
+  },
   // 대시보드에서 직접 넣은 변수를 배포 때 지우지 않는다(비밀은 원래 유지됨).
   "keep_vars": true,
   "assets": {
