@@ -2,6 +2,8 @@
 // month: 'YYYY-MM', date: 'YYYY-MM-DD'
 
 export const queryKeys = {
+  /** B4 `GET /api/auth/me` — 인증 가드 (AC-040-4) */
+  me: () => ['auth', 'me'] as const,
   golfClubs: () => ['golfClubs'] as const,
   roundsByMonth: (month: string) => ['rounds', { month }] as const,
   roundsByDate: (date: string) => ['rounds', { date }] as const,
