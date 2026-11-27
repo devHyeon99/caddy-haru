@@ -20,6 +20,7 @@
 - [x] 2026-11-27 ADR-0004 DB 세션 · ADR-0005 명시적 userId + 복합 FK · ADR-0006 백업(Neon 6시간 + 매일 암호화 pg_dump) · ADR-0007 pnpm workspaces
 - [x] 2026-11-27 **`data-model.md` 작성 (검토중):** ERD, `users`·`sessions`·`golf_clubs`·`rounds` 컬럼별 요구사항 ID, 목표 DDL(CHECK·부분 유니크·복합 FK `RESTRICT`), 정수 집계(반 라운드 단위), 제약 테스트 목록
 - [x] 2026-11-27 **ADR-0003 ORM = Drizzle** (Prisma·TypeORM과 비교, 버전 고정, SQL 마이그레이션 리뷰). Q-026 해결: 숨긴 골프장과 같은 이름 추가 **허용**
+- [x] 2026-11-27 **`api-spec.md` 작성 (검토중):** 엔드포인트 17개(health·인증 4·골프장 4·라운드 5·월/연 통계·CSV), 요청/응답 JSON·검증 규칙·상태 코드·AC, 400(형식)/409(유니크)/422(업무 규칙) 구분, **남의 리소스 ID = 404**(403은 Origin·프록시 비밀에만), 테스트 연결. **ADR-0008 에러 형식 승인**, **Q-027 해결: 날짜 허용 범위 2000~2099**
 
 ## 확정된 핵심 사항 (요약)
 
@@ -33,7 +34,8 @@
 - 세금: 연간 총액 요약만 / 비용: 무료 티어만
 - 스택: React + NestJS + Neon, Cloudflare Pages(+ `/api` 프록시) + Render 무료 — 첫 요청 약 1분 지연 감수, 크론 상시 기동은 일단 안 씀 (ADR-0002)
 - 인증: 카카오 회원번호로 가입(이메일·동의 항목 없음), **DB 세션** 30일 슬라이딩 (ADR-0004)
-- 분리: Repository 첫 인자 `userId`, 남의 ID는 404, 복합 FK, `:id` 라우트 누락 감지 테스트 (ADR-0005)
+- 분리: Repository 첫 인자 `userId`, 남의 ID는 404(없는 ID와 응답이 똑같음, 본문의 `golfClubId`도 404), 복합 FK, `:id` 라우트 누락 감지 테스트 (ADR-0005, api-spec §3)
+- API: `/api` 아래 REST, 금액은 JSON 정수, 환산 라운드 수는 `roundHalfUnits` 정수, 에러는 `{ error: { code, message, fields?, requestId } }` (api-spec, ADR-0008)
 - 백업: Neon 즉시 복원 6시간 + GitHub Actions 매일 age 암호화 `pg_dump` 90일 (ADR-0006)
 - 모노레포: pnpm workspaces, `packages/shared`에 계산식·상수·API 타입 (ADR-0007)
 - ORM: **Drizzle**, 스키마 = `data-model.md` §4 DDL, 마이그레이션은 생성 SQL을 PR에서 리뷰 후 Actions에서 적용 (ADR-0003)
@@ -43,9 +45,9 @@
 
 ## 다음 할 일 (우선순위 순)
 
-1. [ ] `02-design/api-spec.md` REST API 목록 (DB 제약 위반 → 409/422 매핑은 data-model §3·§7 참고) (인증 4개는 architecture §4 기준, 라운드, 골프장, 통계, CSV, 에러 코드 404/409/422)
+1. [ ] **사용자 확인:** `api-spec.md` 검토
 2. [ ] `02-design/ui-design.md` 화면 흐름·와이어프레임 ("서버 깨우는 중"·로그인 오류 화면 포함, architecture §5.3)
-3. [ ] `api-spec.md`·`ui-design.md`가 끝나면 `architecture.md`·`data-model.md` 상태를 "확정"으로 → M1 설계 확정
+3. [ ] `ui-design.md`가 끝나면 `architecture.md`·`data-model.md`·`api-spec.md` 상태를 "확정"으로 → M1 설계 확정. SRS §6 추적성 매트릭스 "설계 문서" 칸 채우기
 4. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
 5. [ ] 사용자 할 일 (구현 시작 전까지): 카카오 개발자 콘솔 앱 등록(Redirect URI `https://<도메인>/api/auth/kakao/callback`), Cloudflare·Render·Neon 계정 준비 (원래 GitHub 계정 사용), **age 키 쌍 생성 후 개인키를 비밀번호 관리자 + 오프라인에 보관**
 6. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Pages Functions `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2)
