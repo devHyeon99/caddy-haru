@@ -44,6 +44,7 @@
 3. 새 결정이 있었으면 ADR 추가, 새 질문이 있었으면 open-questions에 추가
 
 ## 6. 문서 작성 규칙
+- **사용자에게 하는 설명·답변·요약·질문은 무조건 한국어로 한다.** (작업 완료 보고, 선택지 질문, 다음 단계 안내 포함. 코드 식별자·기술 용어는 영어 허용)
 - 언어: 한국어 (코드 식별자·기술 용어는 영어 허용)
 - 형식: Markdown, 다이어그램은 Mermaid
 - 각 문서 상단에 `상태(초안/검토중/확정)`, `최종 수정일` 표기
@@ -53,7 +54,7 @@
 > 상세와 근거: `docs/03-decisions/ADR-0002-tech-stack.md`
 - 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Pages
 - 백엔드: NestJS + TypeScript (REST API) → Render 무료 (Dockerfile)
-- DB: Neon (PostgreSQL) · ORM은 ADR-0003에서 결정 예정
+- DB: Neon (PostgreSQL) · ORM: **Drizzle** (버전 고정, 스키마는 `docs/02-design/data-model.md` §4 DDL과 일치, ADR-0003)
 - 인증: 카카오 OAuth(이메일 없이 회원번호) + **DB 세션**(`__Host-sid` httpOnly 쿠키, 토큰은 SHA-256 해시로 저장, ADR-0004). `/api/*`는 Pages Functions 프록시로 같은 도메인 유지
 - 데이터 분리: Repository 메서드 첫 인자 `userId: UserId` 필수, `WHERE id AND user_id`, 복합 FK (ADR-0005)
 - 백업: Neon 즉시 복원(6시간) + GitHub Actions 매일 age 암호화 `pg_dump`(90일), 개인키는 GitHub 밖 (ADR-0006)

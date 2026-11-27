@@ -18,6 +18,8 @@
 - [x] 2026-11-27 Q-025 해결: AC-N001-3은 서버가 깨어난 뒤부터 30초로 측정 (확정 후 변경, 사용자 승인)
 - [x] 2026-11-27 **`architecture.md` 상세 작성 (검토중):** NestJS 모듈·레이어, NFR-003 강제·AC-N003 테스트 방식, 카카오 OAuth·DB 세션 시퀀스, 프록시·서버 깨우기, NFR 대응 표, 디렉터리 구조, 배포, 백업
 - [x] 2026-11-27 ADR-0004 DB 세션 · ADR-0005 명시적 userId + 복합 FK · ADR-0006 백업(Neon 6시간 + 매일 암호화 pg_dump) · ADR-0007 pnpm workspaces
+- [x] 2026-11-27 **`data-model.md` 작성 (검토중):** ERD, `users`·`sessions`·`golf_clubs`·`rounds` 컬럼별 요구사항 ID, 목표 DDL(CHECK·부분 유니크·복합 FK `RESTRICT`), 정수 집계(반 라운드 단위), 제약 테스트 목록
+- [x] 2026-11-27 **ADR-0003 ORM = Drizzle** (Prisma·TypeORM과 비교, 버전 고정, SQL 마이그레이션 리뷰). Q-026 해결: 숨긴 골프장과 같은 이름 추가 **허용**
 
 ## 확정된 핵심 사항 (요약)
 
@@ -34,18 +36,19 @@
 - 분리: Repository 첫 인자 `userId`, 남의 ID는 404, 복합 FK, `:id` 라우트 누락 감지 테스트 (ADR-0005)
 - 백업: Neon 즉시 복원 6시간 + GitHub Actions 매일 age 암호화 `pg_dump` 90일 (ADR-0006)
 - 모노레포: pnpm workspaces, `packages/shared`에 계산식·상수·API 타입 (ADR-0007)
+- ORM: **Drizzle**, 스키마 = `data-model.md` §4 DDL, 마이그레이션은 생성 SQL을 PR에서 리뷰 후 Actions에서 적용 (ADR-0003)
+- 데이터: 금액은 라운드에 복사 저장(FR-007), `UNIQUE (user_id, played_on, slot)`, 골프장 숨김은 `hidden_at` + 복합 FK `RESTRICT`, 기본 골프장은 `is_default` 부분 유니크
 - 일정: **1개월 안 실사용** (M3 2026-12-26)
 - 목적: 실사용 + 학습/포트폴리오
 
 ## 다음 할 일 (우선순위 순)
 
-1. [ ] `02-design/data-model.md` ERD·엔티티 정의 (FR-007 캐디피 보존, Q-018 숨기기, Q-017 유니크 `(user_id, played_on, slot)`, 나인추가 CHECK, **ADR-0005 복합 FK**, `users`·`sessions` 테이블) + **ORM 선택 ADR-0003** (평가 기준에 복합 FK 표현 가능 여부 포함)
-2. [ ] `02-design/api-spec.md` REST API 목록 (인증 4개는 architecture §4 기준, 라운드, 골프장, 통계, CSV, 에러 코드 404/409/422)
-3. [ ] `02-design/ui-design.md` 화면 흐름·와이어프레임 ("서버 깨우는 중"·로그인 오류 화면 포함, architecture §5.3)
-4. [ ] 위 세 문서가 끝나면 `architecture.md` 상태를 "확정"으로 → M1 설계 확정
-5. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
-6. [ ] 사용자 할 일 (구현 시작 전까지): 카카오 개발자 콘솔 앱 등록(Redirect URI `https://<도메인>/api/auth/kakao/callback`), Cloudflare·Render·Neon 계정 준비 (원래 GitHub 계정 사용), **age 키 쌍 생성 후 개인키를 비밀번호 관리자 + 오프라인에 보관**
-7. [ ] 구현 1주차에 확인: Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Pages Functions `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2)
+1. [ ] `02-design/api-spec.md` REST API 목록 (DB 제약 위반 → 409/422 매핑은 data-model §3·§7 참고) (인증 4개는 architecture §4 기준, 라운드, 골프장, 통계, CSV, 에러 코드 404/409/422)
+2. [ ] `02-design/ui-design.md` 화면 흐름·와이어프레임 ("서버 깨우는 중"·로그인 오류 화면 포함, architecture §5.3)
+3. [ ] `api-spec.md`·`ui-design.md`가 끝나면 `architecture.md`·`data-model.md` 상태를 "확정"으로 → M1 설계 확정
+4. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
+5. [ ] 사용자 할 일 (구현 시작 전까지): 카카오 개발자 콘솔 앱 등록(Redirect URI `https://<도메인>/api/auth/kakao/callback`), Cloudflare·Render·Neon 계정 준비 (원래 GitHub 계정 사용), **age 키 쌍 생성 후 개인키를 비밀번호 관리자 + 오프라인에 보관**
+6. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Pages Functions `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2)
 
 ## 막힌 것 / 사용자 결정 필요
 
@@ -54,12 +57,12 @@
 ## 설계 단계에서 정할 것
 
 - ~~데이터 백업 방식 (AC-N004-2)~~ → ADR-0006 결정 완료
-- ORM (ADR-0003) — `data-model.md` 작업 때
+- ~~ORM (ADR-0003)~~ → Drizzle 결정 완료
 - ~~무료 티어 한도 검증 (AC-N007-1)~~ → ADR-0002에 기록 완료. Cloudflare Pages 정적 한도만 구현 전 재확인
 
 ## 단계 전환 체크리스트
 
 - Phase 0 → 1: 헌장의 목적·범위·성공 기준이 "확정" — ✅
 - Phase 1 → 2: SRS의 Must 요구사항 전부 "확정", open-questions에 Must 관련 미해결 없음 — ✅
-- Phase 2 → 3: 아키텍처·데이터 모델 확정, 기술 스택 ADR 작성 (✅ ADR-0002)
+- Phase 2 → 3: 아키텍처·데이터 모델 확정 (둘 다 검토중), 기술 스택 ADR 작성 (✅ ADR-0002, ✅ ADR-0003)
 - Phase 3 → 4: Must 요구사항 전부 구현 + 테스트 통과

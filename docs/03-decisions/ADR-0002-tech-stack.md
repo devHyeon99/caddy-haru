@@ -53,7 +53,7 @@ Phase 2(설계)에 들어가기 전에 프론트엔드·백엔드·DB·인증·�
 | DB | **Neon** (서버리스 PostgreSQL) |
 | 인증 | 카카오 OAuth 2.0(인가 코드 방식)을 NestJS에서 처리하고, 서버가 httpOnly 쿠키를 발급 |
 | 저장소 | 모노레포 하나: `apps/web`(React), `apps/api`(NestJS), 원래 GitHub 계정 |
-| ORM·라이브러리 세부 | 데이터 모델 설계 때 따로 결정 (ADR-0003 예정) |
+| ORM·라이브러리 세부 | 데이터 모델 설계 때 따로 결정 → ADR-0003 (Drizzle) |
 
 ```mermaid
 flowchart LR
@@ -127,3 +127,4 @@ flowchart LR
 ## 변경 이력
 - 2026-11-27 작성·승인 (사용자 선택: React + NestJS, Render 무료, 크론 없이 시작)
 - 2026-11-27 후속 결정 연결: 세션 방식 ADR-0004(DB 세션), 데이터 분리 ADR-0005, 백업 ADR-0006, 모노레포 ADR-0007
+- 2026-11-27 ORM 결정 연결: ADR-0003(Drizzle)

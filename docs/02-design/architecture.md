@@ -2,9 +2,9 @@
 
 > 상태: 검토중 · 최종 수정일: 2026-11-27
 > 선행 조건: SRS Must 요구사항 확정, ADR-0002(기술 스택)
-> 관련 결정: ADR-0002 기술 스택 · ADR-0004 로그인 세션 · ADR-0005 데이터 분리 강제 · ADR-0006 백업 · ADR-0007 모노레포 · (ADR-0003 ORM은 `data-model.md` 작업 때 결정)
+> 관련 결정: ADR-0002 기술 스택 · ADR-0004 로그인 세션 · ADR-0005 데이터 분리 강제 · ADR-0006 백업 · ADR-0007 모노레포 · ADR-0003 ORM(Drizzle) · 데이터 모델: `data-model.md`
 
-이 문서의 코드 예시는 **설계 의도를 보여주는 의사 코드**다. ORM(ADR-0003)이 정해지면 실제 문법은 달라질 수 있지만, 규칙(시그니처, 쿼리 조건, 쿠키 속성)은 그대로 지킨다.
+이 문서의 코드 예시는 **설계 의도를 보여주는 의사 코드**다. 실제 문법은 Drizzle(ADR-0003)을 따르지만, 규칙(시그니처, 쿼리 조건, 쿠키 속성)은 그대로 지킨다.
 
 ---
 
@@ -51,7 +51,7 @@ flowchart LR
 | 프론트엔드 | React + Vite + TypeScript (SPA) | ADR-0002 |
 | 백엔드 | NestJS + TypeScript, REST API | ADR-0002 |
 | DB | Neon (서버리스 PostgreSQL) | ADR-0002 |
-| ORM | 미정 | ADR-0003 예정 |
+| ORM | Drizzle (`node-postgres` 드라이버, 버전 고정) | **ADR-0003** |
 | 인증 | 카카오 OAuth 2.0 인가 코드 방식 + **DB 세션**(httpOnly 쿠키에 불투명 토큰) | ADR-0002, **ADR-0004** |
 | 데이터 분리 | Repository 메서드에 **명시적 `userId`** + DB 복합 FK | **ADR-0005** |
 | 백업 | Neon 즉시 복원(6시간) + GitHub Actions 매일 `pg_dump`(age 암호화, 90일) | **ADR-0006** |
@@ -142,7 +142,7 @@ flowchart LR
 // common/user-id.ts — 브랜드 타입: 세션에서 나온 값만 UserId가 된다 (NFR-003)
 export type UserId = number & { readonly __brand: 'UserId' };
 
-// rounds/rounds.repository.ts (의사 코드, ORM은 ADR-0003)
+// rounds/rounds.repository.ts (의사 코드, 구현은 Drizzle — ADR-0003)
 export interface RoundsRepository {
   findById(userId: UserId, id: number): Promise<Round | null>;
   findByMonth(userId: UserId, year: number, month: number): Promise<Round[]>;
@@ -436,7 +436,7 @@ caddy/
 │       │   ├── rounds/
 │       │   └── stats/
 │       ├── test/                         # E2E: isolation.e2e-spec.ts, auth.e2e-spec.ts, health.e2e-spec.ts
-│       ├── migrations/                   # (ORM 결정 후 위치 확정)
+│       ├── drizzle/                      # drizzle-kit 생성 SQL 마이그레이션 (ADR-0003)
 │       ├── Dockerfile                    # 빌드 컨텍스트 = 저장소 루트 (shared 포함)
 │       └── package.json
 ├── packages/
@@ -526,7 +526,7 @@ flowchart LR
 ---
 
 ## 10. 남은 일 · 다른 문서로 넘기는 것
-- ORM 선택(ADR-0003)과 테이블 정의·제약(복합 FK, 유니크 `(user_id, played_on, slot)`, CHECK) → `data-model.md`
+- ~~ORM 선택과 테이블 정의·제약~~ → ADR-0003(Drizzle), `data-model.md` 작성 완료 (2026-11-27)
 - 엔드포인트별 요청·응답, 에러 코드 → `api-spec.md`
 - "서버 깨우는 중"·오류 화면 문구와 디자인 → `ui-design.md`
 - §8.2의 "구현 전 확인" 항목 → 구현 1주차에 확인
@@ -535,3 +535,4 @@ flowchart LR
 - 2026-11-26 틀 생성
 - 2026-11-27 ADR-0002 반영: 구성도, 기술 스택 표
 - 2026-11-27 상세 설계 작성: 모듈·레이어, NFR-003 강제·테스트 방식, 카카오 OAuth·DB 세션 시퀀스, 프록시·깨우기, NFR 대응 표, 디렉터리 구조, 배포, 백업 (ADR-0004~0007) → 상태 "검토중"
+- 2026-11-27 ADR-0003(Drizzle) 반영: 기술 스택 표, 마이그레이션 디렉터리, §10
