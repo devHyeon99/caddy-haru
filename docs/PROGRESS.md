@@ -1,7 +1,7 @@
 # 진행 현황
 
 > 세션 시작 시 가장 먼저 읽고, 세션 종료 시 반드시 갱신한다.
-> 최종 수정일: 2026-11-27
+> 최종 수정일: 2026-11-28
 
 ## 현재 단계
 
@@ -60,14 +60,14 @@
 
 1. [x] ~~`docs/phase2-architecture` → main 병합~~ (PR #1, 2026-11-27)
 2. [x] ~~모노레포 뼈대~~ (PR #2 병합, CI 통과)
-3. [x] ~~첫 배포~~ (2026-11-27): Render Docker(Singapore 권장, Free) + Worker `caddy-haru` → `https://caddy-haru.eomhh99.workers.dev/api/health` 200. 남은 것: 카카오 Redirect URI 교체(사용자)
+3. [x] ~~첫 배포~~ (2026-11-27): Render Docker(Singapore 권장, Free) + Worker `caddy-haru` → `https://caddy-haru.eomhh99.workers.dev/api/health` 200. 카카오 Redirect URI 교체 완료(2026-11-28)
 4. [ ] Must 구현 (권장 순서: 인증(DB·세션) → 골프장 → 라운드 → 달력·통계)
 5. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
 6. [ ] 사용자 할 일 (구현 시작 전까지)
    - [x] 카카오 개발자 콘솔 앱 등록 (2026-11-27, **Redirect URI는 임시 주소**)
    - [x] Cloudflare·Render·Neon 계정 준비 (2026-11-27)
-   - [ ] **age 키 쌍 생성** 후 개인키를 비밀번호 관리자 + 오프라인에 보관, 공개키(`age1…`)만 GitHub Secret `BACKUP_AGE_RECIPIENT`로 (ADR-0006)
-   - [ ] Worker 첫 배포 뒤 카카오 Redirect URI를 `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback`으로 바꾸기
+   - [ ] **age 키 쌍 생성 → 백업 워크플로(`backup.yml`) 작업 때 함께** (2026-11-28 사용자 결정: 지금은 DB가 비어 있어 미룸). 방법: `brew install age` → `age-keygen -o ~/caddy-haru-backup.key` → 공개키만 `gh secret set BACKUP_AGE_RECIPIENT` → 개인키는 비밀번호 관리자 + 오프라인 보관 후 원본 삭제 → `brew uninstall age` (ADR-0006). **실데이터 기록 시작 전에 반드시 완료**
+   - [x] (2026-11-28 완료) Worker 첫 배포 뒤 카카오 Redirect URI를 `https://caddy-haru.eomhh99.workers.dev/api/auth/kakao/callback`으로 바꾸기
 7. [ ] 구현 1주차에 확인: Drizzle 최신 안정판 버전 고정, Render 무료 배포 훅·자동 배포 끄기, 카카오 동의 항목 없이 로그인, Worker 프록시 `redirect: 'manual'`·여러 `Set-Cookie` 전달 (architecture §8.2), 카카오 로그인 버튼 가이드·iOS 키패드 위 저장 버튼 (ui-design §8)
 
 ## 막힌 것 / 사용자 결정 필요
