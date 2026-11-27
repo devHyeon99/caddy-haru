@@ -1,8 +1,9 @@
-# 캐디 수입 관리 웹앱 — 프로젝트 규칙 (모든 세션 필독)
+# 캐디하루 (CaddyHaru) — 프로젝트 규칙 (모든 세션 필독)
 
 이 파일은 Claude 세션이 시작될 때 자동으로 읽힌다. 모든 작업은 아래 규칙을 따른다.
 
 ## 1. 프로젝트 한 줄 요약
+**캐디하루**(영문 표기 `CaddyHaru`, 식별자 `caddy-haru`) — 저장소 `devHyeon99/caddy-haru`.
 지인 캐디 몇 명이 각자 계정으로 라운드별 캐디피·오버피를 휴대폰으로 기록하고,
 월/연 수입 통계와 연간 총액(종합소득세 신고 참고용)을 확인하는 모바일 우선 웹앱.
 운영비 0원(무료 티어) 제약. 목적은 실사용 + 학습/포트폴리오.
@@ -10,14 +11,14 @@
 ## 2. 현재 단계
 > 단계가 바뀔 때마다 이 줄을 갱신한다.
 
-**현재: Phase 2 — 설계** (코드 작성 전) · Must 요구사항 확정 2026-11-26
+**현재: Phase 3 — 구현** · Must 요구사항 확정 2026-11-26 · 설계 확정(M1) 2026-11-27
 
 | Phase | 이름 | 산출물 | 상태 |
 |---|---|---|---|
 | 0 | 기획 | `docs/00-overview/` | 완료 |
 | 1 | 요구사항 정의 | `docs/01-requirements/` | 완료 (Must 확정) |
-| 2 | 설계 | `docs/02-design/` | 진행 중 |
-| 3 | 구현 | `src/` + 테스트 | 대기 |
+| 2 | 설계 | `docs/02-design/` | 완료 (설계 4종 확정) |
+| 3 | 구현 | `src/` + 테스트 | 진행 중 |
 | 4 | 검증/배포 | `docs/04-test/`, 배포 문서 | 대기 |
 
 ## 3. 문서 지도 (어디에 무엇이 있나)
@@ -44,10 +45,19 @@
 3. 새 결정이 있었으면 ADR 추가, 새 질문이 있었으면 open-questions에 추가
 
 ## 6. 문서 작성 규칙
+- **사용자에게 하는 설명·답변·요약·질문은 무조건 한국어로 한다.** (작업 완료 보고, 선택지 질문, 다음 단계 안내 포함. 코드 식별자·기술 용어는 영어 허용)
 - 언어: 한국어 (코드 식별자·기술 용어는 영어 허용)
 - 형식: Markdown, 다이어그램은 Mermaid
 - 각 문서 상단에 `상태(초안/검토중/확정)`, `최종 수정일` 표기
 - 확정된 문서를 바꿀 때는 문서 하단 "변경 이력"에 한 줄 추가
 
 ## 7. 기술 스택
-> 미정 — Phase 2(설계)에서 ADR로 결정한 뒤 여기에 요약한다.
+> 상세와 근거: `docs/03-decisions/ADR-0002-tech-stack.md`
+- 프론트엔드: React + Vite + TypeScript (SPA) → Cloudflare Pages · React Router · TanStack Query(메모리 캐시만) · vanilla-extract · Radix Dialog + vaul (ADR-0009)
+- 백엔드: NestJS + TypeScript (REST API) → Render 무료 (Dockerfile)
+- DB: Neon (PostgreSQL) · ORM: **Drizzle** (버전 고정, 스키마는 `docs/02-design/data-model.md` §4 DDL과 일치, ADR-0003)
+- 인증: 카카오 OAuth(이메일 없이 회원번호) + **DB 세션**(`__Host-sid` httpOnly 쿠키, 토큰은 SHA-256 해시로 저장, ADR-0004). `/api/*`는 Pages Functions 프록시로 같은 도메인 유지
+- 데이터 분리: Repository 메서드 첫 인자 `userId: UserId` 필수, `WHERE id AND user_id`, 복합 FK (ADR-0005)
+- 백업: Neon 즉시 복원(6시간) + GitHub Actions 매일 age 암호화 `pg_dump`(90일), 개인키는 GitHub 밖 (ADR-0006)
+- 저장소: pnpm workspaces 모노레포 `apps/web`, `apps/api`, `packages/shared` (ADR-0007). 상세 설계: `docs/02-design/architecture.md`
+- 지켜야 할 규칙: `/api/health`는 DB 접근 금지, 서버 메모리에 상태 저장 금지, 서버 시작 시 DB 연결·마이그레이션 금지(lazy 연결), 모든 쿼리에 사용자 ID 강제(NFR-003), Render 무료 서비스는 1개만
