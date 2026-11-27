@@ -16,6 +16,18 @@ export default {
       return env.ASSETS.fetch(request);
     }
 
+    // 설정이 빠지면 예외(1101) 대신 원인이 보이는 503 — 화면은 "서버 깨우는 중" 흐름으로 처리된다(architecture §5.3)
+    if (!env.API_ORIGIN || !env.PROXY_SECRET) {
+      console.error('프록시 설정 누락', {
+        API_ORIGIN: Boolean(env.API_ORIGIN),
+        PROXY_SECRET: Boolean(env.PROXY_SECRET),
+      });
+      return new Response('proxy not configured', {
+        status: 503,
+        headers: { 'cache-control': 'no-store' },
+      });
+    }
+
     const target = new URL(url.pathname + url.search, env.API_ORIGIN); // /api 접두사 유지
 
     const headers = new Headers(request.headers);
