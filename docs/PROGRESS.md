@@ -25,6 +25,7 @@
 - [x] 2026-11-27 **`ui-design.md` 작성 (검토중):** 화면 13개(SCR-00 깨우기·00o 오버레이·06 로그인·01 홈·02/02e 라운드 추가·수정·03/03d 달력·날짜 시트·04 통계·05/05f 설정·골프장, DLG-01·02), 화면 흐름도 2개, 360px 와이어프레임, 서버 에러 → 화면 매핑, `/login?error=` 문구, **30초 흐름 = 3탭 + 5키(약 10초)**, 검증 방법. SRS §6 "설계 문서" 칸 채움 → **설계 문서 4종 초안 완료**
 
 - [x] 2026-11-27 **M1 달성: 설계 4종 확정** (architecture·data-model·api-spec·ui-design, 사용자 승인) → **Phase 3 진입**
+- [x] 2026-11-27 **ADR-0009 프론트 라이브러리 결정:** React Router · TanStack Query(메모리 캐시만, 저장 재시도 없음, 포커스 시 재요청 끔) · vanilla-extract · Radix Dialog + vaul. 시트 열림 = 주소 `date`, 뒤로 가기 = 닫기
 
 ## 확정된 핵심 사항 (요약)
 
@@ -41,6 +42,7 @@
 - 분리: Repository 첫 인자 `userId`, 남의 ID는 404(없는 ID와 응답이 똑같음, 본문의 `golfClubId`도 404), 복합 FK, `:id` 라우트 누락 감지 테스트 (ADR-0005, api-spec §3)
 - API: `/api` 아래 REST, 금액은 JSON 정수, 환산 라운드 수는 `roundHalfUnits` 정수, 에러는 `{ error: { code, message, fields?, requestId } }` (api-spec, ADR-0008)
 - 백업: Neon 즉시 복원 6시간 + GitHub Actions 매일 age 암호화 `pg_dump` 90일 (ADR-0006)
+- 프론트: React Router · TanStack Query · vanilla-extract(토큰에 44px 등) · Radix Dialog(DLG) + vaul(시트) (ADR-0009)
 - 모노레포: pnpm workspaces, `packages/shared`에 계산식·상수·API 타입 (ADR-0007)
 - ORM: **Drizzle**, 스키마 = `data-model.md` §4 DDL, 마이그레이션은 생성 SQL을 PR에서 리뷰 후 Actions에서 적용 (ADR-0003)
 - 데이터: 금액은 라운드에 복사 저장(FR-007), `UNIQUE (user_id, played_on, slot)`, 골프장 숨김은 `hidden_at` + 복합 FK `RESTRICT`, 기본 골프장은 `is_default` 부분 유니크
@@ -50,8 +52,8 @@
 
 ## 다음 할 일 (우선순위 순)
 
-1. [ ] 프론트 라이브러리(라우터·서버 상태 캐시·스타일·시트/대화상자) 결정 → 트레이드오프 있으면 ADR-0009
-2. [ ] 모노레포 뼈대(pnpm workspaces, `apps/web`·`apps/api`·`packages/shared`, CI) + `test-plan.md`에 api-spec §11·ui-design §6 옮기기
+1. [ ] (먼저) `docs/phase2-architecture` 브랜치를 PR로 `main`에 합치기 → 구현 브랜치는 main에서 새로
+2. [ ] 모노레포 뼈대(pnpm workspaces, `apps/web`·`apps/api`·`packages/shared`, CI) + `test-plan.md`에 api-spec §11·ui-design §6 옮기기. 이때 ADR-0009 라이브러리 최신 안정판 버전 고정, **vaul 유지보수 상태·React 호환 확인**, 초기 JS gzip 크기 측정
 3. [ ] Must 구현 시작 (권장 순서: health·인증 → 골프장 → 라운드 → 달력·통계)
 4. [ ] (병행, Should) `use-cases.md`의 UC-00, UC-02 ~ UC-07 작성
 5. [ ] 사용자 할 일 (구현 시작 전까지): 카카오 개발자 콘솔 앱 등록(Redirect URI `https://<도메인>/api/auth/kakao/callback`), Cloudflare·Render·Neon 계정 준비 (원래 GitHub 계정 사용), **age 키 쌍 생성 후 개인키를 비밀번호 관리자 + 오프라인에 보관**
@@ -77,5 +79,5 @@
   - ✅ 기술 스택 ADR (ADR-0002, ORM ADR-0003, 인증·분리·백업·모노레포·에러 ADR-0004~0008)
   - ✅ Must 요구사항 전부 설계에 연결 (SRS §6 "설계 문서" 칸 11개 모두 채움)
   - ✅ open-questions 미해결 0개
-  - ⬜ (구현 전 준비, 전환 조건은 아님) 사용자 계정·카카오 앱 등록·age 키, 프론트 라이브러리 결정
+  - ⬜ (구현 전 준비, 전환 조건은 아님) 사용자 계정·카카오 앱 등록·age 키 · ✅ 프론트 라이브러리 결정(ADR-0009)
 - Phase 3 → 4: Must 요구사항 전부 구현 + 테스트 통과

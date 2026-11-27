@@ -2,7 +2,7 @@
 
 > 상태: **확정** · 최종 수정일: 2026-11-27
 > 선행 조건: SRS Must 요구사항 확정, ADR-0002(기술 스택)
-> 관련 결정: ADR-0002 기술 스택 · ADR-0004 로그인 세션 · ADR-0005 데이터 분리 강제 · ADR-0006 백업 · ADR-0007 모노레포 · ADR-0003 ORM(Drizzle) · 데이터 모델: `data-model.md`
+> 관련 결정: ADR-0002 기술 스택 · ADR-0009 프론트 라이브러리 · ADR-0004 로그인 세션 · ADR-0005 데이터 분리 강제 · ADR-0006 백업 · ADR-0007 모노레포 · ADR-0003 ORM(Drizzle) · 데이터 모델: `data-model.md`
 
 이 문서의 코드 예시는 **설계 의도를 보여주는 의사 코드**다. 실제 문법은 Drizzle(ADR-0003)을 따르지만, 규칙(시그니처, 쿼리 조건, 쿠키 속성)은 그대로 지킨다.
 
@@ -48,7 +48,7 @@ flowchart LR
 ## 2. 기술 스택
 | 영역 | 선택 | 근거 ADR |
 |---|---|---|
-| 프론트엔드 | React + Vite + TypeScript (SPA) | ADR-0002 |
+| 프론트엔드 | React + Vite + TypeScript (SPA) · React Router · TanStack Query · vanilla-extract · Radix Dialog + vaul | ADR-0002, ADR-0009 |
 | 백엔드 | NestJS + TypeScript, REST API | ADR-0002 |
 | DB | Neon (서버리스 PostgreSQL) | ADR-0002 |
 | ORM | Drizzle (`node-postgres` 드라이버, 버전 고정) | **ADR-0003** |
@@ -542,3 +542,4 @@ flowchart LR
 - 2026-11-27 `api-spec.md` 반영: §3.2 예외 매핑에 403(요청 출처) 추가, 에러 형식 ADR-0008 링크, §10
 - 2026-11-27 `ui-design.md` 반영: §10 화면 문구 항목 완료 표시
 - 2026-11-27 **확정** (사용자 승인, M1 설계 확정). 이후 변경은 이 이력에 기록한다
+- 2026-11-27 ADR-0009(프론트 라이브러리) 반영: 기술 스택 표, 관련 결정
